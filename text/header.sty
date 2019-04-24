@@ -1,1 +1,26 @@
 \ProvidesPackage{header}
+
+% Basic layout
+\usepackage[a4paper, left=3cm, right=3cm, top=2.9cm, bottom=2.9cm, footskip=1.3cm]{geometry}
+
+% Everything related to language
+\usepackage[english]{babel}
+
+% Some other packages
+\usepackage{lipsum}
+\usepackage[pageanchor=false]{hyperref} % hyperlinks
+
+% Setup fonts
+%
+% So I still have to decide. Either use CM + Biolinum as sans font, or
+% Libertine (including Biolinum) everywhere. OR even Palatino?
+\usepackage[T1]{fontenc}
+% \usepackage{mathpazo}
+\usepackage{libertine}
+\usepackage[libertine]{newtxmath}
+% \usepackage{biolinum}
+% \usepackage{lmodern}
+
+% Stuff for including images
+\usepackage{graphicx}
+\graphicspath{ {img/} }
