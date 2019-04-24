@@ -7,7 +7,7 @@
 \usepackage[english]{babel}
 
 % Some other packages
-\usepackage{lipsum}
+\usepackage{blindtext}
 \usepackage[pageanchor=false]{hyperref} % hyperlinks
 
 % Setup fonts
@@ -20,6 +20,17 @@
 \usepackage[libertine]{newtxmath}
 % \usepackage{biolinum}
 % \usepackage{lmodern}
+
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+    {\sffamily\raggedleft\fontsize{50}{0}\selectfont\bfseries}
+    {\thechapter}
+    {-.5em}
+    {\huge\raggedright}
+    [\hrule]
+\titleformat{\section}[block]
+    {\sffamily\Large\bfseries}{\thesection}{1em}{}
+
 
 % Stuff for including images
 \usepackage{graphicx}
