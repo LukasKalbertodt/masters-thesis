@@ -3,13 +3,14 @@
 
 \begin{document}
     % Special stuff in the beginning
-    \input{chapters/title.tex}
+    \input{chapters/title}
     \thispagestyle{empty}\newpage
 
-    \input{chapters/abstract.tex}
+    \input{chapters/abstract}
     \thispagestyle{empty}\newpage
 
     \tableofcontents\thispagestyle{empty}\newpage
+
 
     % Main content (TODO: put in individual files)
     \setcounter{page}{1}
@@ -26,7 +27,15 @@
     \blindtext
 
     \section{Structure}
+    \newpage
+
 
     % Special stuff in the end
+    \newpage\null\thispagestyle{empty}\newpage
+    \input{chapters/acknowledgements}
+
+    \newpage\null\thispagestyle{empty}\newpage
+    \input{chapters/authorship}
+
 
 \end{document}
