@@ -1,0 +1,40 @@
+- Introduction
+    - A longer version of the abstract
+    - Overview over different chapters
+
+- Basics of Geomtry Processing
+    - What is the field about ? Algorithms, those need adjacency information. Thus we need a data structure.
+    - Explain existing data structures
+    - Give a rough overview over existing libraries, explain OM in a bit more detail
+
+- Basics of Rust
+    - Syntax and the very Basics
+    - Traits: how abstraction is done
+    - Iterators
+    - Codegen & LLVM
+
+- Implementation of `lox`
+    - How to store adjacency information and properties?
+        - Struct of Arrays vs. Array of structs, Benchmark, conclusion
+        - Handles to refer to elements & refs
+        - Maps: `PropMap` & `PropStore`
+    - Mesh and adjacency trait design (show algorithm signatures)
+    - Data structures
+    - IO
+        - Traits: distinction between `Mem` and `Stream`
+        - Casts
+        - Custom Derives
+    - Optimizations
+
+- Evaluation: comparison with OM
+    - Benchmarks of algorithms + IO
+    - Comparison of code length/"niceness"
+
+- Comparison Rust & C++
+    - Missing in Rust: GATs & Specialization
+    - Problematic: Aliasing XOR mutability
+    - Advantages apart from traits
+    - Roadmap 2019
+
+- Conclusion
+  - Answering all questions from the Resume
