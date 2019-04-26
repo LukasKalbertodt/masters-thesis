@@ -1,6 +1,40 @@
 \chapter{Introduction}
 
-\blindtext
+This is a test of several formatting options. I want to be done with most of the LaTeX stuff as soon as possible. For one, I want inline code boxes which have different background color and a small round border. For example, I develop the library \code{lox} and it uses a bunch of \code{Vec<T>}. Sometimes, I say stuff like \code{v.adjacent_faces()} in my code.
+
+However, sometimes, a bigger box is needed. For some nice multi line Rust code:
+
+\begin{rustcode}
+fn main() {
+    let x = 27; // peter
+    x == 3;
+    for i in 1 .. x + 1 {
+        if x % i == 0 {
+            println!("Teiler {}!", i);
+        }
+    }
+    Some(3)
+}
+
+use std;
+mod uhg {}
+
+#[derive(Banana)]
+const FOO: usize = 3;
+struct Foo<T>(T);
+enum Bar {}
+\end{rustcode}
+
+And here some C++ code:
+
+\begin{cppcode}
+int main() {
+printf("hello, world");
+return 0;
+}
+\end{cppcode}
+
+This is after the code.
 
 \section{Structure}
 

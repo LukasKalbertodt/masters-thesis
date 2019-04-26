@@ -16,8 +16,10 @@
 % Libertine (including Biolinum) everywhere. OR even Palatino?
 \usepackage[T1]{fontenc}
 % \usepackage{mathpazo}
-\usepackage{libertine}
+\usepackage[mono=false]{libertine}
 \usepackage[libertine]{newtxmath}
+% the 0.93 was set to match the x height of libertine font
+\setmonofont[Scale=0.93]{Inconsolata}
 % \usepackage{biolinum}
 % \usepackage{lmodern}
 
@@ -35,3 +37,45 @@
 % Stuff for including images
 \usepackage{graphicx}
 \graphicspath{ {img/} }
+
+
+% Colors
+\usepackage{xcolor}
+\definecolor{lightgray}{rgb}{0.83, 0.83, 0.83}
+\definecolor{solarized_bg}{HTML}{FDF6E3}
+
+% Multi-line source code
+\usepackage[outputdir=build]{minted}
+\usemintedstyle{mysolarized}   % see the `solarized` folder for more info
+\setminted{
+  linenos,
+  numbersep=10pt,
+  xleftmargin=20pt,
+  xrightmargin=10pt,
+  frame=single,
+  framesep=7pt,
+  baselinestretch=1.05,
+  fontsize=\small     % maybe \footnotesize
+}
+\newminted{rust}{
+    rulecolor=\color{lightgray},
+}
+\newminted{cpp}{
+    rulecolor=\color{lightgray},
+}
+
+% Inline code boxes
+\usepackage{newverbs}
+\usepackage[skins]{tcolorbox}
+\newtcbox{\codebox}[0]{
+    on line,
+    colback=solarized_bg!30,
+    colframe=solarized_bg!95!black,
+    size=fbox,
+    arc=3pt,
+    boxrule=0.8pt,
+    boxsep=1pt,
+    top=1pt,
+    bottom=1pt,
+}
+\newcommand{\code}{\collectverb{\codebox}}
