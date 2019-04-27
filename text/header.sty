@@ -8,7 +8,7 @@
 
 % Some other packages
 \usepackage{blindtext}
-\usepackage[pageanchor=false]{hyperref} % hyperlinks
+\usepackage[pageanchor=false, hidelinks]{hyperref} % hyperlinks
 
 % Setup fonts
 %
@@ -16,23 +16,26 @@
 % Libertine (including Biolinum) everywhere. OR even Palatino?
 \usepackage[T1]{fontenc}
 % \usepackage{mathpazo}
-\usepackage[mono=false]{libertine}
-\usepackage[libertine]{newtxmath}
+% \usepackage[mono=false]{libertine}
+% \usepackage[libertine]{newtxmath}
 % the 0.93 was set to match the x height of libertine font
+\usepackage{biolinum}
 \setmonofont[Scale=0.93]{Inconsolata}
-% \usepackage{biolinum}
 % \usepackage{lmodern}
 
 % Paragraph style
 \parskip = 10pt
 \parindent = 0pt
 
+% Line height
+\renewcommand{\baselinestretch}{1.07}\normalsize
+
 \usepackage{titlesec}
 \titleformat{\chapter}[display]
-    {\sffamily\raggedleft\fontsize{50}{0}\selectfont\bfseries}
+    {\vspace{-3cm}\sffamily\raggedleft\fontsize{50}{0}\selectfont\bfseries}
     {\thechapter}
-    {-.5em}
-    {\huge\raggedright}
+    {-.75em}
+    {\fontsize{24}{25}\selectfont\raggedright}
     [\hrule]
 \titleformat{\section}[block]
     {\sffamily\Large\bfseries}{\thesection}{1em}{}
