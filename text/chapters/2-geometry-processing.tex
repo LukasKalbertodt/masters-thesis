@@ -1,3 +1,29 @@
-\chapter{Geometry Processing}
+\chapter{Background: Geometry Processing}
 
-\blindtext
+The field of \emph{geometry processing} is concerned with acquiring, manipulating and analysing 3D surfaces.
+Applications include simulations, modeling in industrial context, biomedical processing, and real-time 3D graphics (mostly, but not exclusively, for entertainment purposes).
+
+A 3D surface can be acquired through a variety of different means.
+In many areas, humans manually model 3D objects with a modeling software (like Blender\footnote{Blender website: \url{https://www.blender.org/}}), while in many other cases, 3D surfaces are algorithmically created from mathematical definitions or 3D scans (like MRI\footnote{Magnetic resonance imaging} data or laser scans).
+It is then often necessary to manipulate the surface in order to improve certain characteristics of it.
+For example, laser scan data is often fairly noisy, so various post-processing algorithms are needed to remove artifacts caused by that noise.
+For real-time 3D graphics, it is often beneficial to reduce the complexity of an object in order to improve rendering times.
+
+To work with 3D surfaces, one first has to find a way to represent them.
+Amongst the many very different kinds of representations (cf. \cite{botsch2010polygon}, chapter 1), the polygon mesh is one of the most widely used one.
+A polygon mesh is a collection of vertices (points), edges (connecting two vertices) and faces (polygons bounded by edges).
+It is important to note that polygon meshes can only exactly represent polyhedrons, so most of the time, they are just an approximation of the actual 3D surface.
+
+There are two special forms of the polygon mesh of high practical relevance. A \emph{triangle mesh} is a polygon mesh where each face is triangular and a \emph{quad mesh}, all faces are quadrilaterals.
+Restricting the faces like that often makes algorithms operating on that mesh a lot simpler (and thus potentially faster).
+In particular, since triangles are the simplest polygon (a 2-simplex, in fact), many operations on triangle meshes are a lot faster than on a general polygon mesh.
+
+% - image of mesh with vertices, edges, faces marked
+% - explanation of requirements (manifold, orientable, ...)
+% - image of non-manifold features
+
+
+\section{Mesh Data Structures}
+% - requirements of data structures (adj info)
+% - what makes DS slow/fast? Caches, ...
+% - list and short explanation of different data structures
