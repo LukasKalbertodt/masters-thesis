@@ -1,3 +1,18 @@
 \chapter*{\hfill Abstract}
 
-\blindtext
+Data structures for representing polygon meshes are the backbone of many domains in the field of computer graphics, particularly geometry processing. These data structure need to be able to quickly provide several kinds of adjacency information about the mesh, while at the same time should use as little memory as possible. Despite the development of many different data structures, almost all popular mesh processing libraries only use one particular one: the \emph{half edge mesh}. This thesis describes the development of \code{lox}: an open source software library written in the programming language Rust. This library implements multiple data structures and abstracts over their different capabilities. With that, algorithms can be defined in an \emph{abstract} way, which means they are written against an abstract interface instead of a specific data structures.
+
+% Information the abstract needs to convey:
+%
+% - why?
+%   - There are different data structures, different advantages/disadvantages
+%     - There are some requirements that DS need to satisfy
+%   - most existing libraries only use one DS: HEM
+% - lox was written (as part of this thesis)
+% - infos about lox
+%   - open source
+%   - written in Rust
+%   - it's purpose is to help with geometry processing and other CG things
+% - results
+%   - zero cost abstractions work: faster than OM
+%   - shorter code
