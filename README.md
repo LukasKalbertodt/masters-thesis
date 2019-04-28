@@ -24,3 +24,4 @@ My master thesis. Abstract:
 - *Inconsolata* font installed locally
 - *Pygments* (command `pygmentize`) installed
     - Install `mysolarized` style (see `text/solarized` for more info)
+- Inkscape

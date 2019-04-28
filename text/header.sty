@@ -45,7 +45,12 @@
 
 % Stuff for including images
 \usepackage{graphicx}
-\graphicspath{ {img/} }
+\usepackage{grffile}
+\graphicspath{ {img/} {img/svg2pdf/} }
+\newcommand{\includesvg}[2][\columnwidth]{%
+    \def\svgwidth{#1}%
+    \input{img/svg2pdf/#2.svg.pdf_tex}%
+}
 
 
 % Colors
