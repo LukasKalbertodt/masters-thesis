@@ -3,11 +3,11 @@
 % Basic layout
 \usepackage[a4paper, left=3cm, right=3cm, top=2.9cm, bottom=2.9cm, footskip=1.3cm]{geometry}
 
-% Everything related to language
-\usepackage[english]{babel}
+% Everything related to language. We use 'australian' here to get the correct
+% DD/MM/YYYY date format in biblatex.
+\usepackage[main=british,australian]{babel}
 
-% Some other packages
-\usepackage{blindtext}
+
 % Setup fonts
 %
 % So I still have to decide. Either use CM + Biolinum as sans font, or
@@ -94,5 +94,14 @@
 
 
 % Links
-\usepackage[pageanchor=false, hidelinks]{hyperref} % hyperlinks
+\usepackage[pageanchor=true, hidelinks]{hyperref} % hyperlinks
 \usepackage[all]{hypcap}
+
+
+% Some other packages
+\usepackage{lipsum}
+\usepackage{csquotes}
+
+% Citations
+\usepackage[style=alphabetic, date=iso, seconds=true, language=australian]{biblatex}
+\addbibresource{sources.bib}

@@ -3,6 +3,7 @@
 
 \begin{document}
     % Special stuff in the beginning
+    \hypersetup{pageanchor=false}
     \input{chapters/title}
     \thispagestyle{empty}\newpage
 
@@ -14,6 +15,7 @@
 
     % Main content
     \setcounter{page}{1}
+    \hypersetup{pageanchor=true}
     \input{chapters/1-introduction}\newpage
     \input{chapters/2-geometry-processing}\newpage
     \input{chapters/3-rust-basics}\newpage
@@ -27,8 +29,9 @@
     \newpage\null\thispagestyle{empty}\newpage
     \input{chapters/acknowledgements}
 
-    \bibliography{sources}{}\newpage
-    \bibliographystyle{alpha}
+    \begin{otherlanguage}{australian}
+      \printbibliography
+    \end{otherlanguage}
 
     \newpage\null\thispagestyle{empty}\newpage
     \input{chapters/authorship}
