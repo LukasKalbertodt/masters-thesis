@@ -8,29 +8,55 @@ In many areas, humans manually model 3D objects with a modeling software (like B
 It is then often necessary to manipulate the surface in order to improve certain characteristics of it.
 For example, laser scan data is often fairly noisy, so various post-processing algorithms are needed to remove artifacts caused by that noise.
 For real-time 3D graphics, it is often beneficial to reduce the complexity of an object in order to improve rendering times.
+Also see \ref{fig:cat-algo} for two examples of modifying mesh algorithms.
 
 To work with 3D surfaces, one first has to find a way to represent them.
-Amongst the many very different kinds of representations (cf. \cite{botsch2010polygon}, chapter 1), the polygon mesh is one of the most widely used one.
+Amongst the many very different kinds of representations (cf. \cite{botsch2010polygon}, chapter 1), the polygon mesh (or just \enquote{mesh} for short) is one of the most widely used one.
 A polygon mesh is a collection of vertices (points), edges (connecting two vertices) and faces (polygons bounded by edges).
 It is important to note that polygon meshes can only exactly represent polyhedrons, so most of the time, they are just an approximation of the actual 3D surface.
 
 \begin{figure}[b]
   \includesvg{cat-algo}
   \caption{A 3D model of a cat (center). The left and right meshes are the results of a \emph{simplification} and \emph{subdivision} operation, respectively. (Original model from \cite{catmodel})}
+  \label{fig:cat-algo}
 \end{figure}
 
-There are two special forms of the polygon mesh of high practical relevance. A \emph{triangle mesh} is a polygon mesh where each face is triangular and a \emph{quad mesh}, all faces are quadrilaterals.
+There are two special forms of the polygon mesh of high practical relevance.
+A \emph{triangle mesh} is a polygon mesh where each face is triangular and a \emph{quad mesh}, all faces are quadrilaterals.
 Restricting the faces like that often makes algorithms operating on that mesh a lot simpler (and thus potentially faster).
 In particular, since triangles are the simplest polygon (a 2-simplex, in fact), many operations on triangle meshes are a lot faster than on a general polygon mesh.
 
-
 \begin{figure}[t]
   \includesvg{non-manifolds}
-  \caption{A non-manifold edge with more than two faces (left). A non-manifold vertex (center). The red vertex on the right is technically also a non-manifold vertex. However, this configuration is allowed in most data structures as it can still lead to a manifold mesh (by inserting more faces).}
+  \caption{
+    A non-manifold edge with more than two adjacent faces (left).
+    A non-manifold vertex adjacent to one closed and one open fan (center).
+    The red vertex on the right is technically also a non-manifold vertex (adjacent to two open fans).
+    However, this configuration is allowed in most data structures as it can still lead to a manifold mesh (by inserting more faces).}
+  \label{fig:non-manifold}
 \end{figure}
-% - image of mesh with vertices, edges, faces marked
-% - explanation of requirements (manifold, orientable, ...)
-% - image of non-manifold features
+
+The following list explains a few common terms related to meshes or geometry processing.
+
+\begin{description}
+  \item [\emph{Valence}] The valence of a vertex/face is the number of adjacent edges.
+  \item [\emph{Isolated vertex}] A vertex with a valence of 0.
+  \item [\emph{Boundary}] Meshes can have boundaries: edges with only one incident face.
+  A mesh without boundaries is \textbf{\emph{closed}} (also called \textbf{\emph{watertight}}).
+  A \emph{boundary edge} is an edge with exactly one adjacent face; a \emph{boundary vertex/face} is a vertex/face adjacent to at least one boundary edge.
+  \item [\emph{Manifold}] A surface is \emph{2-manifold} if it locally resembles (is homeomorphic to) a Euclidean plane near each point.
+  In simpler terms: the neighborhood (an infinitesimal sphere) around each point is continuously deformable into a 2D disc (or a half-disc for boundary points).
+  The manifold-property trivially holds for all points inside of a face, but there can be non-manifold edges or vertices (cf. figure~\ref{fig:non-manifold}).
+  A manifold edge has $\le 2$ incident faces.
+  A manifold vertex can be removed without disconnecting its adjacent faces (often described as: it is only adjacent to one fan of triangles).
+  A mesh is called manifold if does not contain any non-manifold edges nor non-manifold vertices.
+  \item [\emph{Normal}] A normal of a point on a surface is the vector perpendicular to that surface.
+  \item [\emph{Orientable}] A mesh is orientable if it is possible to consistently assign a surface normal to every point on its surface.
+  A famous example for a non-orientable mesh is the \emph{Möbius strip}.
+\end{description}
+
+In many applications, meshes are expected to be manifold and orientable, as this makes working with them a lot easier. In this thesis, all meshes are assumed to satisfy these properties as well.
+
 
 
 \section{Mesh Data Structures}
