@@ -52,8 +52,16 @@ The following list explains a few common terms related to meshes or geometry pro
   A mesh is called manifold if does not contain any non-manifold edges nor non-manifold vertices.
   \item [\emph{Normal}] A normal of a point on a surface is the vector perpendicular to that surface.
   \item [\emph{Orientable}] A mesh is orientable if it is possible to consistently assign a surface normal to every point on its surface.
-  A famous example for a non-orientable mesh is the \emph{Möbius strip}.
+  A famous example for a non-orientable mesh is the \emph{Möbius strip} (see figure~\ref{fig:moebius}).
 \end{description}
+
+\begin{figure}[t]
+  \centering
+  \includesvg[.35\textwidth]{moebius}
+  \caption{The Möbius strip: a non-orientable mesh.}
+  \label{fig:moebius}
+\end{figure}
+
 
 In many applications, meshes are expected to be manifold and orientable, as this makes working with them a lot easier. In this thesis, all meshes are assumed to satisfy these properties as well.
 
