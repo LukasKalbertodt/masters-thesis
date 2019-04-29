@@ -1,0 +1,14 @@
+[camera]
+fov = 45.0
+look_at = [5.5, 7.0, -4.0]
+eye = [-12.5, -11.5, 0.0]
+
+[style]
+vertex_size = 0
+vertex_stroke_width = 0
+vertex_fill_color = [0, 0, 0]
+edge_width = 1
+
+[light]
+enabled = true
+light_dir = [1.0, 0.2, -0.7]

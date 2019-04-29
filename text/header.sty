@@ -55,6 +55,7 @@
 \usepackage{xcolor}
 \definecolor{lightgray}{rgb}{0.83, 0.83, 0.83}
 \definecolor{solarized_bg}{HTML}{FDF6E3}
+\definecolor{caption-label-color}{HTML}{1f628d}
 
 % Multi-line source code
 \usepackage[outputdir=build]{minted}
@@ -92,6 +93,15 @@
 }
 \newcommand{\code}{\collectverb{\codebox}}
 
+% Captions
+\usepackage{caption}
+\captionsetup{
+  margin=12pt,
+  font=small,
+  labelfont={sf,bf,color=caption-label-color},
+  labelsep=period,
+}
+
 
 % Links
 \usepackage[pageanchor=true, hidelinks]{hyperref} % hyperlinks
@@ -105,3 +115,6 @@
 % Citations
 \usepackage[style=alphabetic, date=iso, seconds=true, language=australian]{biblatex}
 \addbibresource{sources.bib}
+
+
+\usepackage[bottom]{footmisc}

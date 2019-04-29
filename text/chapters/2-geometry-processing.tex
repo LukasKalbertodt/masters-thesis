@@ -14,6 +14,11 @@ Amongst the many very different kinds of representations (cf. \cite{botsch2010po
 A polygon mesh is a collection of vertices (points), edges (connecting two vertices) and faces (polygons bounded by edges).
 It is important to note that polygon meshes can only exactly represent polyhedrons, so most of the time, they are just an approximation of the actual 3D surface.
 
+\begin{figure}[b]
+  \includesvg{cat-algo}
+  \caption{A 3D model of a cat (center). The left and right meshes are the results of a \emph{simplification} and \emph{subdivision} operation, respectively. (Original model from \cite{catmodel})}
+\end{figure}
+
 There are two special forms of the polygon mesh of high practical relevance. A \emph{triangle mesh} is a polygon mesh where each face is triangular and a \emph{quad mesh}, all faces are quadrilaterals.
 Restricting the faces like that often makes algorithms operating on that mesh a lot simpler (and thus potentially faster).
 In particular, since triangles are the simplest polygon (a 2-simplex, in fact), many operations on triangle meshes are a lot faster than on a general polygon mesh.
