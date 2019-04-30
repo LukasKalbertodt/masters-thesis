@@ -12,12 +12,14 @@ Also see \ref{fig:cat-algo} for two examples of modifying mesh algorithms.
 
 To work with 3D surfaces, one first has to find a way to represent them.
 Amongst the many very different kinds of representations (cf. \cite{botsch2010polygon}, chapter 1), the polygon mesh (or just \enquote{mesh} for short) is one of the most widely used one.
-A polygon mesh is a collection of vertices (points), edges (connecting two vertices) and faces (polygons bounded by edges).
+A polygon mesh is a collection of vertices (points, singular \emph{vertex}), edges (connecting two vertices) and faces (polygons bounded by edges).
 It is important to note that polygon meshes can only exactly represent polyhedrons, so most of the time, they are just an approximation of the actual 3D surface.
 
 \begin{figure}[b]
   \includesvg{cat-algo}
-  \caption{A 3D model of a cat (center). The left and right meshes are the results of a \emph{simplification} and \emph{subdivision} operation, respectively. (Original model from \cite{catmodel})}
+  \caption{A 3D model of a cat (center).
+  The left and right meshes are the results of a \emph{simplification} and \emph{subdivision} operation, respectively.
+  (Original model from \cite{catmodel})}
   \label{fig:cat-algo}
 \end{figure}
 
@@ -39,6 +41,7 @@ In particular, since triangles are the simplest polygon (a 2-simplex, in fact), 
 The following list explains a few common terms related to meshes or geometry processing.
 
 \begin{description}
+  \item [\emph{Mesh element}] A vertex, edge or face.
   \item [\emph{Valence}] The valence of a vertex/face is the number of adjacent edges.
   \item [\emph{Isolated vertex}] A vertex with a valence of 0.
   \item [\emph{Boundary}] Meshes can have boundaries: edges with only one incident face.
@@ -63,11 +66,49 @@ The following list explains a few common terms related to meshes or geometry pro
 \end{figure}
 
 
-In many applications, meshes are expected to be manifold and orientable, as this makes working with them a lot easier. In this thesis, all meshes are assumed to satisfy these properties as well.
-
+In many applications, meshes are expected to be manifold and orientable, as this makes working with them a lot easier.
+In this thesis, all meshes are assumed to satisfy these properties as well.
 
 
 \section{Mesh Data Structures}
 % - requirements of data structures (adj info)
 % - what makes DS slow/fast? Caches, ...
 % - list and short explanation of different data structures
+
+In order to represent polygon meshes in a computer, some kind of data structure is needed.
+We can distinguish two types of data we need to store: the connectivity information and additional \emph{mesh properties}.
+
+A \emph{mesh property} is arbitrary data which is associated with elements of the mesh.
+For example, 3D vertex positions -- a 3D vector associated with every vertex -- are such a property and are present in virtually every mesh.
+Surface normals and texture coordinates are two properties that are stored in many meshes, too (they are also usually associated with each vertex).
+For visualization, vertices, edges or faces can be colored, that is: associated a color with each element.
+Lastly, many algorithms need to associated temporary values with mesh elements, like a boolean flag to store which element was already visited or some kind of cost.
+In general, it is necessary to be able to associated arbitrary values with mesh elements.
+
+As long as each mesh element can be uniquely identified, storing mesh properties is easy (e.\,g. in a hash map).
+Instead, the difficulty lies in storing the connectivity of a mesh, because algorithms operating on meshes require various adjacency information.
+For example, a simple way to smooth a mesh is to replace each vertex position with the centroid of all adjacent vertices.
+That algorithm needs to be able to enumerate all neighbor vertices of a specific vertex.
+In general, the data structure should be able to enumerate all neighbors of any element.
+
+% TODO: maybe show smoothing algorithm?
+
+The challenge in creating a mesh data structure is about (a) providing all required connectivity information, (b) doing that as fast as possible, and (c) being as memory efficient as possible.
+Just providing the information is not particularly difficult:
+one could store all neighborhood information explicitly, i.\,e. each face stores a list of all adjacent faces, a list of all adjacent edges and a list of all adjacent vertices; similarly for vertices and edges.
+However, this approach has a tremendous memory overhead and it would be very slow to modify the mesh, as a lot of information has to be updated.
+
+
+\subsection{Performance Characteristics of Modern Hardware}
+
+% In the last few decades, one factor became increasingly important for the speed of programs dealing with a lot of data: CPU caches. Accessing the main memory (RAM) is relatively slow, taking around 100 CPU-cycles on modern systems.
+
+% The latency of main memory (RAM) is fairly high compared to the CPU speed,
+
+% While the clock speed of CPUs grew continuously in that time, the latency of the main memory (RAM) did not improve nearly as fast. As such, memory accesses quickly became the bottleneck in many applications. In order to tackle this problems, CPU manufacturers introduced more and more caches directly into the CPU.
+
+
+\subsection{Commonly used Mesh Data Structures}
+
+
+\section{Existing Libraries for Geometry Processing}
