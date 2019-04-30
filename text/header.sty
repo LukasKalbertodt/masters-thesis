@@ -22,6 +22,7 @@
 % the 0.94 was set to match the x height of computer modern font
 \usepackage[scaled=0.94]{zi4}
 % \usepackage{lmodern}
+\usepackage{MnSymbol}
 
 % Paragraph style
 \parskip = 10pt
@@ -58,6 +59,10 @@
 \definecolor{lightgray}{rgb}{0.83, 0.83, 0.83}
 \definecolor{solarized_bg}{HTML}{FDF6E3}
 \definecolor{caption-label-color}{HTML}{1f628d}
+\definecolor{flat-red-dark}{HTML}{c0392b}
+\definecolor{flat-green-dark}{HTML}{27ae60}
+\definecolor{flat-blue-dark}{HTML}{2980b9}
+\definecolor{flat-gray-dark}{HTML}{34495e}
 
 % Multi-line source code
 \usepackage[outputdir=build]{minted}
@@ -137,3 +142,20 @@
 
 
 \usepackage[bottom]{footmisc}
+
+
+% Own commands
+\newtcbox{\adjbox}[0]{
+    on line,
+    colback=white,
+    colframe=gray!70,
+    size=fbox,
+    arc=2pt,
+    boxrule=0.6pt,
+    boxsep=1pt,
+    top=1pt,
+    bottom=1pt,
+}
+\newcommand{\adj}[3][black]{%
+  \adjbox{\textsf{\textbf{\color{#1} #2 $\rightarrow$ #3}}}
+}

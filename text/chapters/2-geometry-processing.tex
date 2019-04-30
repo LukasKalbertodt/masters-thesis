@@ -89,9 +89,44 @@ As long as each mesh element can be uniquely identified, storing mesh properties
 Instead, the difficulty lies in storing the connectivity of a mesh, because algorithms operating on meshes require various adjacency information.
 For example, a simple way to smooth a mesh is to replace each vertex position with the centroid of all adjacent vertices.
 That algorithm needs to be able to enumerate all neighbor vertices of a specific vertex.
-In general, the data structure should be able to enumerate all neighbors of any element.
-
 % TODO: maybe show smoothing algorithm?
+
+Generally, an algorithm might request all the neighbors of any mesh element. The following table shows the nine possible neighborhood queries.
+
+\begin{center}
+  \begin{minipage}{.52\textwidth}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{| l || c | c | c |}
+      \hline
+      \hfill \textbf{$\lcurvearrowne$} & Vertex & Edge & Face\\\hline\hline
+      Vertex
+        & \adj[flat-blue-dark]{V}{V}
+        & \adj[flat-green-dark]{V}{E}
+        & \adj[flat-blue-dark]{V}{F} \\\hline
+      Edge
+        & \adj[flat-green-dark]{E}{V}
+        & \adj[flat-red-dark]{E}{E}
+        & \adj[flat-green-dark]{E}{F} \\\hline
+      Face
+        & \adj[flat-blue-dark]{F}{V}
+        & \adj[flat-green-dark]{F}{E}
+        & \adj[flat-blue-dark]{F}{F} \\\hline
+    \end{tabular}
+    \renewcommand{\arraystretch}{1}
+  \end{minipage}
+  \begin{minipage}{.42\textwidth}
+    \footnotesize
+    \begin{description}
+      \item [\textcolor{flat-green-dark}{Green}] \emph{Real} neighbors; already provides all neighborhood information.
+      \item [\textcolor{flat-blue-dark}{Blue}] Not \emph{real} neighbors; but very common query.
+      \item [\textcolor{flat-red-dark}{Red}] Rarely used.
+    \end{description}
+  \end{minipage}
+\end{center}
+
+Algorithms often need slightly different kind of information (like \enquote{are these two elements adjacent?}, \enquote{what is the valence of this vertex?}, or \enquote{is this face a boundary face?}), but all of these questions can be answered through the basic neighborhood queries shown above.
+
+\vspace{1cm}
 
 The challenge in creating a mesh data structure is about (a) providing all required connectivity information, (b) doing that as fast as possible, and (c) being as memory efficient as possible.
 Just providing the information is not particularly difficult:
@@ -107,8 +142,32 @@ However, this approach has a tremendous memory overhead and it would be very slo
 
 % While the clock speed of CPUs grew continuously in that time, the latency of the main memory (RAM) did not improve nearly as fast. As such, memory accesses quickly became the bottleneck in many applications. In order to tackle this problems, CPU manufacturers introduced more and more caches directly into the CPU.
 
+% TODO: how to refer to elements? -> index
 
-\subsection{Commonly used Mesh Data Structures}
+
+\subsection{Existing Mesh Data Structures}
+
+Over the years, many data structures for meshes have been developed -- differing in capabilities, speed and memory efficiency.
+This chapter will give an overview over the most commonly used ones, but will exclude data structures like the \emph{triangle soup} which doesn't store any adjacency information at all.
+
+
+\begin{description}
+  \item [Shared Vertex Mesh] This data structure is the simplest and arguably the most used one.
+  It uses very little memory, but is severely restricted in its standard version:
+  it can only store triangular faces and has no adjacency information apart from \adj{F}{V}.
+  These limitations do not pose a problem for most real-time 3D applications, however, as \adj{F}{V} is sufficient for rendering and most graphic APIs (like Vulkan or OpenGL) only support triangle meshes anyway.
+  For that reason, this data structure is used almost everywhere in real-time rendering.
+
+  A shared vertex mesh only stores all adjacent vertices for all faces.
+  Since this data structure is almost exclusively used for triangle meshes, the list of adjacent vertices can be stored inline, making it very cache-friendly and memory efficient. TODO See Figure.
+
+  \item [Half Edge Mesh] Often abbreviated \emph{HEM}, this data structure splits each edges into two \emph{half edges} and stores most connectivity information in those.
+  Each face/vertex only stores a reference to an arbitrary adjacent/outgoing half edge, respectively.
+
+  Each half edges stores the vertex it is pointing at (\emph{target}), the face it is adjacent to, its \emph{twin} and the next half edge counter-clockwise around the face (or hole) it is adjacent to.
+  Sometimes, the previous half edge (around the adjacent face) is also stored, which increases memory consumption, but makes some operations faster.
+  The \emph{twin} reference is typically not stored explicitly, but encoded implicitly by making sure twin half edges are always stored next to each other in memory. TODO See figure.
+\end{description}
 
 
 \section{Existing Libraries for Geometry Processing}
