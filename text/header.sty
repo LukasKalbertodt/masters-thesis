@@ -105,6 +105,23 @@
 }
 
 
+% Better lists
+\usepackage{relsize}
+\usepackage{enumitem}
+\setlist[itemize,1]{
+    label={\raisebox{.6mm}{\scriptsize$\blacktriangleright$}},
+    itemsep=-4pt
+}
+\setlist[itemize,2]{
+    label={\raisebox{.4mm}{\scriptsize$\triangleright$}},
+    topsep=-3mm,
+    before={\relscale{0.9}},
+    after={\vspace{2mm}},
+    leftmargin=7mm,
+    itemsep=-6pt,
+}
+
+
 % Links
 \usepackage[pageanchor=true, hidelinks]{hyperref} % hyperlinks
 \usepackage[all]{hypcap}
