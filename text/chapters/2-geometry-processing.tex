@@ -129,8 +129,11 @@ Algorithms often need slightly different kind of information (like \enquote{are 
 \vspace{1cm}
 
 The challenge in creating a mesh data structure is about (a) providing all required connectivity information, (b) doing that as fast as possible, and (c) being as memory efficient as possible.
+
 Just providing the information is not particularly difficult:
-one could store all neighborhood information explicitly, i.\,e. each face stores a list of all adjacent faces, a list of all adjacent edges and a list of all adjacent vertices; similarly for vertices and edges.
+most data structures can provide all adjacency information in $\mathcal O(|V| + |F| + |E|)$.
+However, in this thesis, \enquote{fast} implies a runtime of $\mathcal O(|r|)$ where $r$ is the result of the query (the neighbors). In the rest of this thesis, a statement like \enquote{cannot provide this information} might also mean \enquote{cannot provide this information in $\mathcal O(|r|)$}.
+One could store all neighborhood information explicitly to meet those asymptotic runtime requirements (i.\,e. each face stores a list of all adjacent faces, a list of all adjacent edges and a list of all adjacent vertices; similarly for vertices and edges).
 However, this approach has a tremendous memory overhead and it would be very slow to modify the mesh, as a lot of information has to be updated.
 
 
@@ -154,20 +157,89 @@ This chapter will give an overview over the most commonly used ones, but will ex
 \begin{description}
   \item [Shared Vertex Mesh] This data structure is the simplest and arguably the most used one.
   It uses very little memory, but is severely restricted in its standard version:
-  it can only store triangular faces and has no adjacency information apart from \adj{F}{V}.
+  it can only store triangular faces and cannot provide any adjacency information apart from \adj{F}{V}.
   These limitations do not pose a problem for most real-time 3D applications, however, as \adj{F}{V} is sufficient for rendering and most graphic APIs (like Vulkan or OpenGL) only support triangle meshes anyway.
   For that reason, this data structure is used almost everywhere in real-time rendering.
 
   A shared vertex mesh only stores all adjacent vertices for all faces.
-  Since this data structure is almost exclusively used for triangle meshes, the list of adjacent vertices can be stored inline, making it very cache-friendly and memory efficient. TODO See Figure.
+  Since this data structure is almost exclusively used for triangle meshes, the list of adjacent vertices can be stored inline, making it very cache-friendly and memory efficient. Edges are not stored at all and cannot be referred to. See figure~\ref{fig:sv-structure}.
 
   \item [Half Edge Mesh] Often abbreviated \emph{HEM}, this data structure splits each edges into two \emph{half edges} and stores most connectivity information in those.
-  Each face/vertex only stores a reference to an arbitrary adjacent/outgoing half edge, respectively.
+  A HEM can provide all connectivity information.
 
+  Each face/vertex only stores a reference to an arbitrary adjacent/outgoing half edge, respectively.
   Each half edges stores the vertex it is pointing at (\emph{target}), the face it is adjacent to, its \emph{twin} and the next half edge counter-clockwise around the face (or hole) it is adjacent to.
   Sometimes, the previous half edge (around the adjacent face) is also stored, which increases memory consumption, but makes some operations faster.
-  The \emph{twin} reference is typically not stored explicitly, but encoded implicitly by making sure twin half edges are always stored next to each other in memory. TODO See figure.
+  The \emph{twin} reference is typically not stored explicitly, but encoded implicitly by making sure twin half edges are always stored next to each other in memory.
+  See figure~\ref{fig:hem-structure}.
 \end{description}
+
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}{.35\textwidth}
+    \includesvg{shared-vertex}
+  \end{minipage}
+  \hspace{2cm}
+  \begin{minipage}{.3\textwidth}
+    \small
+    \begin{tabular}{|p{\textwidth}|}\hline
+      \textbf{Data per \emph{face}} \\\hline
+      \code{vertex0: Vertex}\\\hline
+      \code{vertex1: Vertex}\\\hline
+      \code{vertex2: Vertex}\\\hline
+    \end{tabular}
+
+    \vspace{3mm}
+
+    \begin{tabular}{|p{\textwidth}|}\hline
+      \textbf{Data per \emph{vertex}} \\\hline
+      \emph{nothing}\\\hline
+    \end{tabular}
+
+  \end{minipage}
+  \vspace{2mm}
+  \caption{Structure of a shared vertex mesh.}
+  \label{fig:sv-structure}
+\end{figure}
+
+
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}{.47\textwidth}
+    \includesvg{hem}
+  \end{minipage}
+  \begin{minipage}{.4\textwidth}
+    \small
+    \begin{tabular}{|p{\textwidth}|}\hline
+      \textbf{Data per \emph{face}} \\\hline
+      \code{edge: HalfEdge}\\\hline
+    \end{tabular}
+
+    \vspace{3mm}
+
+    \begin{tabular}{|p{\textwidth}|}\hline
+      \textbf{Data per \emph{vertex}} \\\hline
+      \code{outgoing: HalfEdge?}\\\hline
+    \end{tabular}
+
+    \vspace{3mm}
+
+    \begin{tabular}{|p{\textwidth}|}\hline
+      \textbf{Data per \emph{half edge}} \\\hline
+      \code{target: Vertex}\\\hline
+      \code{face: Face?}\\\hline
+      \code{next: HalfEdge}\\\hline
+      \code{prev: HalfEdge} (optional)\\\hline
+      \code{twin: HalfEdge} (stored implicitly)\\\hline
+    \end{tabular}
+  \end{minipage}
+  \vspace{2mm}
+  \caption{Structure of a half edge mesh. A \codebox{?} in the table denotes a value that can be \emph{null}/\codebox{None}.}
+  \label{fig:hem-structure}
+\end{figure}
+
 
 
 \section{Existing Libraries for Geometry Processing}
