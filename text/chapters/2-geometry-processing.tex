@@ -119,7 +119,7 @@ Generally, an algorithm might request all the neighbors of any mesh element. The
     \begin{description}
       \item [\textcolor{flat-green-dark}{Green}] \emph{Real} neighbors; already provides all neighborhood information.
       \item [\textcolor{flat-blue-dark}{Blue}] Not \emph{real} neighbors; but very common query.
-      \item [\textcolor{flat-red-dark}{Red}] Rarely used.
+      \item [\textcolor{flat-red-dark}{Red}] Not \emph{real} neighbors; rarely used.
     \end{description}
   \end{minipage}
 \end{center}
@@ -151,31 +151,42 @@ However, this approach has a tremendous memory overhead and it would be very slo
 \subsection{Existing Mesh Data Structures}
 
 Over the years, many data structures for meshes have been developed -- differing in capabilities, speed and memory efficiency.
-This chapter will give an overview over the most commonly used ones, but will exclude data structures like the \emph{triangle soup} which doesn't store any adjacency information at all.
+This chapter will give an overview over the most commonly used ones, but will exclude data structures like the \emph{triangle soup} which does not store any adjacency information at all.
+
+Generally, two types of data structures can be distinguished: \emph{face-based} and \emph{edge-based} data structures.
+The former store the main adjacency information per face, the latter per edge.
+As discussed in the last section, storing lists with dynamic length is usually very inefficient and should be avoided.
+As can be seen in table~\ref{tab:max-neighbors}, the number of possible neighbors of vertices are unbounded, which is why there are no relevant vertex-based data structures.
+The table also shows that face-based data structures are only efficient if the valence of faces is fixed (e.g. a triangle or quad mesh), as otherwise dynamic lists are required.
+
+\begin{table}[t]
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|l|c|c|c|}
+    \hline
+    & \adj{V}{\{V|E|F\}} & \adj{E}{\{V|F\}} & \adj{F}{\{V|E|F\}} \\[.8mm]\hline
+    Triangle Mesh & $\infty$ & 2 & 3 \\\hline
+    Quad Mesh     & $\infty$ & 2 & 4 \\\hline
+    Polygon Mesh  & $\infty$ & 2 & $\infty$ \\\hline
+  \end{tabular}
+  \renewcommand{\arraystretch}{1}
+  \caption{Maximum number of neighbors of mesh elements. }
+  \label{tab:max-neighbors}
+\end{table}
+
+\subsubsection*{Shared Vertex Mesh}
+This face-based data structure, also called \emph{indexed face set}, is the simplest and arguably the most used one.
+It uses very little memory, but is quite restricted in its standard version:
+it can only store triangular faces and cannot provide any adjacency information apart from \adj{F}{V}.
+These limitations do not pose a problem for most real-time 3D applications, however, as \adj{F}{V} is sufficient for rendering and most graphic APIs (like Vulkan or OpenGL) only support triangle meshes anyway.
+For that reason, this data structure is used almost everywhere in real-time rendering.
+
+A shared vertex mesh only stores all adjacent vertices for all faces.
+Since this data structure is almost exclusively used for triangle meshes, the list of adjacent vertices can be stored inline, making it very cache-friendly and memory efficient.
+Edges are not stored at all and cannot be referred to. See figure~\ref{fig:sv-structure}.
 
 
-\begin{description}
-  \item [Shared Vertex Mesh] This data structure is the simplest and arguably the most used one.
-  It uses very little memory, but is severely restricted in its standard version:
-  it can only store triangular faces and cannot provide any adjacency information apart from \adj{F}{V}.
-  These limitations do not pose a problem for most real-time 3D applications, however, as \adj{F}{V} is sufficient for rendering and most graphic APIs (like Vulkan or OpenGL) only support triangle meshes anyway.
-  For that reason, this data structure is used almost everywhere in real-time rendering.
-
-  A shared vertex mesh only stores all adjacent vertices for all faces.
-  Since this data structure is almost exclusively used for triangle meshes, the list of adjacent vertices can be stored inline, making it very cache-friendly and memory efficient. Edges are not stored at all and cannot be referred to. See figure~\ref{fig:sv-structure}.
-
-  \item [Half Edge Mesh] Often abbreviated \emph{HEM}, this data structure splits each edges into two \emph{half edges} and stores most connectivity information in those.
-  A HEM can provide all connectivity information.
-
-  Each face/vertex only stores a reference to an arbitrary adjacent/outgoing half edge, respectively.
-  Each half edges stores the vertex it is pointing at (\emph{target}), the face it is adjacent to, its \emph{twin} and the next half edge counter-clockwise around the face (or hole) it is adjacent to.
-  Sometimes, the previous half edge (around the adjacent face) is also stored, which increases memory consumption, but makes some operations faster.
-  The \emph{twin} reference is typically not stored explicitly, but encoded implicitly by making sure twin half edges are always stored next to each other in memory.
-  See figure~\ref{fig:hem-structure}.
-\end{description}
-
-
-\begin{figure}[t]
+\begin{figure}[b]
   \centering
   \begin{minipage}{.35\textwidth}
     \includesvg{shared-vertex}
@@ -204,6 +215,16 @@ This chapter will give an overview over the most commonly used ones, but will ex
 \end{figure}
 
 
+\subsubsection*{Half Edge Mesh}
+
+Often abbreviated \emph{HEM}, this data structure splits each edges into two \emph{half edges} and stores most connectivity information in those. Thus, it is a (half-)edge-based data structure.
+A HEM can provide all connectivity information. (Cf. \cite{mantyla1988introduction})
+
+Each face/vertex only stores a reference to an arbitrary adjacent/outgoing half edge, respectively.
+Each half edges stores the vertex it is pointing at (\emph{target}), the face it is adjacent to, its \emph{twin} and the next half edge counter-clockwise around the face (or hole) it is adjacent to.
+Optionally, the previous half edge (around the adjacent face) is also stored, which increases memory consumption, but makes some operations faster.
+The \emph{twin} reference is typically not stored explicitly, but encoded implicitly by making sure twin half edges are always stored next to each other in memory.
+See figure~\ref{fig:hem-structure}.
 
 \begin{figure}[t]
   \centering
@@ -241,5 +262,21 @@ This chapter will give an overview over the most commonly used ones, but will ex
 \end{figure}
 
 
+\subsubsection*{Directed Edge Mesh}
 
-\section{Existing Libraries for Geometry Processing}
+Todo.
+
+\subsubsection*{Other data structures}
+
+Besides the shared vertex mesh, there are other, more capable face-based data structures.
+They usually store one arbitrary adjacent face for each vertex and all adjacent vertices plus additional data per face.
+In the simplest form, this additional data consists of all adjacent faces (per face), but it can be more elaborate than this.
+Interestingly, these data structures are often not discussed in-depth in literature, but instead quickly dismissed as not sufficient, because they do not explicitly store edges and are restricted to triangle/quad meshes.
+Not being able to refer to edges can indeed be a problem in many situations, but by far not every algorithm deals with edges explicitly.
+
+Two other well known, edge-based data structures are the \emph{quad-edge mesh} \cite{guibas1985primitives} and the \emph{winged-edge mesh} \cite{baumgart1972winged}.
+
+
+
+
+\section{Existing Geometry Processing Libraries}

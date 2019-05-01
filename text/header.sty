@@ -39,10 +39,12 @@
     {\fontsize{24}{25}\selectfont\raggedright}
     [\hrule]
 \titleformat{\section}[block]
-    {\sffamily\Large\bfseries}{\thesection}{1em}{}
+    {\sffamily\LARGE\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}[block]
-    {\sffamily\large\bfseries}{\thesubsection}{1em}{}
-
+    {\sffamily\Large\bfseries}{\thesubsection}{1em}{}
+\titleformat
+{\subsubsection}[block]
+    {\sffamily\large\bfseries}{\thesubsubsection}{1em}{}[\vspace{-3mm}]
 
 % Stuff for including images
 \usepackage{graphicx}
