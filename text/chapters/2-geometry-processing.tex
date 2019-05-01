@@ -34,7 +34,7 @@ In particular, since triangles are the simplest polygon (a 2-simplex, in fact), 
     A non-manifold edge with more than two adjacent faces (left).
     A non-manifold vertex adjacent to one closed and one open fan (center).
     The red vertex on the right is technically also a non-manifold vertex (adjacent to two open fans).
-    However, this configuration is allowed in most data structures as it can still lead to a manifold mesh (by inserting more faces).}
+    However, this configuration is allowed in most data structures (it can still be turned into a manifold mesh by inserting more faces).}
   \label{fig:non-manifold}
 \end{figure}
 
@@ -275,7 +275,6 @@ Interestingly, these data structures are often not discussed in-depth in literat
 Not being able to refer to edges can indeed be a problem in many situations, but by far not every algorithm deals with edges explicitly.
 
 Two other well known, edge-based data structures are the \emph{quad-edge mesh} \cite{guibas1985primitives} and the \emph{winged-edge mesh} \cite{baumgart1972winged}.
-
 
 
 
