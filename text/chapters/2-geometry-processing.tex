@@ -279,3 +279,34 @@ Two other well known, edge-based data structures are the \emph{quad-edge mesh} \
 
 
 \section{Existing Geometry Processing Libraries}
+
+There are a variety of software libraries and frameworks for geometry processing, often with different features and capabilities.
+Most of them are open-source software.
+This section gives an incomplete overview over some of those libraries and frameworks.
+
+\begin{description}
+  \item [OpenMesh] Developed at the RTWH Aachen, OpenMesh \cite{botsch2002openmesh,openmeshhomepage} is one of the most used polygon mesh library.
+  It is the basis for OpenFlipper \cite{mobius2010openflipper, openflipperhomepage}, a geometry processing and rendering framework mainly developed at the same university.
+  (OpenFlipper is disregarded in this thesis, as it doesn't provide its own data structures.)
+  OpenMesh is the main focus of this thesis when it comes to comparison to other libraries.
+
+  The library is cross-platform, written in C++ (though it also offers Python bindings) and mainly features a customizable implementation of a half-edge mesh.
+  Those compile-time customizations allow the user to, for example, choose whether or not \code{prev} references are stored and whether the mesh should be restricted to triangular faces.
+  On top of the main data structures, multiple algorithms and functionality for reading and writing files of different formats are implemented.
+
+  \item [CGAL] The \textbf{C}omputational \textbf{G}eometry \textbf{A}lgorithms \textbf{L}ibrary \cite{cgalhomepage} offers a wide variety of different algorithms and data structures for everything related to computational geometry.
+  This includes features beyond 3D meshes, like point set processing, nearest-neighbor search, surface reconstruction and many more.
+  Its main mesh data structure is also the half-edge mesh (see \cite{cgal:k-hds-19a, cgal:bsmf-sm-19a}), but the library also uses different or more specialized data structures for some tasks.
+
+  \item [PMP] The \textbf{P}olygon \textbf{M}esh \textbf{P}rocessing library \cite{pmp-library}, written in C++, offers a half-edge mesh data structure, several mesh algorithms and functionality for visualizing meshes.
+  Version 1.0 was released on 2019/02/18.
+  The implementation of the mesh data structure is based on the \code{Surface_mesh} implementation discussed in \cite{sieger2011design}.
+
+  \item [VCGlib] A C++ library for manipulating, processing and displaying 3D meshes \cite{vcglibhomepage}.
+  Most notably, it is used in the software MeshLab \cite{meshlabhomepage}.
+  Its basic data structure is a shared vertex mesh which can be extended with additional adjacency information and supports many non-manifold features.
+\end{description}
+
+As can be seen here, the half edge data structure is used in most libraries.
+Since each library offers only one main mesh data structure, choosing the half edge mesh makes sense, as it does offer the most features and has shown to be faster than other data structures with the same feature set.
+But more important than this is the fact, that all libraries only offer \emph{one} main data structure.
