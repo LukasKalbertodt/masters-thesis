@@ -1,3 +1,56 @@
-\chapter{Rust}
+\chapter{Background: Rust}
 
-\lipsum[1]
+\emph{Rust}\footnote{Website: \url{https://www.rust-lang.org/}} is a general-purpose, open-source systems programming language\footnote{A \enquote{system programming language} is a language that is well suited to build system software, like operating systems, browser engines and device drivers. These language give the programmer low-level access to the computer hardware.} focused on reliability, performance and memory safety.
+It is openely developed by the Rust community, with core developers being funded by Mozilla\footnote{Mozilla is mainly known for the browser \emph{Firefox} and its involvement with researching and standardising web-technologies. Website: \url{https://www.mozilla.org}}.
+Its first stable version was release in May, 2015.
+Since then, a new, fully backwards-compatible version is released every six weeks.
+Rust was voted \enquote{most loved programming language} four times in a row from 2015 -- 2019 in the StackOverflow\footnote{A question \& answer website for programmers with over 10 million registered users as of January, 2019 \cite{so-user-count}. Website: \url{https://stackoverflow.com/}} Developer Survey -- one of the largest annual programmer-focussed surveys \cite{so-survey}.
+
+\begin{figure}[h]
+  \vspace{5mm}
+  \centering
+  \includesvg[.68\textwidth]{rust-logo-ferris}
+  \caption{The Rust logo (left, \protect\hyperlink{cc-by}{CC-BY 4.0}) and the unofficial mascot of Rust (right, \protect\hyperlink{cc0}{CC0}).}
+  \vspace{5mm}
+\end{figure}
+
+Rust is categorized as a multi-paradigm programming language; it is mainly imperative and structured, but has many features to allow for different programming paradigms, like functional or declarative programming.
+Its design is influenced by many other programming languages, most importantly C++, Haskell and OCaml \cite{rust-influences}.
+A strong, static type system is at the core of the language, enabling many of Rust's main features (this is explained in more detail below).
+Rust is also a cross-platform language, running on different operating systems (including Linux, Windows, macOS, Android and iOS) and different CPU architectures (including x86, ARM, WASM and MIPS) \cite{rust-platforms}.
+
+After installing Rust, the command line tools \code{rustc}, \code{cargo} and \code{rustup} (amongst others) are available.
+\emph{Cargo} is Rust's dependency manager and build tool which can use the official package repository \url{https://crates.io}.
+The ability to easily and reliably include libraries into a project sets Rust apart from most other system programming languages.
+\emph{Rustup} is a compiler version manager, which is also used to install additional tools and to setup cross-compilation.
+
+Since Rust's initial release, it has been adopted by more and more programmers.
+It is already used in production by hundreds of companies, most notably: Dropbox, NPM, Mozilla, Yelp \cite{rust-production}.
+
+This chapter gives a quick overview over Rust's syntax and basic semantics, the features that are most important to to thesis (mostly traits) as well as how Rust is compiled to machine code. To learn more about Rust, a large number of resources are available, including \emph{The Rust Programming Language} \cite{klabnik2018rust} which is available for free at \url{https://doc.rust-lang.org/book/}.
+
+
+% - most loved in SO
+% - Open Source
+% - openly developed by community, fnuded by moz
+% - when released, rapid release cycle
+
+% - influences
+% - multiparadigm
+% - type system
+% - cross plattform
+
+% - many use Rust already
+
+% - modern features
+%   - cargo package manager
+%   -
+
+
+% # Syntax
+
+% # Ownership and Borrowing
+
+% # Performance
+% - zero cost abstraction
+% - LLVM codegen
