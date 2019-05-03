@@ -172,3 +172,11 @@
 \newcommand{\playground}[1]{%
   \vspace{5mm}\hfill\fbox{\href{#1}{\textcolor{link-blue}{Code on Playground \scalebox{.75}{\faExternalLink}}}}\hspace{5mm}\vspace{-1.55cm}
 }
+
+% Typesetting C++
+\usepackage{xspace}
+\newcommand{\Rplus}{%
+  \protect\hspace{-.1em}\protect\raisebox{.35ex}%
+  {\smaller{\smaller\textbf{+}}}%
+}
+\newcommand{\cpp}{\mbox{C\Rplus\hspace{.15ex}\Rplus}\xspace}
