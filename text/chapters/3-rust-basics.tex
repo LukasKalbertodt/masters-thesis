@@ -30,7 +30,7 @@ It is already used in production by hundreds of companies, most notably: Dropbox
 This chapter gives a very quick overview over Rust's syntax and basic semantics, the features that are most important to to thesis (mostly traits) as well as how Rust is compiled to machine code.
 To learn more about Rust, a large number of resources are available, including \emph{The Rust Programming Language} \cite{klabnik2018rust} which is available for free at \url{https://doc.rust-lang.org/book/}.
 Also worth mentioning is the \enquote{Rust Playground}, an online compiler for quick testing, available at \url{https://play.rust-lang.org/}.
-In this chapter, most code snippets contain a link to the playground containing that code (not usable in the print-version).
+In this chapter, most code snippets contain a link to the playground containing that code (obviously only usable in the digital version of this thesis).
 
 
 \section{Basic Syntax and Semantics}
@@ -70,6 +70,41 @@ fn collatz(start: u64) -> Vec<u64> {
 }
 \end{rustcode}
 
+Explanations and remarks to the code above:
+
+\begin{itemize}
+  \item A library in Rust is a single compilation unit, called a \emph{crate}.
+  Each crate defines symbols in a module tree.
+  Modules are similar to namespaces in \cpp, but the module trees in Rust are often deeper than nested namespaces in \cpp.
+  \code{::} is used as separator in paths to symbols (e.\,g. \code{std::time::Duration}).
+  With \code{use} (line~1), symbol names can be imported into scope.
+  A few very important names (listed in \code{std::prelude}) are always imported.
+  \item The keyword \code{fn} defines a function.
+  Parameters are listed in the parenthesis after the function name (parameter name and type are flipped compared to \cpp), the return type is specified after \code{->}.
+  \item The \code{main} function (line~6) is the entry point of Rust programs.
+  \item Variables (more specifically: \emph{variable bindings}) are created with \code{let} (line~9).
+  \item Rust is completely statically typed, but very elaborate type inference allows to omit type annotations in many places.
+  They are usually only necessary in function signatures, types and \code{const} definitions.
+  \item \code{println} (line~10) is a macro which is used for printing to stdout.
+  Macros are invoked with the \code{!} after the name and operate on the source code and not on values, which makes them more powerful than normal functions in some situations.
+  \item There are no \emph{constructors} in Rust.
+  Instead, static methods (called \emph{associated functions} in Rust) returning an instance of the type are used.
+  Examples: \code{Duration::from_millis} (line~12) and \code{Vec::new}  (line~20); \code{new} is not a keyword, but simply the function's name.
+  \item \code{Vec<T>} is equivalent to \code{std::vector<T>} in \cpp: a growable array with elements of type \code{T}.
+  \item Variable bindings are immutable by default.
+  The keyword \code{mut} (line~19 and 20) is necessary to make them mutable.
+  This is exactly the opposite of the default behavior in languages like \cpp and Java.
+  This is useful, because in normal Rust code (unlike in this example), immutable bindings significantly outnumber mutable ones.
+  \item In control structures like \code{if} and \code{while}, the boolean expression does not need to be wrapped inside parenthesis \code{()}, but the body always has to be wrapped in braces \code|{}|.
+  This is, again, exactly the opposite of the rules in \cpp or Java.
+  It is more useful however, because this way, there are no parsing ambiguities.
+  \item Apart from \code{while}, there are also \code|for _ in _ {}| (discussed below) and \code|loop {}| (equivalent to \code|while true {}|) as loop constructs.
+  \item The feature \enquote{everything is an expression} allows most syntactic elements to be used in places where an expression is expected.
+  One example is the assignment on line~22. While this in particular is also possible with the ternary operator \code{?:} in some other languages, Rust allows \code{match} expressions (similar to \code{switch} in \cpp), loops, full blocks and many more constructs in expression context.
+  \item The last expression in a function is automatically returned (early returns with \code{return} are still possible).
+  This feature is particularly useful in combination with \enquote{everything is an expression}.
+  \item By convention, \code{snake_case} is used for functions, methods, variables and modules; \code{UpperCamelCase} for types and traits; \code{SCREAMING_SNAKE_CASE} for constants.
+\end{itemize}
 % # Syntax
 
 % # Ownership and Borrowing
