@@ -105,7 +105,72 @@ Explanations and remarks to the code above:
   This feature is particularly useful in combination with \enquote{everything is an expression}.
   \item By convention, \code{snake_case} is used for functions, methods, variables and modules; \code{UpperCamelCase} for types and traits; \code{SCREAMING_SNAKE_CASE} for constants.
 \end{itemize}
-% # Syntax
+
+
+
+\subsubsection*{Types}
+
+\begin{table}[t]
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|l|l|l|l|l|l||l||l|}\hline
+  \code{i8} & \code{i16} & \code{i32} & \code{i64} & \code{i128} & \code{isize} & \code{f32} & \code{bool} \\\hline
+  \code{u8} & \code{u16} & \code{u32} & \code{u64} & \code{u128} & \code{usize} & \code{f64} & \code{char} \\\hline
+  \end{tabular}
+  \renewcommand{\arraystretch}{1.0}
+  \caption{
+    Rust's primitive types.
+    Signed integers use the prefix \codebox{i}, unsigned integers \codebox{u}, floating point numbers \codebox{f}.
+    The number in the name specifies the size of the type in bits.
+    \codebox{usize} and \codebox{isize} are pointer-sized (64 bits on x86-64) and thus equivalent to \cpp's \codebox{size\_t} and \codebox{ptrdiff\_t}.
+    \codebox{char} has a size of 32 bits and represents a \emph{Unicode scalar value}.
+  }
+  \label{tab:primitive-types}
+\end{table}
+
+The core language contains a number of primitive types as shown in table~\ref{tab:primitive-types} (their names are an exception to the naming convention described before).
+New types can be created by programmers in mainly two ways: as \code{struct} or as \code{enum}.
+Structs are heterogenous product-types, are defined by a list of fields and work very similar to structs or classes in \cpp.
+
+Enums, on the other hand, are sum-types -- a feature not offered by most mainstream languages.
+While some enum types in Rust are simple \enquote{C-like enums} (just an enumeration of names), each enum \emph{variant} can have arbitrary data associated with it.
+In the example below, an instance of type \code{CssColor} is either \code{CssColor::Name} and stores a string, \emph{or} \code{CssColor::Rgb} and stores three \code{u8} values, \emph{or} \code{CssColor::None} and does not store any additional data.
+In \cpp, a type like this would be implemented with an integer tag and a \code{union} (which is exactly how this type works at machine level in Rust).
+
+\begin{center}
+\begin{minipage}[t]{.45\textwidth}
+\begin{rustcode}
+struct Point {
+    x: f32,
+    y: f32,
+}
+\end{rustcode}
+\end{minipage}
+\begin{minipage}[t]{.45\textwidth}
+\begin{rustcode}
+enum CssColor {
+    Name(String),
+    Rgb { r: u8, g: u8, b: u8 },
+    None,
+}
+\end{rustcode}
+\end{minipage}
+\end{center}
+
+In addition to this, Rust has:
+\vspace{-3mm}
+\begin{itemize}
+  \item Fixed-size arrays \code{[T; N]}: anonymous, homogeneous product-types.
+  \item Tuples \code{(T, U, V)}: anonymous, heterogeneous product-types.
+  \item Slices \code{&[T]}: a reference plus length to a contiguous sequence of elements (for example, part of an array or a \code{Vec<T>}).
+  \item String slices \code{&str}: like a normal slice, but referencing a UTF-8 encoded string buffer.
+\end{itemize}
+
+Crucially important for Rust's performance and suitability as a systems programming language, is the fact that user compound types (like structs or enums) do \emph{not} use automatic boxing.
+Instead, all fields are stored inline and are densely packed, as in \cpp or C.
+As a consequence, there is virtually no difference between using two \code{f32} variables, one \code{[f32; 2]} variable or one \code{Point} (example code above) variable in a function: all versions will store $2 \cdot 32 = 64$ bits on the stack.
+
+
 
 % # Ownership and Borrowing
 

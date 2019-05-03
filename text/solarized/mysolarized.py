@@ -28,6 +28,7 @@ class MysolarizedStyle(Style):
     styles = {
         Text: 'bg: %s %s' % (BASE2, BASE00),
         Keyword: YELLOW,
+        Keyword.Type: RED,
         Name: BASE00,
         Name.Function: BLUE,
         Name.Class: BLUE,
