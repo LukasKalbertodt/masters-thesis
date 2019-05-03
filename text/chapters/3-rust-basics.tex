@@ -27,25 +27,48 @@ The ability to easily and reliably include libraries into a project sets Rust ap
 Since Rust's initial release, it has been adopted by more and more programmers.
 It is already used in production by hundreds of companies, most notably: Dropbox, NPM, Mozilla, Yelp \cite{rust-production}.
 
-This chapter gives a quick overview over Rust's syntax and basic semantics, the features that are most important to to thesis (mostly traits) as well as how Rust is compiled to machine code. To learn more about Rust, a large number of resources are available, including \emph{The Rust Programming Language} \cite{klabnik2018rust} which is available for free at \url{https://doc.rust-lang.org/book/}.
+This chapter gives a very quick overview over Rust's syntax and basic semantics, the features that are most important to to thesis (mostly traits) as well as how Rust is compiled to machine code.
+To learn more about Rust, a large number of resources are available, including \emph{The Rust Programming Language} \cite{klabnik2018rust} which is available for free at \url{https://doc.rust-lang.org/book/}.
+Also worth mentioning is the \enquote{Rust Playground}, an online compiler for quick testing, available at \url{https://play.rust-lang.org/}.
+In this chapter, most code snippets contain a link to the playground containing that code (not usable in the print-version).
 
 
-% - most loved in SO
-% - Open Source
-% - openly developed by community, fnuded by moz
-% - when released, rapid release cycle
+\section{Basic Syntax and Semantics}
 
-% - influences
-% - multiparadigm
-% - type system
-% - cross plattform
+The following code snippet (showing a not particularly useful program) demonstrates Rust's basic syntax and many other basic features.
+The code is explained in more detail below.
 
-% - many use Rust already
+\playground{https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=06d3e3f17909c9c73cb68f0fbb7956ea}
 
-% - modern features
-%   - cargo package manager
-%   -
+\begin{rustcode}
+use std::{
+    thread,
+    time::Duration,
+};
 
+fn main() {
+    const START: u64 = 871;
+
+    let seq = collatz(START);
+    println!("Collatz sequence of {} has a length of {}", START, seq.len());
+
+    thread::sleep(Duration::from_millis(1500));
+    println!("Bye!");
+}
+
+/// Generates and returns the Collatz sequence starting from `start`,
+/// excluding `start` itself.
+fn collatz(start: u64) -> Vec<u64> {
+    let mut number = start;
+    let mut steps = Vec::new();
+    while number != 1 {
+        number = if number % 2 == 0 { number / 2 } else { number * 3 + 1 };
+        steps.push(number);
+    }
+
+    steps
+}
+\end{rustcode}
 
 % # Syntax
 

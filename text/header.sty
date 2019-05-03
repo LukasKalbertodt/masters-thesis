@@ -24,6 +24,7 @@
 \setmonofont{Inconsolata}[Scale = MatchLowercase]
 % \usepackage{lmodern}
 \usepackage{MnSymbol}
+\usepackage{fontawesome}
 
 % Paragraph style
 \parskip = 10pt
@@ -66,6 +67,7 @@
 \definecolor{flat-green-dark}{HTML}{27ae60}
 \definecolor{flat-blue-dark}{HTML}{2980b9}
 \definecolor{flat-gray-dark}{HTML}{34495e}
+\definecolor{link-blue}{HTML}{1e3799}
 
 % Multi-line source code
 \usepackage[outputdir=build]{minted}
@@ -165,4 +167,8 @@
 }
 \newcommand{\adj}[3][black]{%
   \adjbox{\textsf{\textbf{\color{#1} #2 $\rightarrow$ #3}}}
+}
+
+\newcommand{\playground}[1]{%
+  \vspace{5mm}\hfill\fbox{\href{#1}{\textcolor{link-blue}{Code on Playground \scalebox{.75}{\faExternalLink}}}}\hspace{5mm}\vspace{-1.55cm}
 }
