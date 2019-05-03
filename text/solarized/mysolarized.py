@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pygments.style import Style
-from pygments.token import Keyword, Name, Comment, Operator, Generic, Literal, Text
+from pygments.token import Keyword, Name, Comment, Operator, Generic, Literal, Text, String
 
 # All the solarized colors, in case I want to use more of those later
 BASE0 = '#839496'
@@ -26,12 +26,16 @@ class MysolarizedStyle(Style):
     """ My Solarized Light based on http://ethanschoonover.com/solarized. """
     background_color = BASE2
     styles = {
-        Text: 'bg: %s %s' % (BASE2, BASE01),
-        Keyword: GREEN,
-        Keyword.Namespace: RED,
-        Name: BLUE,
-        Literal: CYAN,
-        Operator.Word: GREEN,
+        Text: 'bg: %s %s' % (BASE2, BASE00),
+        Keyword: YELLOW,
+        Name: BASE00,
+        Name.Function: BLUE,
+        Name.Class: BLUE,
+        Name.Namespace: BLUE,
+        Name.Builtin.Pseudo: 'bold %s' % BLUE,
+        Name.Constant: RED,
+        Literal: ORANGE,
+        String.Doc: BASE1,
         Comment: BASE1,
-        Generic: MAGENTA,
+        Operator: BASE00
     }
