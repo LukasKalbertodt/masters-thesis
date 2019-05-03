@@ -33,7 +33,7 @@ class MysolarizedStyle(Style):
         Name.Function: BLUE,
         Name.Class: BLUE,
         Name.Namespace: BLUE,
-        Name.Builtin.Pseudo: 'bold %s' % BLUE,
+        Name.Builtin.Pseudo: BLUE,
         Name.Constant: RED,
         Literal: ORANGE,
         String.Doc: BASE1,

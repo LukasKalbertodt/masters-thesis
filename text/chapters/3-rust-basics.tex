@@ -70,8 +70,8 @@ fn collatz(start: u64) -> Vec<u64> {
 }
 \end{rustcode}
 
-Explanations and remarks to the code above:
-
+Explanations and remarks about the code above:
+\vspace{-3mm}
 \begin{itemize}
   \item A library in Rust is a single compilation unit, called a \emph{crate}.
   Each crate defines symbols in a module tree.
@@ -100,7 +100,7 @@ Explanations and remarks to the code above:
   It is more useful however, because this way, there are no parsing ambiguities.
   \item Apart from \code{while}, there are also \code|for _ in _ {}| (discussed below) and \code|loop {}| (equivalent to \code|while true {}|) as loop constructs.
   \item The feature \enquote{everything is an expression} allows most syntactic elements to be used in places where an expression is expected.
-  One example is the assignment on line~22. While this in particular is also possible with the ternary operator \code{?:} in some other languages, Rust allows \code{match} expressions (similar to \code{switch} in \cpp), loops, full blocks and many more constructs in expression context.
+  One example is the assignment on line~22. While this in particular is also possible with the ternary operator \code{?:} in some other languages, Rust allows \code{match} expressions (similar to but more powerful than \code{switch} in \cpp), loops, full blocks and many more constructs in expression context.
   \item The last expression in a function is automatically returned (early returns with \code{return} are still possible).
   This feature is particularly useful in combination with \enquote{everything is an expression}.
   \item By convention, \code{snake_case} is used for functions, methods, variables and modules; \code{UpperCamelCase} for types and traits; \code{SCREAMING_SNAKE_CASE} for constants.
@@ -128,15 +128,16 @@ Explanations and remarks to the code above:
   \label{tab:primitive-types}
 \end{table}
 
-The core language contains a number of primitive types as shown in table~\ref{tab:primitive-types} (their names are an exception to the naming convention described before).
+The core language contains a number of primitive types as shown in table~\ref{tab:primitive-types}.
 New types can be created by programmers in mainly two ways: as \code{struct} or as \code{enum}.
-Structs are heterogenous product-types, are defined by a list of fields and work very similar to structs or classes in \cpp.
+Structs are heterogenous product-types  defined by a list of fields and work very similar to structs or classes in \cpp.
 
 Enums, on the other hand, are sum-types -- a feature not offered by most mainstream languages.
 While some enum types in Rust are simple \enquote{C-like enums} (just an enumeration of names), each enum \emph{variant} can have arbitrary data associated with it.
 In the example below, an instance of type \code{CssColor} is either \code{CssColor::Name} and stores a string, \emph{or} \code{CssColor::Rgb} and stores three \code{u8} values, \emph{or} \code{CssColor::None} and does not store any additional data.
 In \cpp, a type like this would be implemented with an integer tag and a \code{union} (which is exactly how this type works at machine level in Rust).
 
+\vspace{-3mm}
 \begin{center}
 \begin{minipage}[t]{.45\textwidth}
 \begin{rustcode}
@@ -162,6 +163,8 @@ In addition to this, Rust has:
 \begin{itemize}
   \item Fixed-size arrays \code{[T; N]}: anonymous, homogeneous product-types.
   \item Tuples \code{(T, U, V)}: anonymous, heterogeneous product-types.
+  \item References \code{&T} and \code{&mut T} (immutable and mutable): like \cpp references, but are guaranteed to point to a valid instance of \code{T}.
+  This guarantee is one of the core features of Rust and is discussed later.
   \item Slices \code{&[T]}: a reference plus length to a contiguous sequence of elements (for example, part of an array or a \code{Vec<T>}).
   \item String slices \code{&str}: like a normal slice, but referencing a UTF-8 encoded string buffer.
 \end{itemize}
@@ -170,9 +173,103 @@ Crucially important for Rust's performance and suitability as a systems programm
 Instead, all fields are stored inline and are densely packed, as in \cpp or C.
 As a consequence, there is virtually no difference between using two \code{f32} variables, one \code{[f32; 2]} variable or one \code{Point} (example code above) variable in a function: all versions will store $2 \cdot 32 = 64$ bits on the stack.
 
+Another notable difference to languages like \cpp or Java is the separation of data and behavior of a type.
+The type definition shown above only define the data layout of the type.
+To add methods to a type, \code{impl} blocks are used: all functions in an \code{impl} block live in the namespace of that type.
+Functions with a special first \code{self} parameter are methods that can be called on an instance of the type with the dot syntax \code{instance.method()}.
+\code{self} is the instance of the type and is usually equivalent to \code{this} in \cpp and Java or \code{self} in Python.
+Functions without a \code{self} parameter (that are not called on an instance) are so called \emph{associated functions} which are equivalent to \emph{static methods} in \cpp or Java.
 
+A small example based on the \code{Point} definition above:
+
+\playground{https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=b66020119f65675812d46e3be9e82c2d}
+
+\begin{rustcode}
+impl Point {
+    fn origin() -> Self {
+        Self {
+            x: 0.0,
+            y: 0.0,
+        }
+    }
+
+    fn distance_from(&self, other: &Self) -> f32 {
+        ((self.x - other.x).powi(2) + (self.y - other.y).powi(2)).sqrt()
+    }
+}
+
+fn main() {
+    let a = Point::origin();
+    let b = Point { x: 1.0, y: 2.0 };
+    println!("{}", a.distance_from(&b));
+}
+\end{rustcode}
+
+This demonstrates a few additional points:
+
+\vspace{-3mm}
+\begin{itemize}
+  \item \code{Self} is an alias for the type of the \code{impl} block (\code{Point} in this case).
+  \item Structs can be created via the \emph{struct initializer syntax} (see line~3 or 16).
+  If the fields are not accessible due to them being private (like \code{Vec}'s fields), an instance can only be created via the associated functions offered by the type (e.\,g. \code{Point::origin} or \code{Vec::new}).
+  \item Primitive types can have methods, too.
+  Shown here: \code{f32::powi} and \code{f32::sqrt}.
+\end{itemize}
+
+Unlike in many garbage collected languages (like Java), values in Rust cannot be \code{null}:
+a variable of type \code{T} is always a valid instance of that type; a reference \code{&T} is always a valid reference to a valid instance of type \code{T}.
+As such, Rust needs some other way to represent \emph{optional} values and the \emph{absence} of a value.
+Used for that purpose is the generic standard library type \code{Option<T>} which is defined as shown in figure~\ref{lst:option-result-def}.
+For example, an instance of type \code{Option<String>} is either \code{None} or \code{Some(s)} where \code{s} is a valid string.
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}{.4\textwidth}
+\begin{rustcode}
+enum Option<T> {
+    Some(T),
+    None,
+}
+\end{rustcode}
+\end{subfigure}
+\begin{subfigure}{.4\textwidth}
+\begin{rustcode}
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+\end{rustcode}
+\end{subfigure}
+\caption{Definition of \codebox{Option<T>} and \codebox{Result<T, E>} in the standard library.}
+\label{lst:option-result-def}
+\end{figure}
+
+Rust can perform a number of layout optimizations for enums and structs. One of the most important one is the \emph{null pointer optimization} which has the effect that \code{Option<&T>} and \code{&T} have exactly the same size (the size of \code{usize} to be precise). This works for all enums that are defined like \code{Option<T>} (the standard library type is not special) and for all types that never use the bit-pattern 0 (references do not, as they are always valid).
+
+To use a value of type \code{Option<T>}, a programmer has a variety of possibilities. They can use a \code{match} block or use one of \code{Option}'s method, like \code{unwrap_or}: it returns the inner value, if there is one, or a provided default value, if the option was \code{None}.
+
+
+\subsubsection*{Error Handling}
+
+Hi.
+
+% Option -> null optimization
+% Result
+% error handling
+% match?
+
+% # traits
+% generics
+% iterator
+% macros
+% trait objects
+% drop
+% (sync & send)
 
 % # Ownership and Borrowing
+% aliasing xor mutability
+% references always valid
+% table showing equivalents of &self, &mut self, self with C++ and Java
 
 % # Performance
 % - zero cost abstraction
