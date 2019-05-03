@@ -219,7 +219,7 @@ This demonstrates a few additional points:
 Unlike in many garbage collected languages (like Java), values in Rust cannot be \code{null}:
 a variable of type \code{T} is always a valid instance of that type; a reference \code{&T} is always a valid reference to a valid instance of type \code{T}.
 As such, Rust needs some other way to represent \emph{optional} values and the \emph{absence} of a value.
-Used for that purpose is the generic standard library type \code{Option<T>} which is defined as shown in figure~\ref{lst:option-result-def}.
+Used for that purpose is the generic standard library type \code{Option<T>} which is defined as shown in figure~\ref{fig:option-result-def}.
 For example, an instance of type \code{Option<String>} is either \code{None} or \code{Some(s)} where \code{s} is a valid string.
 
 \begin{figure}[t]
@@ -241,22 +241,33 @@ enum Result<T, E> {
 \end{rustcode}
 \end{subfigure}
 \caption{Definition of \codebox{Option<T>} and \codebox{Result<T, E>} in the standard library.}
-\label{lst:option-result-def}
+\label{fig:option-result-def}
 \end{figure}
 
 Rust can perform a number of layout optimizations for enums and structs. One of the most important one is the \emph{null pointer optimization} which has the effect that \code{Option<&T>} and \code{&T} have exactly the same size (the size of \code{usize} to be precise). This works for all enums that are defined like \code{Option<T>} (the standard library type is not special) and for all types that never use the bit-pattern 0 (references do not, as they are always valid).
 
 To use a value of type \code{Option<T>}, a programmer has a variety of possibilities. They can use a \code{match} block or use one of \code{Option}'s method, like \code{unwrap_or}: it returns the inner value, if there is one, or a provided default value, if the option was \code{None}.
-
+% TODO: maybe remove the above paragraph
 
 \subsubsection*{Error Handling}
 
-Hi.
+In Rust, errors are logically divided into two kinds: recoverable errors and bugs (or unrecoverable errors).
+Errors of the former kind are to be expected and occur because the \enquote{world} is in an erroneous state.
+The latter kind of errors are caused by an incorrect program and can usually not be recovered from.
 
-% Option -> null optimization
-% Result
-% error handling
-% match?
+Since these kinds of errors are very different, Rust uses two different strategies to deal with them.
+Upon noticing an unrecoverable error, a Rust program \emph{panics}.
+A \emph{panic} in Rust immediately aborts the current thread and does a final cleanup by unwinding the stack.
+This is Rust's version of \emph{abandonment} as defined in \cite{duffy2016error}.
+That resource is also a great introduction to the topic and explains why this categorization into error kinds is useful and why \emph{abandonment} in a bug situation is useful.
+
+Recoverable errors are handled with the \code{Result<T, E>} type which definition can be seen in figure~\ref{fig:option-result-def}.
+Functions returning such a type either return successfully with a value \code{Ok(x)} where \code{x} is an instance of type \code{T} or they fail and return \code{Err(e)} where \code{e} is an instance of \code{E}.
+This means that Rust uses \emph{return value based} error handling (like C does with returning error codes).
+However, in contrast to C-like error codes, with \code{Result}, it is impossible to forget checking if an error has occurred, making this solution far more robust.
+The core language makes working with \code{Result}s easier by providing the \code{?} operator which delegates errors to the calling function automatically.
+
+
 
 % # traits
 % generics
