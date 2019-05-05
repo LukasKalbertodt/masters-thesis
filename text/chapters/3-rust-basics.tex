@@ -278,14 +278,188 @@ However, in contrast to C-like error codes, with \code{Result}, it is impossible
 The core language makes working with \code{Result}s easier by providing the \code{?} operator which delegates errors to the calling function automatically.
 
 
+\section{Traits}
 
-% # traits
-% generics
-% iterator
-% macros
-% trait objects
-% drop
-% (sync & send)
+Rust supports generic programming, meaning that types and functions can be defined by using type parameters instead of specific types.
+A few examples of generic types, like \code{Vec<T>} and \code{Option<T>}, were already mentioned above.
+When introducing a type parameter, a programmer cannot assume anything about it (except that its size is known at compile time and thus that an instance of that type can be stored on the stack).
+
+See figure~\ref{fig:clamp} for example.
+It shows a function, generic over \code{T}, that returns a value clamped into the range defined by \code{min} and \code{max}.
+The code as shown does not compile, because it cannot be assumed that two instances of type \code{T} can be compared via \code{<} or \code{>}.
+To fix the problem, the function must declare its requirements on \code{T}, which is done via so called \emph{trait bounds}.
+In this particular instance, it is sufficient to change the function signature to \code{fn clamp<T: PartialOrd>}, adding a bound for the trait \code{PartialOrd}.
+
+\begin{figure}[h]
+  \centering
+  \begin{minipage}[t]{.55\textwidth}
+    \begin{rustcode}
+      fn clamp<T>(v: T, min: T, max: T) -> T {
+          if v < min {
+              min
+          } else if v > max {
+              max
+          } else {
+              v
+          }
+      }
+    \end{rustcode}
+  \end{minipage}
+  \hspace{2mm}
+  \begin{minipage}[t]{.42\textwidth}
+    \footnotesize
+    \vspace{3mm}
+    \begin{verbatim}
+error[E0369]: binary operation `<` cannot
+              be applied to type `T`
+ --> src/lib.rs:2:8
+  |
+2 |     if v < min {
+  |        ^^^^^^^
+  |
+  = note: `T` might need a bound for
+          `std::cmp::PartialOrd`
+    \end{verbatim}
+  \end{minipage}
+  \caption{
+    An incorrectly defined generic function (left) and the corresponding error message by the compiler (right).
+  }
+  \label{fig:clamp}
+\end{figure}
+
+A \emph{trait} defines an interface: it describes functionality without providing that functionality itself.
+A trait definition contains a number of items (usually methods) whose signatures are specified, but which are usually lacking an implementation (e.\,g. a method body).
+A trait can be implemented by multiple types and each type can implement multiple traits.
+This is done with an \code{impl Trait for Type} block.
+The \code{impl} block then needs to implement all trait items, i.\,e. provide the actual functionality.
+See figure~\ref{fig:shapes} for an example.
+
+% See figure~\ref{fig:trait-examples} for some example traits from the standard library.
+
+% \begin{figure}[ht]
+%   \centering
+%   \begin{minipage}[t]{.4\textwidth}
+%     \begin{rustcode}
+%     trait Clone {
+%         fn clone(&self) -> Self;
+%     }
+%     \end{rustcode}
+%   \end{minipage}
+%   \begin{minipage}[t]{.5\textwidth}
+%     \begin{rustcode}
+%     trait Write {
+%         fn write(&mut self, buf: &[u8])
+%             -> Result<usize, io::Error>;
+%     }
+%     \end{rustcode}
+%   \end{minipage}
+%   \caption{
+%     Two (slightly simplified) example traits from the standard library.
+%     \codebox{Clone} is implemented by all types that can clone (duplicate) their instances.
+%     \codebox{Write} abstracts over types that can accept and write raw data (like files, stdout or TCP-streams).
+%   }
+%   \label{fig:trait-examples}
+% \end{figure}
+
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}{.65\textwidth}
+    \begin{rustcode}
+    trait Shape {@\playground{?version=stable&mode=debug&edition=2018&gist=7fd9940f9142b70ceed5d35b9ac989d3}@
+        fn area(&self) -> f32;
+    }
+    \end{rustcode}
+    \end{minipage}
+
+    \vspace{3mm}
+
+    \begin{minipage}[t]{.49\textwidth}
+    \begin{rustcode}
+    struct Circle {
+        radius: f32,
+        center: Point,
+    }
+
+    impl Shape for Circle {
+        fn area(&self) -> f32 {
+            self.radius.powi(2) * PI
+        }
+    }
+    \end{rustcode}
+  \end{minipage}
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{rustcode}
+    struct Square {
+        side_length: f32,
+        center: Point,
+    }
+
+    impl Shape for Square {
+        fn area(&self) -> f32 {
+            self.side_length.powi(2)
+        }
+    }
+    \end{rustcode}
+  \end{minipage}
+  \caption{Example trait with two example implementations.}
+  \label{fig:shapes}
+\end{figure}
+
+Traits are used by many other Rust features, including operator overloading (e.\,g. the \code{PartialOrd} trait mentioned above), destructors (the \code{Drop} trait) and closures.
+Particularly interesting are the \code{Send} and \code{Sync} traits which form the foundation for memory safe concurrency (i.\,e. no data races).
+
+Traits can be used in two ways: statically and dynamically dispatched.
+The kind of dispatch is not specified in the trait definition, but in how the trait is used.
+This means that a single trait can be used with dynamic dispatch in one situation and with static dispatch in another.
+An example of the two types of usage can be seen in figure~\ref{fig:dispatch}.
+
+\begin{figure}[b]
+  \centering
+    \begin{minipage}[t]{.49\textwidth}
+    \begin{rustcode}
+      fn print_area<S: Shape>(shape: &S) {
+          println!("{}", shape.area());
+      }
+    \end{rustcode}
+  \end{minipage}
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{rustcode}
+      fn print_area(shape: &dyn Shape) {
+          println!("{}", shape.area());
+      }
+    \end{rustcode}
+  \end{minipage}
+  \caption{
+    The two types of dispatch.
+    On the left, static dispatch is used (via type parameter with trait bound).
+    On the right, dynamic dispatch is used (via trait object).
+  }
+  \label{fig:dispatch}
+\end{figure}
+
+With static dispatch, a new copy of the generic item is made for each way it is instantiated.
+Calling the statically dispatched version of \code{print_area} twice, once with a \code{Circle} and once with a \code{Square}, is equivalent to having defined \code{print_area} twice (once for \code{Circle} and once for \code{Square}).
+This process is also called \emph{monomorphization} and is used when instantiating \cpp templates.
+Dynamic dispatch, on the other hand, uses \emph{vtables} and dynamic/virtual calls.
+\cpp's virtual methods and most object-oriented languages use dynamic dispatch.
+
+The main advantage of monomorphization over dynamic dispatch is execution speed.
+With static dispatch, the compiler has full knowledge about the type and method body and is thus able to optimize the generated code very well.
+With \emph{inlining}, the optimizer is often able to completely remove the call to the trait method, making the usage of traits completely zero-overhead.
+This is the main reason for how Rust can achieve \emph{zero cost abstractions}.
+
+An extreme case of good optimization due to static dispatch is the \code{Iterator} trait.
+An iterator is simply a sequence of items of a specific type.
+The trait features a variety of different helper methods -- called \emph{iterator adaptors} -- which can be used to create a new iterator from an existing ones.
+For example, \code{1..8} is the Rust syntax for a range and represents an iterator over integers: 1, 2, 3, 4, 5, 6, 7 (the upper limit is exclusive).
+We can create a new iterator by filtering the existing one to remove some elements: \code{(1..8).filter(|&x| x % 2 == 0)}.
+This expression is an iterator over the items 2, 4, 6.
+Taking this further, with \code{map}, we can change each item to something else.
+\code{(1..8).filter(|&x| x % 2 == 0).map(|x| x * x)} is an iterator over the items 4, 16, 36.
+
+While this high-level programming looks like it involves many method calls, iterator chains like this compile down to almost optimal machine code most of the time.
+
 
 % # Ownership and Borrowing
 % aliasing xor mutability
