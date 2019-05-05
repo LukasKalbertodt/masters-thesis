@@ -461,7 +461,129 @@ Taking this further, with \code{map}, we can change each item to something else.
 While this high-level programming looks like it involves many method calls, iterator chains like this compile down to almost optimal machine code most of the time.
 
 
-% # Ownership and Borrowing
-% aliasing xor mutability
-% references always valid
-% table showing equivalents of &self, &mut self, self with C++ and Java
+\section{Ownership and Borrowing}
+
+In order to guarantee memory safety and robustness, Rust uses a few concepts not found in most other languages.
+One such concept is \emph{ownership}.
+
+Different languages have different \emph{default assignment semantics}, in other words: they differ in what happens when assigning one value to another.
+In Java and many other garbage collected languages, \emph{share semantics} are used by default.
+That means that, if there is a collection \code{a} and the line \code{Collection b = a;} is executed, \code{b} is now a reference to the original collection (i.\,e. \code{a} and \code{b} reference the same collection).
+\cpp on the other hand, defaults to \emph{copy semantics}.
+In \cpp, \code{b} would be an exact (usually deep) copy of \code{a}; changing \code{b} would not influence \code{a}.
+
+Rust uses neither of those solutions: referencing a value requires taking a reference to it explicitly; cloning a value also requires an explicit call to \code{clone()}.
+Instead, Rust uses \emph{move semantics}.
+In Rust, the original collection can be accessed through the variable \code{b} and the variable \code{a} is not usable anymore.
+The latter is checked by the compiler and compilation will fail with an error when a moved value is accessed (see figure~\ref{fig:string-move}).
+
+
+\begin{figure}[b]
+  \centering
+  \begin{minipage}[t]{.5\textwidth}
+    \begin{rustcode}
+      @\playground{?version=stable&mode=debug&edition=2018&gist=e367f6069e48d4c2a7306479217af34c}@
+      fn main() {
+          let a = String::from("hello");
+          let b = a;
+          println!("{}", b);
+          println!("{}", a);
+      }
+    \end{rustcode}
+  \end{minipage}
+  \hspace{2mm}
+  \begin{minipage}[t]{.47\textwidth}
+    \footnotesize
+    \vspace{3mm}
+    \begin{verbatim}
+error[E0382]: borrow of moved value: `a`
+ --> src/main.rs:5:20
+  |
+2 |     let a = String::from("hello");
+3 |     let b = a;
+  |             - value moved here
+4 |     println!("{}", b);
+5 |     println!("{}", a);
+  |                    ^ value borrowed here
+    \end{verbatim}
+  \end{minipage}
+  \caption{Attempting to use a value that has been moved results in a compiler error.}
+  \label{fig:string-move}
+\end{figure}
+
+Optional move semantics have been introduced in \cppeleven, but they are not as secure as in Rust.
+For example, the \cpp compiler does not raise an error when the programmer accesses the variable that was moved from, although this is usually unsafe.
+
+There is one notable exception to Rust's move semantics: types that implement the trait \code{Copy} use copy semantics.
+That trait is only implemented by types that can be correctly cloned by simply copying the bits of the type (i.\,e. the bits on the stack).
+For example, \code{Vec<T>} cannot implement that trait, because it consists of a pointer to data; simply copying the pointer without copying the buffer behind that pointer would mean that two instances of \code{Vec<T>} think they own a buffer, leading to a double free when the destructor of the two instances is called.
+All primitive types implement \code{Copy}, but user-defined types can also implement it, as long as all their fields implement the trait, too.
+
+% TODO: maybe remove this table
+\begin{table}[ht]
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|l|l|l|l|}\hline
+    \textbf{Rust} & \textbf{\cpp} & \textbf{Java} \\\hline
+    \code{fn foo()} & \code{static void foo()} & \code{static void foo()}\\\hline
+    \code{fn foo(&self)} & \code{void foo() const} & \emph{not possible}\\\hline
+    \code{fn foo(&mut self)} & \code{void foo()} & \code{void foo()}\\\hline
+    \code{fn foo(self)} & \code{void foo() &&} & \emph{not possible}\\\hline
+  \end{tabular}
+  \renewcommand{\arraystretch}{1}
+  \caption{Comparison of different types of methods across different languages.}
+  \label{tbl:receiver-obj}
+\end{table}
+
+The concept \emph{borrowing} is related to references.
+In Rust, taking the reference of a value is also called \enquote{borrowing that value} and during the time a reference to a value exists, that value is said to be \enquote{borrowed}.
+There are immutable (\code{&T}) and mutable borrows (\code{&mut T}).
+
+There is one crucially important rule regarding the use of references: \textbf{at any point in time, each value can \emph{either} be referenced by any number of immutable references \emph{or} by exactly one mutable reference}.
+This is also called \emph{Aliasing xor Mutability} (although \emph{nand} would technically be more correct).
+This means that there cannot exist a mutable and an immutable reference to the same value at the same time.
+Like the ownership analysis mentioned above, this rules is also entirely enforced at compile time; Rust references compile down to simple pointers.
+
+This restriction might initially sound too strict, but there are good reasons why it is a good idea.
+Figure~\ref{fig:vector-bad} illustrates one reason.
+In practice, this rule is not as problematic as one might assume.
+In only a very few situations, it is necessary work around this problem, which can be done in a variety of ways.
+One notable \enquote{escape hatch} is called \emph{interior mutability}, which describes the ability to mutate some data through a \code{&T} reference.
+This is only possible via carefully designed interface, like the type \code{Mutex} from the standard library.
+
+\begin{figure}[b]
+  \centering
+    \begin{minipage}[t]{.49\textwidth}
+    \begin{rustcode}
+      let mut v = vec![5, 6];
+      let a = &v[0];
+      v.push(7);
+      println!("{}", a);
+    \end{rustcode}
+  \end{minipage}
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{cppcode}
+      auto v = vector<int>{5, 6};
+      const auto& a = v[0];
+      v.push_back(7);
+      cout << a << endl;
+    \end{cppcode}
+  \end{minipage}
+  \caption{
+    A classical example of why mutability with aliasing can easily lead to memory unsafety.
+    The \codebox{push}/\codebox{push\_back} might trigger an internal reallocation which would invalidate the reference \codebox{a}.
+    The Rust version does not compile due to the \emph{aliasing xor mutability} rule, while the \cpp version compiles fine but exhibits \emph{undefined behavior} due to memory unsafety when executing.
+  }
+  \label{fig:vector-bad}
+\end{figure}
+
+Finally, due to compile-time lifetime-tracking, the compiler can make sure that references never outlive the value they are referencing.
+Thus, references always point to valid objects.
+It is possible, and sometimes necessary, for the programmer to explicitly annotate lifetimes on function signatures, but as this is not important to understanding this thesis, it will not be explained here.
+
+While Rust can almost always prove the memory-safety of a program, in some rare cases, it is necessary to write code outside of the compiler's protection.
+For that reason, Rust offers \code{unsafe} blocks.
+Within such a block, the programmer can work with raw pointers and do a few other things that are not allowed outside of an \code{unsafe} block.
+But again, using \code{unsafe} is not necessary in the vast majority of Rust code.
+It is actually considered bad style to use \code{unsafe} code where it can be avoided.
+Almost all \code{unsafe} code is hidden behind safe interfaces; so while building blocks like \code{Vec<T>} and \code{Mutex<T>} cannot be efficiently implemented without \code{unsafe} code, users can use their safe interface without needing to worry about memory safety.

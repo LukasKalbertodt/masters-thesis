@@ -175,7 +175,14 @@
 }
 
 \newcommand{\playground}[1]{%
-  \hfill\fbox{\href{https://play.rust-lang.org/#1}{\textcolor{link-blue}{\small\sffamily Code on Playground \scalebox{.75}{\faExternalLink}}}}\hspace{-2mm}
+  \hfill\fbox{%
+    \href{https://play.rust-lang.org/#1}{%
+      \textcolor{link-blue}{%
+        \footnotesize\sffamily Code on Playground \scalebox{.75}{\faExternalLink}%
+      }%
+    }%
+  }%
+  \hspace{0mm}%
 }
 
 % Typesetting C++
@@ -185,3 +192,4 @@
   {\smaller{\smaller\textbf{+}}}%
 }
 \newcommand{\cpp}{\mbox{C\Rplus\hspace{.15ex}\Rplus}\xspace}
+\newcommand{\cppeleven}{\mbox{C\Rplus\hspace{.15ex}\Rplus11}\xspace}
