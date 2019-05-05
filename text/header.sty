@@ -73,13 +73,15 @@
 \usepackage[outputdir=build]{minted}
 \usemintedstyle{mysolarized}   % see the `solarized` folder for more info
 \setminted{
-  linenos,
+  % linenos,
   numbersep=10pt,
-  xleftmargin=20pt,
-  xrightmargin=10pt,
+  autogobble,
+  xleftmargin=8pt,
+  xrightmargin=8pt,
   frame=single,
   framesep=7pt,
   baselinestretch=1.05,
+  escapeinside=@@,
   fontsize=\small     % maybe \footnotesize
 }
 \newminted{rust}{
@@ -173,7 +175,7 @@
 }
 
 \newcommand{\playground}[1]{%
-  \vspace{5mm}\hfill\fbox{\href{#1}{\textcolor{link-blue}{Code on Playground \scalebox{.75}{\faExternalLink}}}}\hspace{5mm}\vspace{-1.55cm}
+  \hfill\fbox{\href{https://play.rust-lang.org/#1}{\textcolor{link-blue}{\small\sffamily Code on Playground \scalebox{.75}{\faExternalLink}}}}\hspace{-2mm}
 }
 
 % Typesetting C++

@@ -48,10 +48,8 @@ In this chapter, many code snippets contain a link to the playground containing 
 The following code snippet (showing a not particularly useful program) demonstrates Rust's basic syntax and many other basic features.
 The code is explained in more detail below.
 
-\playground{https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=06d3e3f17909c9c73cb68f0fbb7956ea}
-
-\begin{rustcode}
-use std::{
+\begin{rustcode*}{linenos, xleftmargin=20pt}
+use std::{@\playground{?version=stable&mode=release&edition=2018&gist=06d3e3f17909c9c73cb68f0fbb7956ea}@
     thread,
     time::Duration,
 };
@@ -78,7 +76,7 @@ fn collatz(start: u64) -> Vec<u64> {
 
     steps
 }
-\end{rustcode}
+\end{rustcode*}
 
 Explanations and remarks about the code above:
 \vspace{-3mm}
@@ -138,9 +136,9 @@ Explanations and remarks about the code above:
   \label{tab:primitive-types}
 \end{table}
 
-The core language contains a number of primitive types as shown in table~\ref{tab:primitive-types}.
+The core language contains a number of primitive types, shown in table~\ref{tab:primitive-types}.
 New types can be created by programmers in mainly two ways: as \code{struct} or as \code{enum}.
-Structs are heterogenous product-types  defined by a list of fields and work very similar to structs or classes in \cpp.
+Structs are heterogenous product-types  defined by a list of fields and work very similar to structs in~C.
 
 Enums, on the other hand, are sum-types -- a feature not offered by most mainstream languages.
 While some enum types in Rust are simple \enquote{C-like enums} (just an enumeration of names), each enum \emph{variant} can have arbitrary data associated with it.
@@ -168,11 +166,15 @@ enum CssColor {
 \end{minipage}
 \end{center}
 
+Rust is not an object-oriented language.
+While there are some similarities to object-oriented languages like Java (e.\,g. the \code{instance.method()} call syntax and \emph{encapsulation}), Rust, by design, does not feature inheritance.
+Advantages of OOP, like code-reuse and abstraction, are achieved via different means in Rust.
+
 In addition to this, Rust has:
 \vspace{-3mm}
 \begin{itemize}
   \item Fixed-size arrays \code{[T; N]}: anonymous, homogeneous product-types.
-  \item Tuples \code{(T, U, V)}: anonymous, heterogeneous product-types.
+  \item Tuples \code{(T, U, V)}: anonymous, heterogeneous product-types. The empty tuple \code{()} is equivalent to \code{void} in many other languages.
   \item References \code{&T} and \code{&mut T} (immutable and mutable): like \cpp references, but are guaranteed to point to a valid instance of \code{T}.
   This guarantee is one of the core features of Rust and is discussed later.
   \item Slices \code{&[T]}: a reference plus length to a contiguous sequence of elements (for example, part of an array or a \code{Vec<T>}).
@@ -192,10 +194,8 @@ Functions without a \code{self} parameter (that are not called on an instance) a
 
 A small example based on the \code{Point} definition above:
 
-\playground{https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=b66020119f65675812d46e3be9e82c2d}
-
-\begin{rustcode}
-impl Point {
+\begin{rustcode*}{linenos, xleftmargin=20pt}
+impl Point { @\playground{?version=stable&mode=debug&edition=2018&gist=b66020119f65675812d46e3be9e82c2d}@
     fn origin() -> Self {
         Self {
             x: 0.0,
@@ -213,7 +213,7 @@ fn main() {
     let b = Point { x: 1.0, y: 2.0 };
     println!("{}", a.distance_from(&b));
 }
-\end{rustcode}
+\end{rustcode*}
 
 This demonstrates a few additional points:
 
