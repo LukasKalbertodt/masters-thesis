@@ -19,6 +19,16 @@ Its design is influenced by many other programming languages, most importantly \
 A strong, static type system is at the core of the language, enabling many of Rust's main features (this is explained in more detail below).
 Rust is also a cross-platform language, running on different operating systems (including Linux, Windows, macOS, Android and iOS) and different CPU architectures (including x86, ARM, WASM and MIPS) \cite{rust-platforms}.
 
+Rust does not have a \emph{garbage collector} (GC) and is compiled to native machine code in a native executable format.
+The code generation is done by LLVM \cite{llvmwebsite, lattner2004llvm}, a collection of libraries and tools related to building compilers.
+LLVM is also used by the \cpp compiler \code{clang++}, among others.
+Like in \cpp, resource management (including memory management) is handled by the \emph{RAII} idiom \cite{raiihackcraft, stroustrup2001exception}.
+This means that resources are released in so called \emph{destructor} functions (called \code{drop} in Rust) which are called automatically if an instance is destroyed (e.\,g. by going out of scope).
+
+An important principle of Rust is the notion of \emph{zero cost abstractions} -- a term coined by \cpp.
+As described by Stroustrup: \enquote{\cpp implementations obey the zero-overhead principle: What you don’t use, you don’t pay for [...]. And further: What you do use, you couldn’t hand code any better} \cite{stroustrup2012foundations}.
+Due to the focus on making abstractions \emph{zero cost} and LLVM's high-quality code generation, Rust programs achieve execution speeds equivalent to \cpp or C programs (sometimes a bit slower, sometimes a bit faster).
+
 After installing Rust, the command line tools \code{rustc}, \code{cargo} and \code{rustup} (amongst others) are available.
 \emph{Cargo} is Rust's dependency manager and build tool which can use the official package repository \url{https://crates.io}.
 The ability to easily and reliably include libraries into a project sets Rust apart from most other system programming languages.
@@ -27,10 +37,10 @@ The ability to easily and reliably include libraries into a project sets Rust ap
 Since Rust's initial release, it has been adopted by more and more programmers.
 It is already used in production by hundreds of companies, most notably: Dropbox, NPM, Mozilla, Yelp \cite{rust-production}.
 
-This chapter gives a very quick overview over Rust's syntax and basic semantics, the features that are most important to to thesis (mostly traits) as well as how Rust is compiled to machine code.
+This chapter gives a very quick overview over the parts of Rust most important to this thesis.
 To learn more about Rust, a large number of resources are available, including \emph{The Rust Programming Language} \cite{klabnik2018rust} which is available for free at \url{https://doc.rust-lang.org/book/}.
 Also worth mentioning is the \enquote{Rust Playground}, an online compiler for quick testing, available at \url{https://play.rust-lang.org/}.
-In this chapter, most code snippets contain a link to the playground containing that code (obviously only usable in the digital version of this thesis).
+In this chapter, many code snippets contain a link to the playground containing that code (obviously only usable in the digital version of this thesis).
 
 
 \section{Basic Syntax and Semantics}
@@ -281,7 +291,3 @@ The core language makes working with \code{Result}s easier by providing the \cod
 % aliasing xor mutability
 % references always valid
 % table showing equivalents of &self, &mut self, self with C++ and Java
-
-% # Performance
-% - zero cost abstraction
-% - LLVM codegen
