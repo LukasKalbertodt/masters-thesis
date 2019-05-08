@@ -1,41 +1,93 @@
 \chapter{Introduction}
 
-This is a test of several formatting options. I want to be done with most of the LaTeX stuff as soon as possible. For one, I want inline code boxes which have different background color and a small round border. For example, I develop the library \code{lox} and it uses a bunch of \code{Vec<T>}. Sometimes, I say stuff like \code{v.adjacent_faces()} in my code.
+% \emph{Polygon meshes} are an essential tool in many different domains of computer graphics, particularly in the field of \emph{geometry processing}.
+% Over the time, various data structures for the representation of these meshes have been developed.
+% To properly operate on a polygon mesh, algorithms require the data structure to offer certain capabilities (e.\,g. store non-triangular faces or fast access to certain neighborhood-information).
+% Additionally, data structures should be as fast and memory-efficient as possible.
 
-However, sometimes, a bigger box is needed. For some nice multi line Rust code:
+% \emph{Polygon meshes} are an essential tool in many domains of computer graphics, particularly in the field of \emph{geometry processing}.
+% To operate on a polygon mesh, algorithms require the data structure representing that mesh to offer certain capabilities (e.\,g. the ability to store non-triangular faces or fast access to certain neighborhood-information).
+% To satisfy these requirements (widely varying from algorithm to algorithm) while still being as fast and as memory-efficient as possible, various mesh data structures have been developed over time.
 
-\begin{rustcode}
-fn main() {
-    let x = 27; // peter
-    x == 3;
-    for i in 1 .. x + 1 {
-        if x % i == 0 {
-            println!("Teiler {}!", i);
-        }
-    }
-    Some(3)
-}
+\emph{Polygon meshes} are an essential tool in many domains of computer graphics, particularly in the field \emph{geometry processing}.
+For algorithms operating on a polygon mesh to function, the data structure representing that mesh needs to offer certain capabilities, such as fast access to certain neighborhood-information or support for non-triangular faces.
+To satisfy these requirements (which are widely varying between different algorithms) while still being as fast and as memory-efficient as possible, various mesh data structures have been developed over time.
 
-use std;
-mod uhg {}
+Interestingly, most existing geometry processing libraries offer only one particular of those data structures: the \emph{half edge mesh}.
+While it is suitable for most applications due to its large set of capabilities, in many cases, not all of them are needed and a less capable but faster data structure could be used instead.
+A library offering multiple different data structures would need to abstract over them to avoid having to write all algorithms and utility procedures for each data structure separately.
+As the vast majority of existing libraries are written in \cpp, it can be conjectured that their reason for only offering one data structure is \cpp lacking the means to express this abstraction in a fast and convenient way.
+Specifically, abstraction via abstract classes with virtual methods incurs a non-tolerable runtime overhead and abstraction via \emph{\cpp templates} is unpleasant due to bad compiler error messages and the absence of a formal interface.
 
-#[derive(Banana)]
-const FOO: usize = 3;
-struct Foo<T>(T);
-enum Bar {}
-\end{rustcode}
+\vspace{1cm}
 
-And here some C++ code:
+As part of this thesis, the open-source geometry processing library \code{lox} was developed.
+It is dual-licensed as \hyperlink{mit}{MIT}/\hyperlink{apache2}{Apache-2.0} and written in the programming language Rust.
+One of the main reasons for choosing Rust is its \emph{trait} system which -- as a tool for abstraction -- promises to combine the speed of \cpp templates with the convenience of a checked and explicit interface.
+The main goal of this thesis is to release \code{lox} as a functional and well-design library that can easily be used by other programmers in many areas related to computer graphics and geometry processing.
 
-\begin{cppcode}
-int main() {
-printf("hello, world");
-return 0;
-}
-\end{cppcode}
+\begin{figure}[b]
+  \centering
+  TODO: lox logo here and/or maybe just some polygon mesh to have some eye candy
+  \caption{TODO}
+\end{figure}
 
-This is after the code.
+\newpage
 
-\section{Structure}
+Using the library \code{lox} and the experience from creating it, this thesis attempts to answer the following questions:
 
-\lipsum[1]
+\begin{itemize}
+  \item Is it possible to abstract over different mesh data structures with zero runtime overhead, i.\,e. without decreasing execution speed?
+  \item Is it possible to use Rust and its modern language features to express mesh algorithms in a more concise way, again, without decreasing execution speed?
+\end{itemize}
+
+% TODO: really two existing libraries?!
+To answer these questions, \code{lox} is compared against two existing \cpp libraries regarding execution speed and brevity of algorithm code.
+
+\vspace{1cm}
+
+% TODO: write out numbers?
+This paper starts by laying out some necessary background information.
+Chapter~2 explains terminology around polygon meshes, discusses why mesh data structures are needed and what makes it hard to design fast data structures (including some information about program performance on modern hardware).
+The chapter also lists and describes some existing data structures as well as existing geometry processing libraries.
+Chapter~3 introduces the programming language Rust and explains its core concepts with a focus on everything particularly relevant for this thesis.
+
+% TODO: fill in details
+Chapter~4 does X. Chapter~5 does Y. Chapter~6 does Z. The summary chapter summarizes.
+
+
+\vfill
+
+\textbf{Quick links}
+\begin{itemize}
+  \item Repository of the library \code{lox}: \url{https://github.com/LukasKalbertodt/lox}
+  \item Repository of this thesis, including all materials to reproduce the benchmarks in this paper: \url{https://github.com/LukasKalbertodt/master-thesis}
+\end{itemize}
+
+\vspace{2cm}
+
+
+% - In many fields of computer graphics, working with meshes is needed
+% - Different data structures have been developed
+%   - Have to be fast, small and offer certain information
+% - Existing libraries only use one, mostly HEM
+%   - But HEM is not always needed and not always fastest
+% - Why not hide data structures behind an interface?
+% - Conjecture: C++s tools for abstractions are not sufficient maybe
+%   - Virtual methods no because, templates no because
+%   - Rust combines good stuff -> zero cost abstractions
+% - library lox was developed (as part of this thesis)
+%   - in Rust, Open Source (MIT & Apache2)
+% - Goals of thesis:
+%   - Provide a good, usable library
+%   - Answer questions:
+%     - is it possible to abstract over different data structures with Rust's
+%       traits without loosing speed?
+%     - Are we able to make mesh algorithms shorter and easier to read by
+%       using Rust?
+% - To achieve/check goals:
+%   - lox is benchmarked against two C++ libraries (speed)
+%     - IO & algorithms
+%   - Example algorithms are compared in their length and readability
+% - Quick chapter overview
+% - Links to library and thesis repo

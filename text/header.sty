@@ -124,7 +124,8 @@
 \usepackage{enumitem}
 \setlist[itemize,1]{
     label={\raisebox{.6mm}{\footnotesize$\blacktriangleright$}},
-    leftmargin=7mm,
+    topsep=0mm,
+    leftmargin=6mm,
     itemsep=-1pt
 }
 \setlist[itemize,2]{
@@ -150,6 +151,8 @@
 \usepackage[style=alphabetic, date=iso, seconds=true, language=australian]{biblatex}
 \addbibresource{sources.bib}
 
+\nocite{mit}
+\nocite{apache2}
 \nocite{cc-by}
 \nocite{cc0}
 
