@@ -138,13 +138,62 @@ However, this approach has a tremendous memory overhead and it would be very slo
 
 \subsection{Performance Characteristics of Modern Hardware}
 
-% In the last few decades, one factor became increasingly important for the speed of programs dealing with a lot of data: CPU caches. Accessing the main memory (RAM) is relatively slow, taking around 100 CPU-cycles on modern systems.
+In order to create fast data structures, some knowledge of modern computer hardware is required.
+This sub-section gives a very coarse overview over some aspect of this topic.
+A lot of information throughout this section is taken from \cite{hennessy2017computer}, particularly from chapter~2 and appendix~B.
 
-% The latency of main memory (RAM) is fairly high compared to the CPU speed,
+For some decades now, the speed of processors improved more quickly than the memory speed.
+On current hardware, accessing the main memory takes approximately between 50\,ns and 100\,ns.
+As modern processors are clocked at approximately 3\,GHz, the memory access time equates to roughly 150 to 300 cycles.
+To avoid wasting a lot of time waiting for memory, different techniques are used, the most notably being: \emph{CPU caches}.
 
-% While the clock speed of CPUs grew continuously in that time, the latency of the main memory (RAM) did not improve nearly as fast. As such, memory accesses quickly became the bottleneck in many applications. In order to tackle this problems, CPU manufacturers introduced more and more caches directly into the CPU.
+The \emph{principle of locality} states that memory access patterns of programs tend to be fairly predictable.
+Temporal locality means that recently accessed data is often accessed again shortly afterwards;
+spatial locality means that consecutive memory accesses are usually accessing memory locations close to one another.
+This behavior is exploited by CPU caches -- processor-internal memory that is smaller but a lot faster than main memory.
+For each memory access, the processor checks whether the requested data is already present in one of the CPU caches.
+If that is the case (a \emph{cache hit}), that value can be used and the main memory does not need to be accessed.
+If the cache does not contain the requested data (a \emph{cache miss}), the value has to be loaded from main memory and is then stored in the cache.
+Most modern processors have multiple layers of caches; see \ref{tbl:caches} for typical sizes and access times of caches from different layers.
 
-% TODO: how to refer to elements? -> index
+\begin{table}[t]
+  \centering
+  \small
+  \sffamily
+  \begin{tabular}{llllll}
+  & \textbf{CPU registers} & \textbf{L1 cache} & \textbf{L2 cache} & \textbf{L3 cache} & \textbf{Main memory} \\\hline
+  \textbf{Size} & 1000\,bytes & 64\,KB & 256\,KB & 4--32\,MB & 4--64\,GB \\\hline
+  \textbf{Access time} & One cycle ($\approx$ 300\,ps) & 1\,ns & 3--10\,ns & 10--20\,ns & 50--100\,ns \\\hline
+  \end{tabular}
+  \caption{Typical sizes and access times of different kinds of memories on a desktop computer (data taken from \cite{hennessy2017computer}).}
+  \label{tbl:caches}
+\end{table}
+
+To use the spatial locality of programs, data is always loaded in \emph{cache lines}, blocks of memory typically 64 bytes long (on current x86 processors).
+That way, accessing multiple values in one cache line only requires accessing main memory at most once.
+Additionally, the \emph{prefetcher} is used to load new cache lines from main memory even before the program requests them (this is done by predicting what memory is likely to be accessed next).
+
+As a consequence of CPU caches, the execution time of a program can be increased (dramatically in many cases) by making it more \enquote{cache friendly}: making sure that memory access patterns are predictable and follow the principle of locality.
+For example, iterating over an array (which stores its elements contiguously in memory) is one of the most cache friendly things to do, while iterating over a linked list is the exact opposite.
+In the latter case, since each list node is usually allocated on its own, each element access is likely a cache miss.
+
+Traversing a polygon mesh is usually not particularly cache friendly.
+As polygon meshes represent 2D surfaces, but the memory address space has only one dimension, most adjacent mesh elements cannot be stored close to each other in memory.
+While perfect cache friendliness is impossible to achieve for polygon meshes, it is still important to make sure a data structure causes as few cache misses as possible.
+This has a few different consequences.
+
+In many programming languages, it seems natural to refer to mesh elements via pointers or references.
+This is problematic, however, since this approach requires a stable allocation for each element: the element cannot be moved in memory after the initial allocation.
+Unfortunately, all ways of achieving stable pointers (e.\,g. by using a linked lists) are inherently cache unfriendly.
+A faster alternative is to store all elements in a growing array and refer to them via an index into that array (pointers cannot be used since they are invalidated when the growing array has to reallocate).
+This can be less convenient but has the additional bonus that the indices can often be stored with only 32 bits, reducing the memory consumption of the data structure on 64-bit platforms.
+
+Furthermore, storing dynamic lists (a sequence of elements which length is not known at compile time) should be avoided.
+If at all, this sequence should be stored in a growing array and not a linked list.
+This would require storing the length of the sequence, causing memory overhead.
+But more importantly, the list data cannot be stored inline, requiring separate allocations and causing cache misses when accessing the data.
+%TODO: see figure X
+
 
 
 \subsection{Existing Mesh Data Structures}
