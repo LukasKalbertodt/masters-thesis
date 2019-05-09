@@ -1,0 +1,20 @@
+[mesh]
+source = "tiger.ply"
+
+[camera]
+fov = 50.0
+look_at = [0.47, 0.35, -0.15]
+eye = [-0.75, -0.95, 0.17]
+# 0.570384 -0.150454 -0.886937
+# up = [0, 1, 0]
+
+[style]
+vertex_size = 0
+vertex_stroke_width = 0
+vertex_fill_color = [0, 0, 0]
+edge_width = 0.5
+
+[light]
+enabled = true
+light_dir = [0.8, -1.2, -1.5]
+ambient_light = 0.4
