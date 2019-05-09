@@ -192,10 +192,8 @@ Furthermore, storing dynamic lists (a sequence of elements which length is not k
 If at all, this sequence should be stored in a growing array and not a linked list.
 This would require storing the length of the sequence, causing memory overhead.
 But more importantly, the list data cannot be stored inline, requiring separate allocations and causing cache misses when accessing the data.
-%TODO: see figure X
 
-
-
+\newpage
 \subsection{Existing Mesh Data Structures}
 
 Over the years, many data structures for meshes have been developed -- differing in capabilities, speed and memory efficiency.
@@ -209,7 +207,7 @@ The table also shows that face-based data structures are only efficient if the v
 
 \begin{table}[t]
   \centering
-  \renewcommand{\arraystretch}{1.2}
+  \renewcommand{\arraystretch}{1.1}
   \begin{tabular}{|l|c|c|c|}
     \hline
     & \adj{V}{\{V|E|F\}} & \adj{E}{\{V|F\}} & \adj{F}{\{V|E|F\}} \\[.8mm]\hline
@@ -222,17 +220,11 @@ The table also shows that face-based data structures are only efficient if the v
   \label{tab:max-neighbors}
 \end{table}
 
+Note that mesh properties, including vertex positions, are completely ignored in this subsection.
+Whether these properties should be stored externally or next to the adjacency information is discussed later.
+
+
 \subsubsection*{Shared Vertex Mesh}
-This face-based data structure, also called \emph{indexed face set}, is the simplest and arguably the most used one.
-It uses very little memory, but is quite restricted in its standard version:
-it can only store triangular faces and cannot provide any adjacency information apart from \adj{F}{V}.
-These limitations do not pose a problem for most real-time 3D applications, however, as \adj{F}{V} is sufficient for rendering and most graphic APIs (like Vulkan or OpenGL) only support triangle meshes anyway.
-For that reason, this data structure is used almost everywhere in real-time rendering.
-
-A shared vertex mesh only stores all adjacent vertices for all faces.
-Since this data structure is almost exclusively used for triangle meshes, the list of adjacent vertices can be stored inline, making it very cache-friendly and memory efficient.
-Edges are not stored at all and cannot be referred to. See figure~\ref{fig:sv-structure}.
-
 
 \begin{figure}[b]
   \centering
@@ -262,6 +254,16 @@ Edges are not stored at all and cannot be referred to. See figure~\ref{fig:sv-st
   \label{fig:sv-structure}
 \end{figure}
 
+This face-based data structure, also called \emph{indexed face set}, is the simplest and arguably the most used one.
+It uses very little memory, but is quite restricted in its standard version:
+it can only store triangular faces and cannot provide any adjacency information apart from \adj{F}{V}.
+These limitations do not pose a problem for most real-time 3D applications, however, as \adj{F}{V} is sufficient for rendering and most graphic APIs (like Vulkan or OpenGL) only support triangle meshes anyway.
+For that reason, this data structure is used almost everywhere in real-time rendering.
+
+A shared vertex mesh only stores the adjacent vertices for each face.
+Since this data structure is almost exclusively used for triangle meshes, the list of adjacent vertices can be stored inline, making it very cache-friendly and memory efficient.
+Edges are not stored at all and cannot be referred to. See figure~\ref{fig:sv-structure}.
+
 
 \subsubsection*{Half Edge Mesh}
 
@@ -274,7 +276,7 @@ Optionally, the previous half edge (around the adjacent face) is also stored, wh
 The \emph{twin} reference is typically not stored explicitly, but encoded implicitly by making sure twin half edges are always stored next to each other in memory.
 See figure~\ref{fig:hem-structure}.
 
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
   \begin{minipage}{.47\textwidth}
     \includesvg{hem}
@@ -305,9 +307,11 @@ See figure~\ref{fig:hem-structure}.
     \end{tabular}
   \end{minipage}
   \vspace{2mm}
-  \caption{Structure of a half edge mesh. A \codebox{?} in the table denotes a value that can be \emph{null}/\codebox{None}.}
+  \caption{Structure of a half edge mesh. A \codebox{?} in the table denotes a value that can be absent (\emph{null}/\codebox{None}).}
   \label{fig:hem-structure}
 \end{figure}
+
+
 
 
 \subsubsection*{Directed Edge Mesh}
@@ -330,7 +334,7 @@ Two other well known, edge-based data structures are the \emph{quad-edge mesh} \
 
 There are a variety of software libraries and frameworks for geometry processing, often with different features and capabilities.
 Most of them are open-source software.
-This section gives an incomplete overview over some of those libraries and frameworks.
+This section gives an incomplete overview over those libraries and frameworks.
 
 \begin{description}
   \item [OpenMesh] Developed at the RTWH Aachen, OpenMesh \cite{botsch2002openmesh,openmeshhomepage} is one of the most used polygon mesh library.
@@ -352,10 +356,8 @@ This section gives an incomplete overview over some of those libraries and frame
   \item [VCGlib] A \cpp library for manipulating, processing and displaying 3D meshes \cite{vcglibhomepage}.
   Most notably, it is used in the software MeshLab \cite{meshlabhomepage}.
   Its basic data structure is a shared vertex mesh which can be extended with additional adjacency information and supports many non-manifold features.
+
+  \item [Plexus] \enquote{Plexus is a Rust library for processing 2D and 3D meshes} \cite{plexus}.
+  As of May 2019, the library is still in its initial development phase offering no API stability guarantees yet.
+  It also uses a half edge mesh to store adjacency information.
 \end{description}
-
-As can be seen here, the half edge data structure is used in most libraries.
-Since each library offers only one main mesh data structure, choosing the half edge mesh makes sense, as it does offer the most features and has shown to be faster than other data structures with the same feature set.
-But more important than this is the fact, that all libraries only offer \emph{one} main data structure.
-
-TODO: Are there Rust libraries already?
