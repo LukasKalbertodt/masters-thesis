@@ -24,7 +24,7 @@ It is important to note that polygon meshes can only exactly represent polyhedro
 \end{figure}
 
 There are two special forms of the polygon mesh of high practical relevance.
-A \emph{triangle mesh} is a polygon mesh where each face is triangular and a \emph{quad mesh}, all faces are quadrilaterals.
+A \emph{triangle mesh} is a polygon mesh where each face is triangular and in a \emph{quad mesh}, all faces are quadrilaterals.
 Restricting the faces like that often makes algorithms operating on that mesh a lot simpler (and thus potentially faster).
 In particular, since triangles are the simplest polygon (a 2-simplex, in fact), many operations on triangle meshes are a lot faster than on a general polygon mesh.
 
@@ -47,13 +47,13 @@ The following list explains a few common terms related to meshes or geometry pro
   \item [\emph{Boundary}] Meshes can have boundaries: edges with only one incident face.
   A mesh without boundaries is \textbf{\emph{closed}} (also called \textbf{\emph{watertight}}).
   A \emph{boundary edge} is an edge with exactly one adjacent face; a \emph{boundary vertex/face} is a vertex/face adjacent to at least one boundary edge.
-  \item [\emph{Manifold}] A surface is \emph{2-manifold} if it locally resembles (is homeomorphic to) a Euclidean plane near each point.
+  \item [\emph{Manifold}] A surface is \emph{2-manifold} if it locally resembles (is homeomorphic to) the Euclidean plane near each point.
   In simpler terms: the neighborhood (an infinitesimal sphere) around each point is continuously deformable into a 2D disc (or a half-disc for boundary points).
-  The manifold-property trivially holds for all points inside of a face, but there can be non-manifold edges or vertices (cf. figure~\ref{fig:non-manifold}).
+  The manifold-property trivially holds for all points inside of a face, but a mesh can contain non-manifold edges or vertices (cf. figure~\ref{fig:non-manifold}).
   A manifold edge has $\le 2$ incident faces.
   A manifold vertex can be removed without disconnecting its adjacent faces (often described as: it is only adjacent to one fan of triangles).
   A mesh is called manifold if does not contain any non-manifold edges nor non-manifold vertices.
-  \item [\emph{Normal}] A normal of a point on a surface is the vector perpendicular to that surface.
+  \item [\emph{Normal}] A surface normal of a point on a surface is the vector perpendicular to that surface at that point.
   \item [\emph{Orientable}] A mesh is orientable if it is possible to consistently assign a surface normal to every point on its surface.
   A famous example for a non-orientable mesh is the \emph{Möbius strip} (see figure~\ref{fig:moebius}).
 \end{description}
@@ -62,7 +62,7 @@ The following list explains a few common terms related to meshes or geometry pro
   \centering
   \includesvg[.7\textwidth]{moebius}
   \caption{The Möbius strip: a non-orientable mesh.
-    On the right, standard lighting was used to shade the mesh.
+    On the right, directional lighting was used to shade the mesh.
     Since normals, which are crucial for lighting, cannot be chosen consistently, an artifact is visible where opposing normals met.}
   \label{fig:moebius}
 \end{figure}
@@ -73,9 +73,6 @@ In this thesis, all meshes are assumed to satisfy these properties as well.
 
 
 \section{Mesh Data Structures}
-% - requirements of data structures (adj info)
-% - what makes DS slow/fast? Caches, ...
-% - list and short explanation of different data structures
 
 In order to represent polygon meshes in a computer, some kind of data structure is needed.
 We can distinguish two types of data we need to store: the connectivity information and additional \emph{mesh properties}.
@@ -119,14 +116,14 @@ Generally, an algorithm might request all the neighbors of any mesh element. The
   \begin{minipage}{.42\textwidth}
     \footnotesize
     \begin{description}
-      \item [\textcolor{flat-green-dark}{Green}] \emph{Real} neighbors; already provides all neighborhood information.
-      \item [\textcolor{flat-blue-dark}{Blue}] Not \emph{real} neighbors; but very common query.
+      \item [\textcolor{flat-green-dark}{Green}] \emph{Real} neighbors. Are \enquote{complete}: all other information can be derived from these neighbors.
+      \item [\textcolor{flat-blue-dark}{Blue}] Not \emph{real} neighbors, but very common queries in practice.
       \item [\textcolor{flat-red-dark}{Red}] Not \emph{real} neighbors; rarely used.
     \end{description}
   \end{minipage}
 \end{center}
 
-Algorithms often need slightly different kind of information (like \enquote{are these two elements adjacent?}, \enquote{what is the valence of this vertex?}, or \enquote{is this face a boundary face?}), but all of these questions can be answered through the basic neighborhood queries shown above.
+Algorithms often need slightly different kinds of information (like \enquote{are these two elements adjacent?}, \enquote{what is the valence of this vertex?}, or \enquote{is this face a boundary face?}), but all of these questions can be answered through the basic neighborhood queries shown above.
 
 \vspace{1cm}
 
