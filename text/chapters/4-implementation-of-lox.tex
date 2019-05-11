@@ -1,3 +1,15 @@
-\chapter{Implementation of lox}
+\chapter{Implementation of \enquote{lox}}
 
-\lipsum[1]
+This chapter discusses the major design decisions and notable implementation details behind the library \code{lox}.
+
+As an aside:
+the term \enquote{lox} is often used as an abbreviation for \emph{\textbf{l}iquid \textbf{ox}ygen}, a pale-blue liquid usually obtained by cooling elemental oxygen below its boiling point of 90.188\,K.
+This substance is used in many areas, playing a particularly important role in the aerospace industry where it is commonly used as a cryogenic oxidizer in rockets.
+Since rust (as a chemical compound\footnote{The programming language \emph{Rust} is not even named after the chemical compound, but after the \enquote{Rust} family of fungi. Source: \url{https://www.reddit.com/r/rust/comments/27jvdt/}}) is a product of an oxidation reaction and rockets are usually very fast, using \enquote{lox} as name for this library seemed fitting.
+However, the name was mainly chosen because it is short and pronounceable.
+
+% TODO: lox logo?
+
+\vspace{1cm}
+
+\section{Basic Memory Layout Considerations}
