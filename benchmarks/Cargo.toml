@@ -1,0 +1,14 @@
+[package]
+name = "lox-benchmarks"
+version = "0.0.0"
+authors = ["Lukas Kalbertodt <lukas.kalbertodt@gmail.com>"]
+edition = "2018"
+
+[dev-dependencies]
+criterion = { version = "0.2", features = ["real_blackbox"] }
+rand = "0.6"
+
+[[bench]]
+name = "memory-layout"
+path = "memory-layout/main.rs"
+harness = false
