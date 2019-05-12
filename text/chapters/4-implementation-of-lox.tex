@@ -2,6 +2,14 @@
 
 This chapter discusses the major design decisions and notable implementation details behind the library \code{lox}.
 
+% TODO: one crate, many Cargo features
+The library mainly consists of a single crate (one compilation unit) which is very common for small to medium-sized Rust libraries.
+As \code{lox} contains a variety of features, it is likely that some users do not need all of them.
+To avoid compiling parts of the library that are unused, \code{lox} uses \emph{Cargo features} to let the user disable those parts individually.
+For example, if a user does not read from or write to files, the IO module can be disabled completely and thus will not be compiled.
+% TODO: add some feature gates
+
+% TODO: maybe put this in a box or make it stand out a bit?
 As an aside:
 the term \enquote{lox} is often used as an abbreviation for \emph{\textbf{l}iquid \textbf{ox}ygen}, a pale-blue liquid usually obtained by cooling elemental oxygen below its boiling point of 90.188\,K.
 This substance is used in many areas, playing a particularly important role in the aerospace industry where it is commonly used as a cryogenic oxidizer in rockets.
@@ -13,3 +21,99 @@ However, the name was mainly chosen because it is short and pronounceable.
 \vspace{1cm}
 
 \section{Basic Memory Layout Considerations}
+
+\subsubsection*{Element Reference}
+
+In many situations, it is necessary to refer to a specific element in the mesh (for example, to delete a specific face or to query the neighbors of a specific vertex).
+There are mainly two ways to realize an \emph{element reference}: pointers or IDs/indices.
+As discussed in chapter~2, it is desirable to use growing arrays to store mesh data, making pointers impossible (or at least very difficult) to use as element references.
+As a consequence, \code{lox} uses the index of an element in its array to refer to that element.
+(Also refer to \cite{sieger2011design} for a discussion about array vs. linked lists and indices vs. pointers.)
+
+Using simple integers as element references in the library's API is not a good idea, however, since it is very easy to use an integer referring to one element kind (e.\,g. a vertex) in a context where a reference to another element kind (e.\,g. a face) is expected.
+To avoid this confusion, multiple distinct types are introduced: \code{VertexHandle}, \code{EdgeHandle} and \code{FaceHandle}.
+All of those types consist of a single integer field (called the \emph{handle ID}), making them behave exactly like an integer on machine level -- thus having no runtime overhead.
+If one is used in the place of another, a compiler \enquote{type mismatch} error is printed, pointing out the bug immediately.
+Additionally, a \code{Handle} trait is defined to abstract over all handle types.
+
+Another benefit of dedicated handle types is that the internal integer type can be changed easily (without changing it across the whole codebase).
+The default integer type in \code{lox} is a \code{u32} which is sufficient for most meshes in practice.
+However, large meshes with more than $2^{32}$ elements require a wider integer type.
+With the already mentioned Cargo features, it is possible to configure \code{lox} to used \code{u64} integers in handles, which is sufficient for all meshes in the foreseeable future.
+% TODO: actually implement this
+
+
+\subsubsection*{Deleting Elements in an Array}
+
+TODO
+
+\subsubsection*{Property Maps}
+
+As mentioned in chapter 2, it is often necessary to associated arbitrary data with specific mesh elements.
+This data is called \enquote{property} in this thesis; vertex normals are a \enquote{vertex property}, for example.
+While some properties live as long as the mesh itself (e.\,g. vertex positions or face colors),  others are temporary values that only live for the duration of one algorithm (e.\,g. a boolean \code{visited} flag).
+These temporary properties should not be kept in memory longer than necessary, meaning that they cannot be stored with the elements directly.
+Instead, \code{lox} uses external maps (mapping from element to property), called \emph{property maps}.
+
+These maps can be implemented in a variety of ways, including:
+
+\begin{itemize}
+\item A growing array using the handle ID as index (this works because it is already used as an array index in the main mesh).
+\item A hash map using the handle ID as key.
+\item A list of \code{(handle, value)} pairs.
+\end{itemize}
+
+In most situations, the growing array is the best choice as accessing values has virtually no overhead (apart from effects due to caching).
+However, in a few situations it is necessary to associated values with only a couple of elements.
+Using a growing array for that purpose is not a good idea, since the length of the array does not depend on the number of values but on the highest handle ID.
+So on average, a growing array would waste a lot of memory, making other implementations a viable choice.
+
+Just like with the mesh data structure, it does not make sense to decide on one specific implementation of external maps.
+Instead, all implementations are offered by \code{lox} and abstracted over via traits.
+That way, the most fitting implementation can be chosen in every situation.
+The corresponding types are currently called \code{VecMap} (growable array), \code{HashMap} and \code{TinyMap} (list of tuples).
+The abstraction is realized with three traits to make it as flexible as possible:
+
+\begin{description}
+  \item [\codebox{PropMap}] This trait only requires a single method to be implemented.
+  Its signature is \code{fn get(&self, handle: H) -> Option<Value>} where \code{H} is the handle type parameter (this is a simplified version of the actual signature, which is explained in chapter~6).
+  Returning \code{None} means that no value is associated with the given handle/element.
+  This trait represents a simple map from handle to optional value.
+  \item [\codebox{PropStore}] Like \code{PropMap} but can additionally iterate over all handles and values.
+  \item [\codebox{PropStoreMut}] Like \code{PropStore} but can additionally change, insert and remove values.
+\end{description}
+
+The three data structures mentioned above (growing array, hash map, list of pairs) implement all three traits.
+The reason for using three traits instead of a single one was to allow for more exotic type to be used.
+The following types are provided by \code{lox} and implement \code{PropMap}, but not the other traits:
+
+\begin{itemize}
+\item \code{EmptyMap}: contains no properties, always returns \code{None}.
+\item \code{ConstMap}: stores a single value and returns that value for all elements/handles.
+\item \code{FnMap}: stores a function object with the signature \code{(&self, H) -> Option<Value>} which is used to implement \code{PropMap}.
+\end{itemize}
+
+While these types might not seem particularly useful at first, they are immensely handy in some situations.
+Of course, they can be replaced by simply preparing a growable array or hash map with the desired values.
+This, however, costs memory and extra time.
+Specifically, \code{FnMap} is very useful to generate properties without using memory.
+
+As a motivating example, consider an algorithm that produces a float value for each face, thus returning \code{VecMap<FaceHandle, f32>}.
+This float value needs to be visualized via colors, for example by simply mapping the float value to gray-scale colors.
+With \code{FnMap} a face~$\rightarrow$~color mapping can be created easily without allocating any memory:
+
+\begin{center}
+  \begin{minipage}{.59\textwidth}
+    \begin{rustcode}
+      let face_values = algorithm(&mesh);
+      let face_colors = FnMap(|fh| {
+          face_values.get(fh).map(to_color)
+      });
+    \end{rustcode}
+  \end{minipage}
+\end{center}
+
+
+\subsubsection*{\enquote{Array of Structs} vs. \enquote{Struct of Arrays}}
+
+TODO
