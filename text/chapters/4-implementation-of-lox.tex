@@ -150,7 +150,36 @@ With \code{FnMap} a face~$\rightarrow$~color mapping can be created easily witho
 
 \subsubsection*{\enquote{Array of Structs} vs. \enquote{Struct of Arrays}}
 
-TODO
+Having property maps to store mesh properties externally brings up an interesting consideration: is it faster to use one property map per property kind or to use as few different maps as possible (e.\,g. by clustering different property kinds).
+This problem is very similar to the \enquote{Array of Structs} (\emph{AoS}) vs. \enquote{Struct of Arrays} (\emph{SoA}) choice.
+The two different layout strategies are visualized in figure X (TODO).
+
+Both layouts use almost the same amount of memory and do not differ in capabilities.
+The only difference is in how they interact with CPU caches.
+To find an answer to what strategy should be preferred, a number of different benchmarks were conducted.
+
+
+In these benchmarks, many items with a few random \code{u32} fields were stored in either one of the two memory layouts.
+The time required to sum up all or some of these values was measured to get an idea of the respective speeds.
+The different benchmarks attempted to cover the following parameter space:
+
+\begin{itemize}
+  \item \textbf{Memory layout}: AOS or SOA.
+  \item \textbf{Traversal kind}: random or sequential.
+  In the sequential benchmarks, a loop simply iterates sequentially over all indices starting from 0.
+  The random benchmarks used the first field's \code{u32} value as next index to jump to.
+  This was done to not include the generation of random numbers in the measured time.
+  Notably, these \code{u32} values were already generated to be valid indices (i.\,e. smaller than the total number of items) and thus, the timed code does not need to perform any additional work on these values.
+  \item \textbf{Total number of items}: values 10,000, 100,000, 1,000,000 and 10,000,000 were tested.
+  \item \textbf{Number of [used] fields per item}: 1:1, 2:1, 2:2, 4:1, 4:2, 4:4, 6:1, 6:3 and 6:6 were tested.
+  The syntax X:Y means that each item has X many fields and Y many fields were included in the sum, the other fields were ignored.
+\end{itemize}
+
+The benchmark code and more details on the benchmark can be found in the repository of this thesis in the folder \code{benchmarks/memory-layout/}.
+The benchmark uses the framework \emph{Criterion} \cite{criterion} which features a sophisticated statistical analysis of the raw measurements.
+The actual measurement was performed on a completely idle \textsf{Thinkpad T-460p} with an \textsf{Intel i7-6700\,HQ} running \textsf{Ubuntu 18.04} and ran for approximately three hours.
+
+%TODO: add and discuss results
 
 \section{Data Structures and Mesh Traits}
 
