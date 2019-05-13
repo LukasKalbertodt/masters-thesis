@@ -25,6 +25,7 @@
         - Casts
         - Custom Derives
     - Optimizations
+    - summary of what the library offers
 
 - Evaluation: comparison with OM
     - Benchmarks of algorithms + IO
