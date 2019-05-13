@@ -54,13 +54,23 @@ Solution (a) has a complexity of $\mathcal O(n)$ for per remove-operation, makin
 However, the real problem is that shifting elements invalidates their indices which are used as element reference.
 As a consequence, solution (b) has to be used.
 
+A problem of this approach is that elements are not actually deleted but linger in memory, potentially until the whole data structure is freed.
+To avoid wasting a lot of memory, programmers should avoid repeatedly adding and removing a large number of elements.
+Additionally, the mesh data structure can offer the programmer a way to trigger an internal garbage collection which actually removes deleted elements by reordering the elements in the array.
+
 There are different ways to implement the \code{deleted} flag.
 The easiest and most obvious solution in Rust would be to use \code{Vec<Option<T>>} instead of \code{Vec<T>}.
 In practice, storing many \code{Option<T>} instances is only a good idea if \code{Option<T>} can use \emph{null value optimization}.
 This is usually not the case in the context of mesh data structures, meaning that \code{Option<T>} is notably larger than \code{T}.
 (Specifically, it is \code{align_of::<T>()} larger, which for structs storing \code{u32} indices is usually 4 bytes.)
 
-% TODO: Maybe show different ways to store deleted flags
+\begin{figure}[ht]
+  \vspace{5mm}
+  \centering
+  \includegraphics[width=.9\textwidth]{svg2pdf/stable-vec}
+  \caption{Different ways to delete an element from a growable array: shifting elements (left), storing a \codebox{deleted} flag as a separate bit-vector (center) and storing a \codebox{deleted} flag next to the elements (right).}
+  \vspace{5mm}
+\end{figure}
 
 A popular alternative way to store \code{deleted} flags is using a bit-vector, a densely packed array of bits (storing 8 bits per byte).
 It has the disadvantage of requiring a separate allocation which slightly increases the reallocation cost and could potentially double the number of cache misses per element access.
