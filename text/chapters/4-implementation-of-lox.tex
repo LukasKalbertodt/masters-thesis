@@ -43,9 +43,42 @@ With the already mentioned Cargo features, it is possible to configure \code{lox
 % TODO: actually implement this
 
 
-\subsubsection*{Deleting Elements in an Array}
+\subsubsection*{Deleting Elements in a Growable Array}
 
-TODO
+A simple growing array cannot replace a linked list in all situations, since the latter allows to remove elements anywhere in the list in $\mathcal O(1)$ whereas the former only supports removing elements from the end.
+Being able to remove arbitrary elements from a mesh required in many situations, so mesh data structures are expected to support it.
+
+There are two possibilities to remove an element at any position inside an array: (a) shift all elements right of the deleted elements one to the left, and (b) store a \code{deleted} flag for each element which is set to \code{true} once an element is deleted.
+Solution (a) has a complexity of $\mathcal O(n)$ for per remove-operation, making it too slow for most applications.
+However, the real problem is that shifting elements invalidates their indices which are used as element reference.
+As a consequence, solution (b) has to be used.
+
+There are different ways to implement the \code{deleted} flag.
+The easiest and most obvious solution in Rust would be to use \code{Vec<Option<T>>} instead of \code{Vec<T>}.
+In practice, storing many \code{Option<T>} instances is only a good idea if \code{Option<T>} can use \emph{null value optimization}.
+This is usually not the case in the context of mesh data structures, meaning that \code{Option<T>} is notably larger than \code{T}.
+(Specifically, it is \code{align_of::<T>()} larger, which for structs storing \code{u32} indices is usually 4 bytes.)
+
+% TODO: Maybe show different ways to store deleted flags
+
+A popular alternative way to store \code{deleted} flags is using a bit-vector, a densely packed array of bits (storing 8 bits per byte).
+It has the disadvantage of requiring a separate allocation which slightly increases the reallocation cost and could potentially double the number of cache misses per element access.
+However, this is usually out-weight by the benefits:
+the dense packing means that no memory is wasted and that many of these flags fit into the cache at once (for example, a standard-sized L1 cache with 256~KB of storage can fit over 2~million bits, a 64~byte cache line can fit 512 bits).
+
+It is also possible to use special \emph{sentinel values} to represent a deleted element (this is the general case of null-value optimization, where the sentinel value is 0) or to interleave the bits with the actual values in blocks to avoid an additional allocation.
+A proper analysis of these different storage methods would be appropriate, but was outside the scope of this thesis.
+In a quick comparison of the \code{Vec<Option<T>>} and bit-vector versions, no large difference in performance was found.
+As a consequence and for memory efficiency, the bit-vector implementation was chosen for \code{lox}.
+This choice is not final, however, and the implementation could easily be replaced by another one.
+
+The logic for growable arrays that allow deletions is implemented completely independently of \code{lox} in a library called \code{stable-vec}\footnote{\url{https://crates.io/crates/stable-vec}}.
+This library is technically also not part of this thesis.
+
+
+
+
+
 
 \subsubsection*{Property Maps}
 
