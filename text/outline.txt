@@ -33,6 +33,8 @@
 
 - Comparison Rust & C++
     - Missing in Rust: GATs & Specialization
+    - Const generics: face kind
+    -
     - Problematic: Aliasing XOR mutability
     - Advantages apart from traits
     - Roadmap 2019

@@ -180,18 +180,44 @@ The different benchmarks attempted to cover the following parameter space:
   The random benchmarks used the first field's \code{u32} value as next index to jump to.
   This was done to not include the generation of random numbers in the measured time.
   Notably, these \code{u32} values were already generated to be valid indices (i.\,e. smaller than the total number of items) and thus, the timed code does not need to perform any additional work on these values.
-  \item \textbf{Total number of items}: values 10,000, 100,000, 1,000,000 and 10,000,000 were tested.
+  \item \textbf{Total number of items}: all benchmarks were performed with 10,000, 100,000, 1,000,000 and 10,000,000 items.
   \item \textbf{Number of [used] fields per item}: 1:1, 2:1, 2:2, 4:1, 4:2, 4:4, 6:1, 6:3 and 6:6 were tested.
   The syntax X:Y means that each item has X many fields and Y many fields were included in the sum, the other fields were ignored.
 \end{itemize}
 
 The benchmark code and more details on the benchmark can be found in the repository of this thesis in the folder \code{benchmarks/memory-layout/}.
 The benchmark uses the framework \emph{Criterion} \cite{criterion} which features a sophisticated statistical analysis of the raw measurements.
-The actual measurement was performed on a completely idle \textsf{Thinkpad T-460p} with an \textsf{Intel i7-6700\,HQ} running \textsf{Ubuntu 18.04} and ran for approximately three hours.
+The actual measurement was performed on a completely idle \textsf{Thinkpad T-460p} (with an \textsf{Intel i7-6700\,HQ} running \textsf{Ubuntu 18.04}) and ran for approximately three hours.
 
 %TODO: add and discuss results
 
 \section{Data Structures and Mesh Traits}
+
+One of the main challenges in creating this library was to find a suitable set of traits that would serve as a reasonable abstraction.
+A single trait is not sufficient because not all data structures offer the same set of capabilities.
+On the other hand, having one trait for each individual feature of data structures (i.\,e. for each neighborhood information, each mutating operation, \dots) would result in a very large number of traits, making the library's API much harder to understand and more difficult to work with.
+Finding a good solution in between those extremes is crucial for the usefulness of the abstraction.
+
+As a first step, it is important to define what entities should be abstracted over.
+As mentioned, the main goal is to be able to easily switch between different mesh data structures, which are provided by \code{lox} itself.
+But users of this library can implement the traits for their own data structures, allowing them to use many features (like mesh algorithms or IO) without \code{lox} even knowing about those types.
+This is useful for highly specialized or non-mesh data structures (e.\,g. graphs).
+
+\begin{figure}[th]
+  \centering
+  \includegraphics[width=.98\textwidth]{svg2pdf/mesh-traits}
+  \caption{
+    Traits currently used in \codebox{lox} to abstract over meshes.
+    The arrows represents \emph{super trait bounds}, i.\,e. \codebox{Mesh} is a super trait of \codebox{MeshMut}.
+    Green boxes contain traits that deal with adjacency information, red boxes contain traits that deal with mutating a mesh.
+  }
+  \label{fig:mesh-traits}
+\end{figure}
+
+The current solution can be seen in figure~\ref{fig:mesh-traits}.
+This, however, is not fixed at all and will likely change in the future by going through a few more design iterations.
+
+
 
 
 \section{Input/Output Module}
