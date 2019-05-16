@@ -223,10 +223,12 @@ The table also shows that face-based data structures are only efficient if the v
 Note that mesh properties, including vertex positions, are completely ignored in this subsection.
 Whether these properties should be stored externally or next to the adjacency information is discussed later.
 
+\newlength{\braceWidth}%
+\newlength{\demColWidth}%
 
 \subsubsection*{Shared Vertex Mesh}
 
-\begin{figure}[b]
+\begin{figure}[h]
   \centering
   \begin{minipage}{.35\textwidth}
     \includesvg{shared-vertex}
@@ -249,6 +251,38 @@ Whether these properties should be stored externally or next to the adjacency in
     \end{tabular}
 
   \end{minipage}
+
+  \vspace{7mm}
+
+  \setlength{\demColWidth}{7mm}
+  \setlength{\dashlinedash}{.4mm}
+  \setlength{\dashlinegap}{.4mm}
+  \setlength{\tabcolsep}{0.2mm}
+
+  \renewcommand{\arraystretch}{1.2}
+  Faces: \hspace{5mm}
+  \makebox[0pt][l]{%
+    \raisebox{-1.7ex}{%
+      \setlength{\braceWidth}{3\demColWidth}%
+      \addtolength{\braceWidth}{2\tabcolsep}%
+      \Large %
+      \hspace{.5mm}%
+      $\underbrace{\hspace{\braceWidth}}_{F_0}$%
+      \hspace{1.7mm}%
+      $\underbrace{\hspace{\braceWidth}}_{F_1}$%
+    }%
+  }%
+  \begin{tabular}{|%
+    C{\demColWidth}:C{\demColWidth}:C{\demColWidth}|%
+    C{\demColWidth}:C{\demColWidth}:C{\demColWidth}|%
+    C{\demColWidth}|%
+  }\hline
+    $v^0_0$ & $v^1_0$ & $v^2_0$ &
+    $v^0_1$ & $v^1_1$ & $v^2_1$ &
+    \dots \\\hline
+  \end{tabular}
+  \renewcommand{\arraystretch}{1.0}
+
   \vspace{2mm}
   \caption{Structure of a shared vertex mesh.}
   \label{fig:sv-structure}
@@ -306,8 +340,58 @@ See figure~\ref{fig:hem-structure}.
       \code{twin: HalfEdge} (stored implicitly)\\\hline
     \end{tabular}
   \end{minipage}
+
+  \vspace{5mm}
+
+  \setlength{\demColWidth}{7mm}
+
+  \setlength{\dashlinedash}{.4mm}
+  \setlength{\dashlinegap}{.4mm}
+  \setlength{\tabcolsep}{0.2mm}
+
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{ll}
+  Vertices: &
+  \begin{tabular}{|C{\demColWidth}|C{\demColWidth}|C{\demColWidth}|C{\demColWidth}|C{\demColWidth}|}\hline
+    $e^\text{out}_0$ & $e^\text{out}_1$ & $e^\text{out}_2$ & $e^\text{out}_3$ & \dots \\\hline
+  \end{tabular} \\[3mm]
+  Faces: &
+  \begin{tabular}{|C{\demColWidth}|C{\demColWidth}|C{\demColWidth}|C{\demColWidth}|C{\demColWidth}|}\hline
+    $e_0$ & $e_1$ & $e_2$ & $e_3$ & \dots \\\hline
+  \end{tabular} \\[3mm]
+  Half edges: \hspace{5mm} &
+  \makebox[0pt][l]{%
+    \raisebox{-1.7ex}{%
+      \setlength{\braceWidth}{3\demColWidth}%
+      \addtolength{\braceWidth}{3\tabcolsep}%
+      \Large %
+      \hspace{.5mm}%
+      $\underbrace{\hspace{\braceWidth}}_{F_0}$%
+      \hspace{1.1mm}%
+      $\underbrace{\hspace{\braceWidth}}_{F_1}$%
+      \hspace{1.1mm}%
+      $\underbrace{\hspace{\braceWidth}}_{F_2}$%
+    }%
+  }%
+  \begin{tabular}{|%
+    C{\demColWidth}:C{\demColWidth}:C{\demColWidth}|%
+    C{\demColWidth}:C{\demColWidth}:C{\demColWidth}|%
+    C{\demColWidth}:C{\demColWidth}:C{\demColWidth}|%
+    C{\demColWidth}|%
+  }\hline
+    $v^t_0$ & $f_0$ & $e^n_1$ &
+    $v^t_1$ & $f_1$ & $e^n_1$ &
+    $v^t_2$ & $f_2$ & $e^n_2$ &
+    \dots \\\hline
+  \end{tabular}\\
+  \end{tabular}
+  \renewcommand{\arraystretch}{1.0}
+
   \vspace{2mm}
-  \caption{Structure of a half edge mesh. A \codebox{?} in the table denotes a value that can be absent (\emph{null}/\codebox{None}).}
+  \caption{
+    Structure of a half edge mesh.
+    A \codebox{?} in the table denotes a value that can be absent (\emph{null}/\codebox{None}).
+  }
   \label{fig:hem-structure}
 \end{figure}
 
@@ -317,6 +401,110 @@ See figure~\ref{fig:hem-structure}.
 \subsubsection*{Directed Edge Mesh}
 
 Todo.
+
+\begin{figure}[h]
+  \centering
+  \begin{minipage}{.47\textwidth}
+    \includesvg{dem}
+  \end{minipage}
+  \begin{minipage}{.4\textwidth}
+    \small
+    \begin{tabular}{|p{\textwidth}|}\hline
+      \textbf{Data per \emph{face}} \\\hline
+      \emph{nothing}\\\hline
+    \end{tabular}
+
+    \vspace{3mm}
+
+    \begin{tabular}{|p{\textwidth}|}\hline
+      \textbf{Data per \emph{vertex}} \\\hline
+      \code{outgoing: HalfEdge?}\\\hline
+    \end{tabular}
+
+    \vspace{3mm}
+
+    \begin{tabular}{|p{\textwidth}|}\hline
+      \textbf{Data per \emph{half edge}} \\\hline
+      \code{target: Vertex}\\\hline
+      \code{twin: HalfEdge}\\\hline
+      \code{next: HalfEdge} (optional/implicit)\\\hline
+      \code{prev: HalfEdge} (optional/implicit)\\\hline
+    \end{tabular}
+  \end{minipage}
+
+  \vspace{5mm}
+
+  \setlength{\demColWidth}{7mm}
+
+  \setlength{\dashlinedash}{.4mm}
+  \setlength{\dashlinegap}{.4mm}
+  \setlength{\tabcolsep}{0.2mm}
+
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{ll}
+  Vertices: &
+  \begin{tabular}{|C{\demColWidth}|C{\demColWidth}|C{\demColWidth}|C{\demColWidth}|C{\demColWidth}|}\hline
+    $e^\text{out}_0$ & $e^\text{out}_1$ & $e^\text{out}_2$ & $e^\text{out}_3$ & \dots \\\hline
+  \end{tabular} \\[4mm]
+  Half edges: \hspace{5mm} &
+  \makebox[0pt][l]{%
+    \raisebox{-1.7ex}{%
+      \setlength{\braceWidth}{6\demColWidth}%
+      \addtolength{\braceWidth}{12\tabcolsep}%
+      \Large %
+      \hspace{.5mm}%
+      $\underbrace{\hspace{\braceWidth}}_{F_0}$%
+      \hspace{1.7mm}%
+      $\underbrace{\hspace{\braceWidth}}_{F_1}$%
+    }%
+  }%
+  \makebox[0pt][l]{%
+    \raisebox{2.5ex}{%
+      \setlength{\braceWidth}{2\demColWidth}%
+      \addtolength{\braceWidth}{2\tabcolsep}%
+      \Large %
+      \hspace{.4mm}%
+      $\overbrace{\hspace{\braceWidth}}^{\text{HE}_0}$%
+      \hspace{.75mm}%
+      $\overbrace{\hspace{\braceWidth}}^{\text{HE}_1}$%
+      \hspace{.75mm}%
+      $\overbrace{\hspace{\braceWidth}}^{\text{HE}_2}$%
+      \hspace{1.4mm}%
+      $\overbrace{\hspace{\braceWidth}}^{\text{HE}_3}$%
+      \hspace{.75mm}%
+      $\overbrace{\hspace{\braceWidth}}^{\text{HE}_4}$%
+      \hspace{.75mm}%
+      $\overbrace{\hspace{\braceWidth}}^{\text{HE}_5}$%
+    }%
+  }%
+  \begin{tabular}{|%
+    C{\demColWidth}:C{\demColWidth}|%
+    C{\demColWidth}:C{\demColWidth}|%
+    C{\demColWidth}:C{\demColWidth}||%
+    C{\demColWidth}:C{\demColWidth}|%
+    C{\demColWidth}:C{\demColWidth}|%
+    C{\demColWidth}:C{\demColWidth}||%
+    C{\demColWidth}|%
+  }\hline
+    $v^\text{ta}_0$ & $e^\text{tw}_0$ &
+    $v^\text{ta}_1$ & $e^\text{tw}_1$ &
+    $v^\text{ta}_2$ & $e^\text{tw}_2$ &
+    $v^\text{ta}_3$ & $e^\text{tw}_3$ &
+    $v^\text{ta}_4$ & $e^\text{tw}_4$ &
+    $v^\text{ta}_5$ & $e^\text{tw}_5$ &
+    \dots \\\hline
+  \end{tabular}\\
+  \end{tabular}
+  \renewcommand{\arraystretch}{1.0}
+
+  \vspace{2mm}
+
+  \caption{
+    Structure of a directed edge mesh.
+    A \codebox{?} in the table denotes a value that can be absent (\emph{null}/\codebox{None}).
+  }
+  \label{fig:dem-structure}
+\end{figure}
 
 \subsubsection*{Other data structures}
 

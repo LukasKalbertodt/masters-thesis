@@ -147,6 +147,11 @@
 \usepackage{lipsum}
 \usepackage{csquotes}
 
+% Tables and stuff
+\usepackage{array}
+\usepackage{arydshln}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
 % Citations
 \usepackage[style=alphabetic, date=iso, seconds=true, language=australian]{biblatex}
 \addbibresource{sources.bib}
