@@ -17,7 +17,7 @@ Interestingly, most existing geometry processing libraries offer only one partic
 While the half edge mesh is suitable for most applications due to its large set of capabilities, in many cases, not all of them are needed and a less capable but faster data structure could be used instead.
 A library offering multiple different data structures would need to abstract over them to avoid having to write all algorithms and utility procedures for each data structure separately.
 As the vast majority of existing libraries are written in \cpp, it can be conjectured that their reason for only offering one data structure is \cpp lacking the means to express this abstraction in a fast and convenient way.
-Specifically, abstraction via abstract classes with virtual methods incurs a runtime overhead and abstraction via \emph{\cpp templates} is unpleasant due to bad compiler error messages and the absence of a formal interface.
+Specifically, abstraction via abstract classes with virtual methods incurs a runtime overhead and abstraction via \emph{\cpp templates} can be difficult due to bad compiler error messages and the absence of a formal interface.
 
 \vspace{5mm}
 
@@ -50,20 +50,24 @@ To answer these questions, \code{lox} is compared against two existing \cpp libr
 
 % TODO: write out numbers?
 This paper starts by laying out some necessary background information.
-Chapter~2 explains terminology around polygon meshes and discusses why mesh data structures are needed and what makes it hard to design fast data structures (including some information about program performance on modern hardware).
+Chapter~2 explains terminology around polygon meshes and discusses why mesh data structures are needed and what makes it hard to design fast data structures; this includes some information about performance on modern hardware.
 The chapter also lists and describes some existing data structures as well as existing geometry processing libraries.
 Chapter~3 introduces the programming language Rust and explains its core concepts with a focus on everything particularly relevant for this thesis.
 
-% TODO: fill in details
-Chapter~4 does X. Chapter~5 does Y. Chapter~6 does Z. The summary chapter summarizes.
+Chapter~4 discusses major design decisions and notable implementation details of \code{lox}.
+In chapter~5, the library is evaluated and compared to existing libraries in regards to execution speed and other factors.
+Chapter~6 briefly reviews the main advantages and problems of the language Rust in the context of this thesis.
+The last chapter summarizes all findings and lays out a plan for the near-term future of \code{lox}.
 
 
 \vfill
 
-\textbf{Quick links}
+\subsubsection*{Quick links}
 \begin{itemize}
-  \item Repository of the library \code{lox}: \url{https://github.com/LukasKalbertodt/lox}
-  \item Repository of this thesis, including all materials to reproduce the benchmarks in this paper: \url{https://github.com/LukasKalbertodt/master-thesis}
+  \item Repository of the library \code{lox}: \textcolor{link-blue}{\url{https://github.com/LukasKalbertodt/lox}}
+  \item Repository of this thesis: \textcolor{link-blue}{\url{https://github.com/LukasKalbertodt/master-thesis}}\\
+  {\footnotesize (It includes this \LaTeX{} document and all materials to reproduce the benchmarks in this paper.
+  The Git tag \code{v1.0} refers to the last commit before the thesis was handed in.)}
 \end{itemize}
 
 \vspace{2cm}
