@@ -12,7 +12,7 @@ In many areas, humans manually model 3D objects with a modeling software (like B
 It is then often necessary to manipulate the surface in order to improve certain characteristics of it.
 For example, 3D scan data is often fairly noisy, so various post-processing algorithms are needed to remove artifacts caused by that noise.
 For real-time 3D graphics, it is often beneficial to reduce the complexity of an object in order to improve rendering times.
-See \ref{fig:cat-algo} for two modfying mesh algorithm examples.
+See \ref{fig:cat-algo} for two modifying mesh algorithm examples.
 
 To work with 3D surfaces, one first has to find a way to represent them.
 Amongst the many very different kinds of representations (cf. \cite[Chapter~1]{botsch2010polygon}), the polygon mesh (or just \enquote{mesh} for short) is one of the most widely used one.
@@ -183,18 +183,18 @@ Additionally, the \emph{prefetcher} -- also a part of the CPU -- is used to load
   \vspace{5mm}
 \end{table}
 
-As a consequence of CPU caches, the execution time of a program can be increased (dramatically in many cases) by making it more \enquote{cache friendly}: making sure that memory access patterns are predictable and follow the principle of locality.
-For example, iterating over an array (which stores its elements contiguously in memory) is one of the most cache friendly things to do, while iterating over a linked list is the exact opposite.
+As a consequence of CPU caches, the execution time of a program can be increased (dramatically in many cases) by making it more \enquote{cache-friendly}: making sure that memory access patterns are predictable and follow the principle of locality.
+For example, iterating over an array (which stores its elements contiguously in memory) is one of the most cache-friendly things to do, while iterating over a linked list is the exact opposite.
 In the latter case, since each list node is usually allocated on its own, each element access is likely a cache miss.
 
-Traversing a polygon mesh is usually not particularly cache friendly.
+Traversing a polygon mesh is usually not particularly cache-friendly.
 As polygon meshes represent 2D surfaces, but the memory address space has only one dimension, most adjacent mesh elements cannot be stored close to each other in memory.
-While perfect cache friendliness is impossible to achieve for polygon meshes, it is still important to make sure a data structure causes as few cache misses as possible.
+While perfect cache-friendliness is impossible to achieve for polygon meshes, it is still important to make sure a data structure causes as few cache misses as possible.
 This has a few different consequences.
 
 In many programming languages, it seems natural to refer to mesh elements via pointers or references.
 This is problematic, however, since this approach requires a stable allocation for each element: the element cannot be moved in memory after the initial allocation.
-Unfortunately, all ways of achieving stable pointers (e.\,g. by using a linked lists) are inherently cache unfriendly.
+Unfortunately, all ways of achieving stable pointers (e.\,g. by using a linked list) are inherently cache-unfriendly.
 A faster alternative is to store all elements in a growing array and refer to them via their index in that array (pointers cannot be used since they are invalidated when the growing array has to reallocate).
 This can be less convenient but has the additional bonus that the indices can often be stored with only 32 bits, reducing the memory consumption of the data structure on 64-bit platforms.
 
@@ -546,7 +546,7 @@ In the simplest form, this additional data consists of all adjacent faces (per f
 Interestingly, these data structures are often not discussed in-depth in literature, but instead quickly dismissed as not sufficient, because they do not explicitly store edges and are restricted to triangle/quad meshes.
 Not being able to refer to edges can indeed be a problem in many situations, but by far not every algorithm deals with edges explicitly.
 
-Two other well known, edge-based data structures are the \emph{quad-edge mesh} \cite{guibas1985primitives} and the \emph{winged-edge mesh} \cite{baumgart1972winged}.
+Two other well-known, edge-based data structures are the \emph{quad-edge mesh} \cite{guibas1985primitives} and the \emph{winged-edge mesh} \cite{baumgart1972winged}.
 
 \subsubsection*{Overview}
 
@@ -604,7 +604,7 @@ This section gives an incomplete overview over those libraries and frameworks.
   It serves as the basis for OpenFlipper \cite{mobius2010openflipper, openflipperhomepage}, a geometry processing and rendering framework mainly developed at the same university.
 
   The library is cross-platform, written in \cpp (though it also offers Python bindings) and mainly features a customizable implementation of the half-edge mesh.
-  Those compile-time customizations allow the user to, for example, choose whether or not \code{prev} references are stored and whether the mesh should be restricted to triangular faces.
+  Those compile-time customizations allow the user to, for example, choose whether \code{prev} references are stored and whether the mesh should be restricted to triangular faces.
   On top of the main data structures, multiple algorithms and functionality for reading and writing files of different formats are implemented.
 
   \item [CGAL] The \textbf{C}omputational \textbf{G}eometry \textbf{A}lgorithms \textbf{L}ibrary \cite{cgalhomepage} offers a wide variety of different algorithms and data structures for everything related to computational geometry.

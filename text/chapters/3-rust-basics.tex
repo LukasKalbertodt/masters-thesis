@@ -1,10 +1,10 @@
 \chapter{Background: Rust}
 
 \emph{Rust}\footnote{Website: \url{https://www.rust-lang.org/}} is a general-purpose, open-source systems programming language\footnote{A \enquote{system programming language} is a language that is well suited to build system software, like operating systems, browser engines and device drivers. These languages give the programmer low-level access to the computer hardware.} focused on reliability, performance and memory safety.
-It is openely developed by the Rust community, with core developers being funded by Mozilla\footnote{Mozilla is mainly known for the browser \emph{Firefox} and its involvement with researching and standardising web-technologies. Website: \url{https://www.mozilla.org}}.
-Its first stable version was release in May, 2015.
+It is openly developed by the Rust community, with core developers being funded by Mozilla\footnote{Mozilla is mainly known for the browser \emph{Firefox} and its involvement with researching and standardizing web-technologies. Website: \url{https://www.mozilla.org}}.
+Its first stable version was release in May 2015.
 Since then, a new, fully backwards-compatible version is released every six weeks.
-Rust was voted \enquote{most loved programming language} four times in a row from 2015 -- 2019 in the StackOverflow\footnote{A question \& answer website for programmers with over 10 million registered users as of January, 2019 \cite{so-user-count}. Website: \url{https://stackoverflow.com/}} Developer Survey -- one of the largest annual programmer-focussed surveys \cite{so-survey}.
+Rust was voted \enquote{most loved programming language} four times in a row from 2015 to 2019 in the StackOverflow\footnote{A question \& answer website for programmers with over 10 million registered users as of January 2019 \cite{so-user-count}. Website: \url{https://stackoverflow.com/}} Developer Survey -- one of the largest annual programmer-focussed surveys \cite{so-survey}.
 
 \begin{figure}[h]
   \vspace{5mm}
@@ -32,14 +32,14 @@ Due to the focus on making abstractions \emph{zero cost} and LLVM's high-quality
 After installing Rust, the command line tools \code{rustc}, \code{cargo} and \code{rustup} (amongst others) are available.
 \emph{Cargo} is Rust's dependency manager and build tool which can use the official package repository \url{https://crates.io}.
 The ability to easily and reliably include libraries into a project sets Rust apart from most other system programming languages.
-\emph{Rustup} is a compiler version manager, which is also used to install additional tools and to setup cross-compilation.
+\emph{Rustup} is a compiler version manager, which is also used to install additional tools and to set up cross-compilation.
 
 Since Rust's initial release, it has been adopted by more and more programmers.
 It is already used in production by hundreds of companies, most notably: Dropbox, NPM, Mozilla, Yelp \cite{rust-production}.
 
 This chapter gives a very quick overview over the language.
-To learn more about Rust, a large number of resources are available, including \emph{The Rust Programming Language} \cite{klabnik2018rust} which is available for free at \url{https://doc.rust-lang.org/book/}.
-Also worth mentioning is the \enquote{Rust Playground}, an online compiler available at \url{https://play.rust-lang.org/}.
+To learn more about Rust, numerous resources are available, including \emph{The Rust Programming Language} \cite{klabnik2018rust} which is available for free at \url{https://doc.rust-lang.org/book/}.
+The \enquote{Rust Playground} is a very handy online compiler available at \url{https://play.rust-lang.org/}.
 In this chapter, many code snippets contain a link to the playground containing that code (only usable in the digital version of this thesis).
 
 \vspace{5mm}
@@ -78,7 +78,6 @@ fn collatz(start: u64) -> Vec<u64> {
 }
 \end{rustcode*}
 
-Explanations and remarks about the code above:
 \vspace{-3mm}
 \begin{itemize}
   \item A library in Rust is a single compilation unit, called a \emph{crate}.
@@ -91,7 +90,7 @@ Explanations and remarks about the code above:
   Parameters are listed in the parenthesis after the function name (parameter name and type are swapped compared to \cpp), the return type is specified after \code{->}.
   \item The \code{main} function (line~6) is the entry point of Rust programs.
   \item Variables (more specifically: \emph{variable bindings}) are created with \code{let} (line~9).
-  \item Rust is completely statically typed, but very elaborate type inference allows to omit type annotations in many places.
+  \item Rust is completely statically typed, but very elaborate type inference allows omitting type annotations in many places.
   They are usually only necessary in function signatures, types and \code{const} definitions.
   \item \code{println} (line~10) is a macro which is used for printing to stdout.
   Macros are invoked with the \code{!} after the name and operate on the source code and not on values, which makes them more powerful than normal functions in some situations.
@@ -115,7 +114,7 @@ Explanations and remarks about the code above:
 \end{itemize}
 
 
-
+\vfill
 \subsubsection*{Types}
 
 \begin{table}[t]
@@ -128,7 +127,7 @@ Explanations and remarks about the code above:
   \renewcommand{\arraystretch}{1.0}
   \caption{
     Rust's primitive types.
-    Signed integers use the prefix \codebox{i}, unsigned integers \codebox{u}, floating point numbers \codebox{f}.
+    Signed integers use the prefix \codebox{i}, unsigned integers \codebox{u}, floating-point numbers \codebox{f}.
     The number in the name specifies the size of the type in bits.
     \codebox{usize} and \codebox{isize} are pointer-sized (64 bits on x86-64) and thus equivalent to \cpp's \codebox{size\_t} and \codebox{ptrdiff\_t}.
     \codebox{char} has a size of 32 bits and represents a \emph{Unicode scalar value}.
@@ -138,7 +137,7 @@ Explanations and remarks about the code above:
 
 The core language contains a number of primitive types, shown in table~\ref{tab:primitive-types}.
 New types can be created by programmers in mainly two ways: as \code{struct} or as \code{enum}.
-Structs are heterogenous product-types  defined by a list of fields and work very similar to structs in~C.
+Structs are heterogeneous product-types  defined by a list of fields and work very similar to structs in~C.
 
 Enums, on the other hand, are sum-types -- a feature not offered by most mainstream languages.
 While some enum types in Rust are simple \enquote{C-like enums} (just an enumeration of names), each enum \emph{variant} can have arbitrary data associated with it.
@@ -170,7 +169,8 @@ Rust is not an object-oriented language.
 While there are some similarities to object-oriented languages like Java (e.\,g. the \code{instance.method()} call syntax and \emph{encapsulation}), Rust, by design, does not feature inheritance.
 Advantages of OOP, like code-reuse and abstraction, are achieved via different means in Rust.
 
-Additionally there are the following types:
+\newpage
+Additionally, there are the following types:
 \vspace{-3mm}
 \begin{itemize}
   \item Fixed-size arrays \code{[T; N]}: anonymous, homogeneous product-types.
@@ -226,7 +226,7 @@ This demonstrates a few additional points:
   Shown here: \code{f32::powi} and \code{f32::sqrt}.
 \end{itemize}
 
-Unlike in many garbage collected languages (like Java), values in Rust cannot be \code{null}:
+Unlike in many garbage-collected languages (like Java), values in Rust cannot be \code{null}:
 a variable of type \code{T} is always a valid instance of that type; a reference \code{&T} is always a valid reference to a valid instance of type \code{T}.
 As such, Rust needs some other way to represent \emph{optional} values/the \emph{absence} of a value.
 Used for that purpose is the generic type \code{Option<T>} from the standard library, defined as shown in figure~\ref{fig:option-result-def}.
@@ -330,7 +330,7 @@ error[E0369]: binary operation `<` cannot
 \vspace{7mm}
 
 A \emph{trait} defines an interface: it describes functionality without providing that functionality itself.
-A trait definition contains a number of items (usually methods) whose signatures are specified, but which are usually lacking an implementation (e.\,g. a method body).
+The definition of a trait contains a number of items (usually methods) whose signatures are specified, but which are usually lacking an implementation (e.\,g. a method body).
 A trait can be implemented by multiple types and each type can implement multiple traits.
 This is done with an \code{impl Trait for Type} block.
 That block then needs to implement all trait items, i.\,e. provide the actual functionality.
@@ -426,7 +426,7 @@ This is the main reason for how Rust can achieve \emph{zero cost abstractions}.
 
 An extreme case of good optimization due to static dispatch is the \code{Iterator} trait.
 An iterator is simply a sequence of items of a specific type.
-The trait features a variety of different helper methods -- called \emph{iterator adaptors} -- which can be used to create a new iterator from an existing ones.
+The trait features a variety of different helper methods -- called \emph{iterator adaptors} -- which can be used to create a new iterator from an existing one.
 For example, \code{1..8} is the Rust syntax for a range and represents an iterator over integers: 1, 2, 3, 4, 5, 6, 7 (the upper limit is excluded).
 A new iterator can be created by filtering the existing one to remove some elements: \code{(1..8).filter(|&x| x % 2 == 0)}.
 This expression is an iterator over the items 2, 4, 6.
@@ -442,7 +442,7 @@ In order to guarantee memory safety and robustness, Rust uses a few concepts not
 One such concept is \emph{ownership}.
 
 Different languages have different \emph{default assignment semantics}, in other words: they differ in what happens when assigning one value to another.
-In Java and many other garbage collected languages, \emph{share semantics} are used by default.
+In Java and many other garbage-collected languages, \emph{share semantics} are used by default.
 That means that, if there is a collection \code{a} and the line \code{Collection b = a;} is executed, \code{b} is now a reference to the original collection (i.\,e. \code{a} and \code{b} reference the same collection).
 \cpp on the other hand, defaults to \emph{copy semantics}.
 In \cpp, \code{b} would be an exact (usually deep) copy of \code{a}; changing \code{b} would not influence \code{a}.
@@ -505,7 +505,7 @@ This is also called \emph{Aliasing xor Mutability} (although \emph{nand} would t
 This means that there cannot exist a mutable and an immutable reference to the same value at the same time.
 Like the ownership analysis mentioned above, this rules is also entirely enforced at compile time; Rust references compile down to simple pointers.
 
-This restriction might initially sound too strict, but there are ,amy reasons why it is a good idea.
+This restriction might initially sound too strict, but there are mamy reasons why it is a good idea.
 Figure~\ref{fig:vector-bad} illustrates one of those reasons.
 In practice, this rule is not as problematic as one might assume.
 In only a very few situations, it is necessary to work around this problem, which can be done in a variety of ways.
