@@ -8,16 +8,16 @@ The field of \emph{geometry processing} is concerned with acquiring, manipulatin
 Applications include simulations, modeling in industrial context, biomedical processing, and real-time 3D graphics (mostly, but not exclusively, for entertainment purposes).
 
 A 3D surface can be acquired through a variety of different means.
-In many areas, humans manually model 3D objects with a modeling software (like Blender\footnote{Blender website: \url{https://www.blender.org/}}), while in many other cases, 3D surfaces are algorithmically created from mathematical definitions or 3D scans (like MRI\footnote{Magnetic resonance imaging} data or laser scans).
+In many areas, humans manually model 3D objects with a modeling software (like Blender\footnote{Blender website: \url{https://www.blender.org/}}), while in many other cases, 3D surfaces are algorithmically created from mathematical definitions or 3D scans (like MRI\footnote{Magnetic resonance imaging} or laser scan data).
 It is then often necessary to manipulate the surface in order to improve certain characteristics of it.
-For example, laser scan data is often fairly noisy, so various post-processing algorithms are needed to remove artifacts caused by that noise.
+For example, 3D scan data is often fairly noisy, so various post-processing algorithms are needed to remove artifacts caused by that noise.
 For real-time 3D graphics, it is often beneficial to reduce the complexity of an object in order to improve rendering times.
-Also see \ref{fig:cat-algo} for two examples of modifying mesh algorithms.
+See \ref{fig:cat-algo} for two modfying mesh algorithm examples.
 
 To work with 3D surfaces, one first has to find a way to represent them.
-Amongst the many very different kinds of representations (cf. \cite{botsch2010polygon}, chapter 1), the polygon mesh (or just \enquote{mesh} for short) is one of the most widely used one.
+Amongst the many very different kinds of representations (cf. \cite[Chapter~1]{botsch2010polygon}), the polygon mesh (or just \enquote{mesh} for short) is one of the most widely used one.
 A polygon mesh is a collection of vertices (points, singular \emph{vertex}), edges (connecting two vertices) and faces (polygons bounded by edges).
-It is important to note that polygon meshes can only exactly represent polyhedrons, so most of the time, they are just an approximation of the actual 3D surface.
+Note that polygon meshes can only exactly represent polyhedrons, so most of the time, they are just an approximation of the actual 3D surface.
 
 \begin{figure}[b]
   \includesvg{cat-algo}
@@ -27,8 +27,8 @@ It is important to note that polygon meshes can only exactly represent polyhedro
   \label{fig:cat-algo}
 \end{figure}
 
-There are two special forms of the polygon mesh of high practical relevance.
-A \emph{triangle mesh} is a polygon mesh where each face is triangular and in a \emph{quad mesh}, all faces are quadrilaterals.
+There are two special cases of the polygon mesh which are highly relevant in practice.
+A \emph{triangle mesh} is a mesh where each face is triangular and in a \emph{quad mesh}, all faces are quadrilaterals.
 Restricting the faces like that often makes algorithms operating on that mesh a lot simpler (and thus potentially faster).
 In particular, since triangles are the simplest polygon (a 2-simplex, in fact), many operations on triangle meshes are a lot faster than on a general polygon mesh.
 
@@ -42,6 +42,7 @@ In particular, since triangles are the simplest polygon (a 2-simplex, in fact), 
   \label{fig:non-manifold}
 \end{figure}
 
+\newpage
 The following list explains a few common terms related to meshes or geometry processing.
 
 \begin{description}
@@ -73,7 +74,7 @@ The following list explains a few common terms related to meshes or geometry pro
 
 
 In many applications, meshes are expected to be manifold and orientable, as this makes working with them a lot easier.
-In this thesis, all meshes are assumed to satisfy these properties as well.
+In this thesis, all meshes are assumed to satisfy these properties as well (however, the configuration in figure~\ref{fig:non-manifold} on the right is allowed).
 
 
 \section{Mesh Data Structures}
@@ -84,8 +85,8 @@ We can distinguish two types of data we need to store: the connectivity informat
 A \emph{mesh property} is arbitrary data which is associated with elements of the mesh.
 For example, 3D vertex positions -- a 3D vector associated with every vertex -- are such a property and are present in virtually every mesh.
 Surface normals and texture coordinates are two properties that are stored in many meshes, too (they are also usually associated with each vertex).
-For visualization, vertices, edges or faces can be colored, that is: associated a color with each element.
-Lastly, many algorithms need to associated temporary values with mesh elements, like a boolean flag to store which element was already visited or some kind of cost.
+For visualization, vertices, edges or faces can be colored, that is: a color associated with each element.
+Lastly, many algorithms need to associate temporary values with mesh elements, like some kind of cost or a boolean flag (e.\,g. to store which element was already visited).
 In general, it is necessary to be able to associated arbitrary values with mesh elements.
 
 As long as each mesh element can be uniquely identified, storing mesh properties is easy (e.\,g. in a hash map).
@@ -94,7 +95,9 @@ For example, a simple way to smooth a mesh is to replace each vertex position wi
 That algorithm needs to be able to enumerate all neighbor vertices of a specific vertex.
 % TODO: maybe show smoothing algorithm?
 
-Generally, an algorithm might request all the neighbors of any mesh element. The following table shows the nine possible neighborhood queries.
+Generally, an algorithm might request all the neighbors of any mesh element (see the table below).
+In many cases more specialized information is required (like \enquote{are these two elements adjacent?}, \enquote{what is the valence of this vertex?}, or \enquote{is this face a boundary face?}), but all of these questions can be answered through the basic neighborhood queries shown in the table below.
+
 
 \begin{center}
   \begin{minipage}{.52\textwidth}
@@ -120,14 +123,13 @@ Generally, an algorithm might request all the neighbors of any mesh element. The
   \begin{minipage}{.42\textwidth}
     \footnotesize
     \begin{description}
-      \item [\textcolor{flat-green-dark}{Green}] \emph{Real} neighbors. Are \enquote{complete}: all other information can be derived from these neighbors.
+      \item [\textcolor{flat-green-dark}{Green}] \emph{Real} neighbors. Are \enquote{complete}: all other information can be derived from this neighborhood information.
       \item [\textcolor{flat-blue-dark}{Blue}] Not \emph{real} neighbors, but very common queries in practice.
       \item [\textcolor{flat-red-dark}{Red}] Not \emph{real} neighbors; rarely used.
     \end{description}
   \end{minipage}
 \end{center}
 
-Algorithms often need slightly different kinds of information (like \enquote{are these two elements adjacent?}, \enquote{what is the valence of this vertex?}, or \enquote{is this face a boundary face?}), but all of these questions can be answered through the basic neighborhood queries shown above.
 
 \vspace{1cm}
 
@@ -139,26 +141,33 @@ However, in this thesis, \enquote{fast} implies a runtime of $\mathcal O(|r|)$ w
 One could store all neighborhood information explicitly to meet those asymptotic runtime requirements (i.\,e. each face stores a list of all adjacent faces, a list of all adjacent edges and a list of all adjacent vertices; similarly for vertices and edges).
 However, this approach has a tremendous memory overhead and it would be very slow to modify the mesh, as a lot of information has to be updated.
 
-
+\vfill
 \subsection{Performance Characteristics of Modern Hardware}
 
 In order to create fast data structures, some knowledge of modern computer hardware is required.
 This sub-section gives a very coarse overview over some aspect of this topic.
 A lot of information throughout this section is taken from \cite{hennessy2017computer}, particularly from chapter~2 and appendix~B.
 
-For some decades now, the speed of processors improved more quickly than the memory speed.
+For some decades now, the speed of processors improved more quickly than the speed of volatile memory.
 On current hardware, accessing the main memory takes approximately between 50\,ns and 100\,ns.
-As modern processors are clocked at approximately 3\,GHz, the memory access time equates to roughly 150 to 300 cycles.
-To avoid wasting a lot of time waiting for memory, different techniques are used, the most notably being: \emph{CPU caches}.
+As modern processors are clocked at around 3\,GHz, the memory access time equates to roughly 150 to 300 cycles.
+In order not to waste a lot of time waiting for the memory, different techniques are used, the most notably being: \emph{CPU caches}.
 
 The \emph{principle of locality} states that memory access patterns of programs tend to be fairly predictable.
 Temporal locality means that recently accessed data is often accessed again shortly afterwards;
 spatial locality means that consecutive memory accesses are usually accessing memory locations close to one another.
-This behavior is exploited by CPU caches -- processor-internal memory that is smaller but a lot faster than main memory.
+This behavior is exploited by CPU caches, processor-internal memory that is smaller but a lot faster than main memory.
 For each memory access, the processor checks whether the requested data is already present in one of the CPU caches.
-If that is the case (a \emph{cache hit}), that value can be used and the main memory does not need to be accessed.
-If the cache does not contain the requested data (a \emph{cache miss}), the value has to be loaded from main memory and is then stored in the cache.
-Most modern processors have multiple layers of caches; see \ref{tbl:caches} for typical sizes and access times of caches from different layers.
+If that is the case (\emph{cache hit}), that value can be used and the main memory does not need to be accessed.
+If the cache does not contain the requested data (\emph{cache miss}), the value has to be loaded from main memory and is then stored in the cache (potentially replacing other data).
+Most modern processors have multiple layers of caches; see table~\ref{tbl:caches} for typical sizes and access times of caches from different layers.
+
+To use the spatial locality of programs, data is always loaded in \emph{cache lines}, blocks of memory typically 64 bytes long (on current x86 processors).
+That way, accessing multiple values in one cache line only requires accessing main memory at most once.
+Additionally, the \emph{prefetcher} -- also a part of the CPU -- is used to load new cache lines from main memory even before the program requests them (it does this by predicting what memory is likely to be accessed next).
+
+\vspace{5mm}
+\newpage
 
 \begin{table}[t]
   \centering
@@ -171,11 +180,8 @@ Most modern processors have multiple layers of caches; see \ref{tbl:caches} for 
   \end{tabular}
   \caption{Typical sizes and access times of different kinds of memories on a desktop computer (data taken from \cite{hennessy2017computer}).}
   \label{tbl:caches}
+  \vspace{5mm}
 \end{table}
-
-To use the spatial locality of programs, data is always loaded in \emph{cache lines}, blocks of memory typically 64 bytes long (on current x86 processors).
-That way, accessing multiple values in one cache line only requires accessing main memory at most once.
-Additionally, the \emph{prefetcher} is used to load new cache lines from main memory even before the program requests them (this is done by predicting what memory is likely to be accessed next).
 
 As a consequence of CPU caches, the execution time of a program can be increased (dramatically in many cases) by making it more \enquote{cache friendly}: making sure that memory access patterns are predictable and follow the principle of locality.
 For example, iterating over an array (which stores its elements contiguously in memory) is one of the most cache friendly things to do, while iterating over a linked list is the exact opposite.
@@ -189,10 +195,10 @@ This has a few different consequences.
 In many programming languages, it seems natural to refer to mesh elements via pointers or references.
 This is problematic, however, since this approach requires a stable allocation for each element: the element cannot be moved in memory after the initial allocation.
 Unfortunately, all ways of achieving stable pointers (e.\,g. by using a linked lists) are inherently cache unfriendly.
-A faster alternative is to store all elements in a growing array and refer to them via an index into that array (pointers cannot be used since they are invalidated when the growing array has to reallocate).
+A faster alternative is to store all elements in a growing array and refer to them via their index in that array (pointers cannot be used since they are invalidated when the growing array has to reallocate).
 This can be less convenient but has the additional bonus that the indices can often be stored with only 32 bits, reducing the memory consumption of the data structure on 64-bit platforms.
 
-Furthermore, storing dynamic lists (a sequence of elements which length is not known at compile time) should be avoided.
+Furthermore, storing dynamic lists (a sequence of elements whose length is not known at compile time) should be avoided.
 If at all, this sequence should be stored in a growing array and not a linked list.
 This would require storing the length of the sequence, causing memory overhead.
 But more importantly, the list data cannot be stored inline, requiring separate allocations and causing cache misses when accessing the data.
@@ -206,8 +212,8 @@ This chapter will give an overview over the most commonly used ones, but will ex
 Generally, two types of data structures can be distinguished: \emph{face-based} and \emph{edge-based} data structures.
 The former store the main adjacency information per face, the latter per edge.
 As discussed in the last section, storing lists with dynamic length is usually very inefficient and should be avoided.
-As can be seen in table~\ref{tab:max-neighbors}, the number of possible neighbors of vertices are unbounded, which is why there are no relevant vertex-based data structures.
-The table also shows that face-based data structures are only efficient if the valence of faces is fixed (e.g. a triangle or quad mesh), as otherwise dynamic lists are required.
+As can be seen in table~\ref{tab:max-neighbors}, the number of possible neighbors per vertex are unbounded, which is why there are no relevant vertex-based data structures.
+The table also shows that face-based data structures are only efficient if the valence of faces is fixed (e.\,g. a triangle or quad mesh), as otherwise dynamic lists are required.
 
 \begin{table}[h]
   \centering
@@ -297,6 +303,7 @@ It uses very little memory, but is quite restricted in its standard version:
 it can only store triangular faces and cannot provide any adjacency information apart from \adj{F}{V}.
 These limitations do not pose a problem for most real-time 3D applications, however, as \adj{F}{V} is sufficient for rendering and most graphic APIs (like Vulkan or OpenGL) only support triangle meshes anyway.
 For that reason, this data structure is used almost everywhere in real-time rendering.
+It is also used by most file formats, like \textsc{Ply} and \textsc{Obj}.
 
 A shared vertex mesh only stores the adjacent vertices for each face.
 Since this data structure is almost exclusively used for triangle meshes, the list of adjacent vertices can be stored inline, making it very cache-friendly and memory efficient.
@@ -393,6 +400,7 @@ A HEM can provide all connectivity information and exposes full edges in its API
     At the bottom, the arrays storing the data are shown (\codebox{prev} is not stored there).
   }
   \label{fig:hem-structure}
+  \vspace{-2mm}
 \end{figure}
 
 Each face/vertex only stores a reference to an arbitrary adjacent/outgoing half edge, respectively.
@@ -404,13 +412,13 @@ See figure~\ref{fig:hem-structure}.
 
 \subsubsection*{Directed Edge Mesh}
 
-The \emph{directed edge mesh} is a memory-efficient variant of the half edge mesh which only works for a fixed face valence (pure triangle or quad meshes).
+The \emph{directed edge mesh} is a memory-efficient version of the half edge mesh which is restricted to meshes with a fixed face valence (pure triangle or quad meshes).
 It was initially presented in \cite{campagna1998directed} and is also mentioned and explained in \cite[Chapter~2]{botsch2010polygon}.
 Depending on the point of view, this data structure is either edge or face based.
 
 The main idea is to store a lot of information implicitly, by storing the half edges of a face next to each other in memory.
 For a triangle mesh, that means that the half edges of a face with index $f$ have the indices $3f$, $3f + 1$ and $3f + 2$.
-Similarly, the face of a half edge can be found by dividing the half edge ID by 3 (rounding down).
+Similarly, the face of a half edge can be found by dividing the half edge index by 3 (rounding down).
 This also encodes the \code{next} and \code{prev} values for half edges implicitly.
 However, in contrast to the half edge mesh, \code{twin} handles have to be stored explicitly.
 Each vertex also stores one \code{outgoing} half edge.
@@ -528,7 +536,7 @@ This, however, makes it impossible to easily iterate around the boundary -- some
 To overcome this, a few different solutions can be used, which are not further described here.
 
 The directed edge mesh can provide full adjacency information between vertices and faces.
-However, it lacks the ability to easily expose full edges in its API; it might be possible to find a consistent scheme to generate edge handles from half edge handles, but it is not straight-forward.
+However, it lacks the ability to easily expose full edges in its API (it might be possible to find a consistent scheme to generate edge handles from half edge handles, but it is not straight-forward).
 
 \subsubsection*{Other data structures}
 
@@ -545,9 +553,9 @@ Two other well known, edge-based data structures are the \emph{quad-edge mesh} \
 The following table shows the most important data structures with their properties.
 The column \emph{Poly} shows whether the data structure supports polygonal faces; \emph{Edges} whether it can expose full edges; and \emph{Full Adjacency} whether it supports all adjacency queries between faces and vertices.
 
-The memory column specifies the memory consumption per vertex on an average triangle mesh.
-From the \emph{Euler formula}, certain properties for triangle meshes can be derived (cf.~\cite{botsch2010polygon}): such a mesh contains approximately twice as many faces and thrice as many edges as it contains vertices ($|F| \approx 2|V|$ and $|E| \approx 3|V|$).
-The memory consumption is thus calculated as $M = \langle\text{bytes per vertex}\rangle + 2 \cdot \langle\text{bytes per face}\rangle + 3 \cdot \langle\text{bytes per full edge}\rangle$.
+The memory column specifies the memory consumption per vertex for an average triangle mesh.
+Such a typical triangle mesh contains approximately twice as many faces and thrice as many edges as it contains vertices: $|F| \approx 2|V|$ and $|E| \approx 3|V|$) (cf.~\cite{botsch2010polygon}).
+The memory consumption $M$ is thus calculated as $M = \langle\text{bytes per vertex}\rangle + 2 \cdot \langle\text{bytes per face}\rangle + 3 \cdot \langle\text{bytes per full edge}\rangle$.
 It is assumed that element references have a size of 4\,bytes.
 Note that the values do \emph{not} include any mesh properties, not even vertex positions.
 Additionally, the smallest version of all meshes is used (without optional fields).
@@ -593,10 +601,9 @@ This section gives an incomplete overview over those libraries and frameworks.
 
 \begin{description}
   \item [OpenMesh] Developed at the RTWH Aachen, OpenMesh \cite{botsch2002openmesh,openmeshhomepage} is one of the most used polygon mesh library.
-  It is the basis for OpenFlipper \cite{mobius2010openflipper, openflipperhomepage}, a geometry processing and rendering framework mainly developed at the same university.
-  (OpenFlipper is disregarded in this thesis, as it doesn't provide its own data structures.)
+  It serves as the basis for OpenFlipper \cite{mobius2010openflipper, openflipperhomepage}, a geometry processing and rendering framework mainly developed at the same university.
 
-  The library is cross-platform, written in \cpp (though it also offers Python bindings) and mainly features a customizable implementation of a half-edge mesh.
+  The library is cross-platform, written in \cpp (though it also offers Python bindings) and mainly features a customizable implementation of the half-edge mesh.
   Those compile-time customizations allow the user to, for example, choose whether or not \code{prev} references are stored and whether the mesh should be restricted to triangular faces.
   On top of the main data structures, multiple algorithms and functionality for reading and writing files of different formats are implemented.
 
