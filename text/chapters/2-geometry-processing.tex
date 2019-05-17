@@ -1,3 +1,7 @@
+\newlength{\origtabcolsep}
+\setlength{\origtabcolsep}{\tabcolsep}
+
+
 \chapter{Background: Geometry Processing}
 
 The field of \emph{geometry processing} is concerned with acquiring, manipulating and analyzing 3D surfaces.
@@ -537,7 +541,47 @@ Not being able to refer to edges can indeed be a problem in many situations, but
 Two other well known, edge-based data structures are the \emph{quad-edge mesh} \cite{guibas1985primitives} and the \emph{winged-edge mesh} \cite{baumgart1972winged}.
 
 \subsubsection*{Overview}
-% TODO: add table comparing mesh data structures!
+
+The following table shows the most important data structures with their properties.
+The column \emph{Poly} shows whether the data structure supports polygonal faces; \emph{Edges} whether it can expose full edges; and \emph{Full Adjacency} whether it supports all adjacency queries between faces and vertices.
+
+The memory column specifies the memory consumption per vertex on an average triangle mesh.
+From the \emph{Euler formula}, certain properties for triangle meshes can be derived (cf.~\cite{botsch2010polygon}): such a mesh contains approximately twice as many faces and thrice as many edges as it contains vertices ($|F| \approx 2|V|$ and $|E| \approx 3|V|$).
+The memory consumption is thus calculated as $M = \langle\text{bytes per vertex}\rangle + 2 \cdot \langle\text{bytes per face}\rangle + 3 \cdot \langle\text{bytes per full edge}\rangle$.
+It is assumed that element references have a size of 4\,bytes.
+Note that the values do \emph{not} include any mesh properties, not even vertex positions.
+Additionally, the smallest version of all meshes is used (without optional fields).
+
+
+\begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \setlength{\tabcolsep}{3mm}
+  \begin{tabular}{l l l l l}
+    \textbf{Data structure} & \textbf{Memory} & \textbf{Poly} & \textbf{Edges} & \textbf{Full Adjacency} \\\hline
+    Shared Vertex Mesh
+      & $0 + 2 \cdot 12 = \textbf{24}$
+      & \textcolor{red}{\textbf{\textsf No}}
+      & \textcolor{red}{\textbf{\textsf No}}
+      & \textcolor{red}{\textbf{\textsf No}} \\\hdashline[.4mm/1mm]
+    Directed Edge Mesh
+      & $4 + 2 \cdot 24 = \textbf{52}$
+      & \textcolor{red}{\textbf{\textsf No}}
+      & \textcolor{red}{\textbf{\textsf No}}
+      & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
+    Half Edge Mesh
+      & $4 + 2 \cdot 4 + 3 \cdot 24 = \textbf{84}$
+      & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+      & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+      & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
+    Winged-edge Mesh
+      & $4 + 2 \cdot 4 + 3 \cdot 32 = \textbf{108}$
+      & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+      & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+      & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\
+  \end{tabular}
+  \renewcommand{\arraystretch}{1.0}
+\end{center}
+
 
 
 \newpage
@@ -572,3 +616,6 @@ This section gives an incomplete overview over those libraries and frameworks.
   As of May 2019, the library is still in its initial development phase offering no API stability guarantees yet.
   It also uses a half edge mesh to store adjacency information.
 \end{description}
+
+
+\setlength{\tabcolsep}{\origtabcolsep}
