@@ -205,7 +205,7 @@ As discussed in the last section, storing lists with dynamic length is usually v
 As can be seen in table~\ref{tab:max-neighbors}, the number of possible neighbors of vertices are unbounded, which is why there are no relevant vertex-based data structures.
 The table also shows that face-based data structures are only efficient if the valence of faces is fixed (e.g. a triangle or quad mesh), as otherwise dynamic lists are required.
 
-\begin{table}[t]
+\begin{table}[h]
   \centering
   \renewcommand{\arraystretch}{1.1}
   \begin{tabular}{|l|c|c|c|}
@@ -222,13 +222,14 @@ The table also shows that face-based data structures are only efficient if the v
 
 Note that mesh properties, including vertex positions, are completely ignored in this subsection.
 Whether these properties should be stored externally or next to the adjacency information is discussed later.
+There is an overview at the end of this chapter, comparing the most important properties of the presented data structures.
 
 \newlength{\braceWidth}%
 \newlength{\demColWidth}%
 
 \subsubsection*{Shared Vertex Mesh}
 
-\begin{figure}[h]
+\begin{figure}[b]
   \centering
   \begin{minipage}{.35\textwidth}
     \includesvg{shared-vertex}
@@ -252,7 +253,7 @@ Whether these properties should be stored externally or next to the adjacency in
 
   \end{minipage}
 
-  \vspace{7mm}
+  \vspace{4mm}
 
   \setlength{\demColWidth}{7mm}
   \setlength{\dashlinedash}{.4mm}
@@ -282,8 +283,7 @@ Whether these properties should be stored externally or next to the adjacency in
     \dots \\\hline
   \end{tabular}
   \renewcommand{\arraystretch}{1.0}
-
-  \vspace{2mm}
+  \vspace{-2mm}
   \caption{Structure of a shared vertex mesh.}
   \label{fig:sv-structure}
 \end{figure}
@@ -302,15 +302,10 @@ Edges are not stored at all and cannot be referred to. See figure~\ref{fig:sv-st
 \subsubsection*{Half Edge Mesh}
 
 Often abbreviated \emph{HEM}, this data structure splits each edges into two \emph{half edges} and stores most connectivity information in those. Thus, it is a (half-)edge-based data structure.
-A HEM can provide all connectivity information. (Cf. \cite{mantyla1988introduction})
+A HEM can provide all connectivity information and exposes full edges in its API, allowing to associated data with them.
+(Cf. \cite{mantyla1988introduction})
 
-Each face/vertex only stores a reference to an arbitrary adjacent/outgoing half edge, respectively.
-Each half edges stores the vertex it is pointing at (\emph{target}), the face it is adjacent to, its \emph{twin} and the next half edge counter-clockwise around the face (or hole) it is adjacent to.
-Optionally, the previous half edge (around the adjacent face) is also stored, which increases memory consumption, but makes some operations faster.
-The \emph{twin} reference is typically not stored explicitly, but encoded implicitly by making sure twin half edges are always stored next to each other in memory.
-See figure~\ref{fig:hem-structure}.
-
-\begin{figure}[h]
+\begin{figure}[b!]
   \centering
   \begin{minipage}{.47\textwidth}
     \includesvg{hem}
@@ -366,11 +361,11 @@ See figure~\ref{fig:hem-structure}.
       \addtolength{\braceWidth}{3\tabcolsep}%
       \Large %
       \hspace{.5mm}%
-      $\underbrace{\hspace{\braceWidth}}_{F_0}$%
+      $\underbrace{\hspace{\braceWidth}}_{\text{HE}_0}$%
       \hspace{1.1mm}%
-      $\underbrace{\hspace{\braceWidth}}_{F_1}$%
+      $\underbrace{\hspace{\braceWidth}}_{\text{HE}_1}$%
       \hspace{1.1mm}%
-      $\underbrace{\hspace{\braceWidth}}_{F_2}$%
+      $\underbrace{\hspace{\braceWidth}}_{\text{HE}_2}$%
     }%
   }%
   \begin{tabular}{|%
@@ -390,19 +385,34 @@ See figure~\ref{fig:hem-structure}.
   \vspace{2mm}
   \caption{
     Structure of a half edge mesh.
-    A \codebox{?} in the table denotes a value that can be absent (\emph{null}/\codebox{None}).
+    A \codebox{?} in the upper table denotes a value that can be absent (\emph{null}/\codebox{None}).
+    At the bottom, the arrays storing the data are shown (\codebox{prev} is not stored there).
   }
   \label{fig:hem-structure}
 \end{figure}
 
-
+Each face/vertex only stores a reference to an arbitrary adjacent/outgoing half edge, respectively.
+Each half edges stores the vertex it is pointing at (\emph{target}), the face it is adjacent to, its \emph{twin} and the next half edge counter-clockwise around the face (or hole) it is adjacent to.
+Optionally, the previous half edge (around the adjacent face) is also stored, which increases memory consumption, but makes some operations faster.
+The \emph{twin} reference is typically not stored explicitly, but encoded implicitly by making sure twin half edges are always stored next to each other in memory.
+See figure~\ref{fig:hem-structure}.
 
 
 \subsubsection*{Directed Edge Mesh}
 
-Todo.
+The \emph{directed edge mesh} is a memory-efficient variant of the half edge mesh which only works for a fixed face valence (pure triangle or quad meshes).
+It was initially presented in \cite{campagna1998directed} and is also mentioned and explained in \cite[Chapter~2]{botsch2010polygon}.
+Depending on the point of view, this data structure is either edge or face based.
 
-\begin{figure}[h]
+The main idea is to store a lot of information implicitly, by storing the half edges of a face next to each other in memory.
+For a triangle mesh, that means that the half edges of a face with index $f$ have the indices $3f$, $3f + 1$ and $3f + 2$.
+Similarly, the face of a half edge can be found by dividing the half edge ID by 3 (rounding down).
+This also encodes the \code{next} and \code{prev} values for half edges implicitly.
+However, in contrast to the half edge mesh, \code{twin} handles have to be stored explicitly.
+Each vertex also stores one \code{outgoing} half edge.
+Also see figure~\ref{fig:dem-structure}.
+
+\begin{figure}[b!]
   \centering
   \begin{minipage}{.47\textwidth}
     \includesvg{dem}
@@ -501,10 +511,20 @@ Todo.
 
   \caption{
     Structure of a directed edge mesh.
-    A \codebox{?} in the table denotes a value that can be absent (\emph{null}/\codebox{None}).
+    A \codebox{?} in the upper table denotes a value that can be absent (\emph{null}/\codebox{None}).
+    At the bottom, the two arrays storing all data are shown (\codebox{next} and \codebox{prev} are not stored there).
   }
   \label{fig:dem-structure}
 \end{figure}
+
+This approach has a few problems and disadvantages.
+Since half edges are stored per face, there are no outer half edges on the boundary of the mesh, meaning that the boundary has to be treated in a special way.
+The original paper only suggests storing a special value~(-1) in the inner boundary half edges' \code{twin} value to signal a missing twin.
+This, however, makes it impossible to easily iterate around the boundary -- something that is useful in many situations.
+To overcome this, a few different solutions can be used, which are not further described here.
+
+The directed edge mesh can provide full adjacency information between vertices and faces.
+However, it lacks the ability to easily expose full edges in its API; it might be possible to find a consistent scheme to generate edge handles from half edge handles, but it is not straight-forward.
 
 \subsubsection*{Other data structures}
 
@@ -516,9 +536,11 @@ Not being able to refer to edges can indeed be a problem in many situations, but
 
 Two other well known, edge-based data structures are the \emph{quad-edge mesh} \cite{guibas1985primitives} and the \emph{winged-edge mesh} \cite{baumgart1972winged}.
 
+\subsubsection*{Overview}
 % TODO: add table comparing mesh data structures!
 
 
+\newpage
 \section{Existing Geometry Processing Libraries}
 
 There are a variety of software libraries and frameworks for geometry processing, often with different features and capabilities.
