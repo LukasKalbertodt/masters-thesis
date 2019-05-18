@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="186.38191mm"
+   height="87.139557mm"
+   viewBox="0 0 186.38191 87.139558"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="mesh-features.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="398.96342"
+     inkscape:cy="187.80853"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1321"
+     inkscape:window-x="0"
+     inkscape:window-y="1174"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-13.449583,-37.756009)">
+    <path
+       style="fill:none;stroke:#646464;stroke-width:0.87054569;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.7410914, 1.7410914;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 66.522538,38.197481 V 124.45409"
+       id="path815"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path817"
+       d="M 146.8499,38.197481 V 124.45409"
+       style="fill:none;stroke:#646464;stroke-width:0.87054569;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.7410914, 1.7410914;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#646464;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="108.27316"
+       y="44.931805"
+       id="text821"><tspan
+         sodipodi:role="line"
+         id="tspan819"
+         x="108.27316"
+         y="44.931805"
+         style="font-size:5.64444447px;text-align:center;text-anchor:middle;fill:#646464;fill-opacity:1;stroke-width:0.26458332"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#646464;fill-opacity:1"
+   id="tspan823">TriMesh</tspan> or <tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#646464;fill-opacity:1"
+   id="tspan825">PolyMesh</tspan></tspan></text>
+    <text
+       id="text833"
+       y="44.931805"
+       x="46.333454"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#646464;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-size:5.64444447px;text-align:center;text-anchor:middle;fill:#646464;fill-opacity:1;stroke-width:0.26458332"
+         y="44.931805"
+         x="46.333454"
+         id="tspan831"
+         sodipodi:role="line"><tspan
+           id="tspan827"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#646464;fill-opacity:1">TriMesh</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#646464;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="168.4088"
+       y="44.931805"
+       id="text839"><tspan
+         sodipodi:role="line"
+         id="tspan837"
+         x="168.4088"
+         y="44.931805"
+         style="font-size:5.64444447px;text-align:center;text-anchor:middle;fill:#646464;fill-opacity:1;stroke-width:0.26458332"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#646464;fill-opacity:1"
+           id="tspan835">PolyMesh</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#f44b4b;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="106.03748"
+       y="58.907429"
+       id="text868"><tspan
+         sodipodi:role="line"
+         id="tspan866"
+         x="106.03748"
+         y="58.907429"
+         style="font-size:5.64444447px;text-align:center;text-anchor:middle;fill:#f44b4b;fill-opacity:1;stroke-width:0.26458332"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;fill:#f44b4b;fill-opacity:1"
+           id="tspan864">MeshMut</tspan></tspan></text>
+    <text
+       id="text874"
+       y="117.30582"
+       x="106.03748"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#0cc770;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;text-align:center;text-anchor:middle;fill:#0cc770;fill-opacity:1;stroke-width:0.26458332"
+         y="117.30582"
+         x="106.03748"
+         id="tspan872"
+         sodipodi:role="line">EdgeMesh</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#0cc770;stroke-width:0.86043835;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect876"
+       width="185.52147"
+       height="42.536938"
+       x="13.879802"
+       y="78.268585"
+       ry="16.756977" />
+    <rect
+       ry="18.842316"
+       y="52.235725"
+       x="13.905724"
+       height="47.830486"
+       width="185.46964"
+       id="rect880"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#f44b4b;stroke-width:0.91228044;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot924"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:1;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,14.566189,-140.58378)"><flowRegion
+         id="flowRegion926"><rect
+           id="rect928"
+           width="206.07111"
+           height="73.236023"
+           x="236.88077"
+           y="763.41046" /></flowRegion><flowPara
+         id="flowPara930"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'">· add vertex</flowPara><flowPara
+         id="flowPara932"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'">· add triangle</flowPara><flowPara
+         id="flowPara996"><flowSpan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'"
+           id="flowSpan1065">· </flowSpan><flowSpan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'"
+           id="flowSpan998">1 to n face split</flowSpan></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot934"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:1;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,-3.5987161,-12.739192)"><flowRegion
+         id="flowRegion936"><rect
+           id="rect938"
+           width="184.35284"
+           height="63.63961"
+           x="307.59146"
+           y="439.65656" /></flowRegion><flowPara
+         id="flowPara940">· enumerate edges</flowPara></flowRoot>    <flowRoot
+       transform="matrix(0.26458333,0,0,0.26458333,14.566189,-118.35115)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:1;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       id="flowRoot950"
+       xml:space="preserve"><flowRegion
+         id="flowRegion944"><rect
+           y="763.41046"
+           x="236.88077"
+           height="73.236023"
+           width="206.07111"
+           id="rect942" /></flowRegion><flowPara
+         id="flowPara948"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'">· add edge</flowPara></flowRoot>    <flowRoot
+       transform="matrix(0.26458333,0,0,0.26458333,88.744016,-140.58378)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:1;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       id="flowRoot962"
+       xml:space="preserve"><flowRegion
+         id="flowRegion956"><rect
+           y="763.41046"
+           x="236.88077"
+           height="73.236023"
+           width="206.07111"
+           id="rect954" /></flowRegion><flowPara
+         id="flowPara960"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'">· add face with</flowPara><flowPara
+         id="flowPara966"><flowSpan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'"
+           id="flowSpan1071">  arbitrary valence</flowSpan></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot976"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:1;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,-36.480743,-118.35115)"><flowRegion
+         id="flowRegion972"><rect
+           id="rect970"
+           width="206.07111"
+           height="73.236023"
+           x="236.88077"
+           y="763.41046" /></flowRegion><flowPara
+         id="flowPara974"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'">· edge flip</flowPara><flowPara
+         id="flowPara978"><flowSpan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'"
+           id="flowSpan1063">· </flowSpan><flowSpan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'"
+           id="flowSpan980">2 to 4 face split</flowSpan></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot992"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:1;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,88.744016,-118.35115)"><flowRegion
+         id="flowRegion984"><rect
+           id="rect982"
+           width="206.07111"
+           height="73.236023"
+           x="236.88077"
+           y="763.41046" /></flowRegion><flowPara
+         id="flowPara990"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum'">· rotate edge</flowPara></flowRoot>    <path
+       style="fill:none;stroke:#646464;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 36.382065,45.499374 H 56.560912"
+       id="path1000"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path1002"
+       d="M 83.156618,45.499374 H 133.66806"
+       style="fill:none;stroke:#646464;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       style="fill:none;stroke:#646464;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 156.484,45.499374 h 23.39165"
+       id="path1004"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="87.884148"
+       y="65.895813"
+       id="text1069"><tspan
+         sodipodi:role="line"
+         id="tspan1067"
+         x="87.884148"
+         y="69.768661"
+         style="stroke-width:0.26458332"></tspan></text>
+  </g>
+</svg>
