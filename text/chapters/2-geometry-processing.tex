@@ -93,7 +93,6 @@ As long as each mesh element can be uniquely identified, storing mesh properties
 Instead, the difficulty lies in storing the connectivity of a mesh, because algorithms operating on meshes require various adjacency information.
 For example, a simple way to smooth a mesh is to replace each vertex position with the centroid of all adjacent vertices.
 That algorithm needs to be able to enumerate all neighbor vertices of a specific vertex.
-% TODO: maybe show smoothing algorithm?
 
 Generally, an algorithm might request all the neighbors of any mesh element (see the table below).
 In many cases more specialized information is required (like \enquote{are these two elements adjacent?}, \enquote{what is the valence of this vertex?}, or \enquote{is this face a boundary face?}), but all of these questions can be answered through the basic neighborhood queries shown in the table below.

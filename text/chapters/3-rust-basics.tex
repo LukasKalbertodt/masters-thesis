@@ -105,7 +105,7 @@ fn collatz(start: u64) -> Vec<u64> {
   \item In control structures like \code{if} and \code{while}, the boolean expression does not need to be wrapped inside parenthesis \code{()}, but the body always has to be wrapped in braces \code|{}|.
   This is, again, exactly the opposite of the rules in \cpp or Java.
   It is more useful however, because this way, there are no parsing ambiguities.
-  \item Apart from \code{while}, there are also \code|for _ in _ {}| (discussed below) and \code|loop {}| (equivalent to \code|while true {}|) as loop constructs.
+  \item Apart from \code{while}, there are also \code|for _ in _ {}| (using iterators) and \code|loop {}| (equivalent to \code|while true {}|) as loop constructs.
   \item The feature \enquote{everything is an expression} allows most syntactic elements to be used in places where an expression is expected.
   One example is the assignment on line~22. While this in particular is also possible with the ternary operator \code{?:} in some other languages, Rust allows \code{match} expressions (similar to but more powerful than \code{switch} in \cpp), loops, full blocks and many more constructs in expression context.
   \item The last expression in a function is automatically returned (early returns with \code{return} are still possible).
@@ -256,8 +256,6 @@ enum Result<T, E> {
 
 Rust can perform a number of layout optimizations for enums and structs. One of the most important one is the \emph{null pointer optimization} which has the effect that \code{Option<&T>} and \code{&T} have exactly the same size (the size of \code{usize} to be precise). This works for all enums that are defined like \code{Option<T>} (the standard library type is not special) and for all types that never use the bit-pattern 0 (references do not, as they are always valid).
 
-To use a value of type \code{Option<T>}, a programmer has a variety of possibilities. They can use a \code{match} block or use one of \code{Option}'s method, like \code{unwrap_or}: it returns the inner value, if there is one, or a provided default value, if the option was \code{None}.
-% TODO: maybe remove the above paragraph
 
 \subsubsection*{Error Handling}
 
@@ -290,7 +288,7 @@ The code as shown does not compile, because it cannot be assumed that two instan
 To fix the problem, the function must declare its requirements on \code{T}, which is done via so called \emph{trait bounds}.
 In this particular instance, it is sufficient to change the generic type declaration to \code{<T: PartialOrd>}, adding a bound for the trait \code{PartialOrd}.
 
-\vspace{7mm}
+\vspace{4mm}
 \begin{figure}[h]
   \centering
   \begin{minipage}[t]{.55\textwidth}
@@ -327,7 +325,7 @@ error[E0369]: binary operation `<` cannot
   }
   \label{fig:clamp}
 \end{figure}
-\vspace{7mm}
+\vspace{4mm}
 
 A \emph{trait} defines an interface: it describes functionality without providing that functionality itself.
 The definition of a trait contains a number of items (usually methods) whose signatures are specified, but which are usually lacking an implementation (e.\,g. a method body).
@@ -435,7 +433,7 @@ Taking this further, with \code{map}, each item can be changed to something else
 
 While this high-level programming looks like it involves many method calls, these iterator chains are compiled down to almost optimal machine code most of the time.
 
-\vspace{5mm}
+\vspace{8mm}
 \section{Ownership and Borrowing}
 
 In order to guarantee memory safety and robustness, Rust uses a few concepts not found in most other languages.
