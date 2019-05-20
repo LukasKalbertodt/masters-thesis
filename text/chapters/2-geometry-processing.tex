@@ -142,33 +142,30 @@ However, in this thesis, \enquote{fast} implies a runtime of $\mathcal O(|r|)$ w
 One could store all the neighborhood information explicitly to meet those asymptotic runtime requirements (i.\,e. each face stores a list of all adjacent faces, a list of all adjacent edges and a list of all adjacent vertices; similarly for vertices and edges).
 However, this approach has tremendous memory overhead and it would be very slow to modify the mesh, as a lot of information has to be updated.
 
-\vfill
 \subsection{Performance Characteristics of Modern Hardware}
 
-In order to create fast data structures, some knowledge of modern computer hardware is required.
-This sub-section gives a very coarse overview over some aspect of this topic.
+Since data structures are expected to provide adjacency information in $\mathcal O(|r|)$ (which is optimal, asymptotically speaking), the only difference in execution speed is due to constants factors.
+In order to create data structures that are fast in practice, some knowledge of modern computer hardware is required.
+This sub-section gives a very coarse overview over some aspect of this topic, focusing on x86-64 CPUs as they are used in the vast majority of desktop PCs.
 A lot of information throughout this section is taken from \cite{hennessy2017computer}, particularly from chapter~2 and appendix~B.
 
 For some decades now, the speed of processors improved more quickly than the speed of volatile memory.
 On current hardware, accessing the main memory takes approximately between 50\,ns and 100\,ns.
 As modern processors are clocked at around 3\,GHz, the memory access time corresponds to roughly 150 to 300 cycles.
-In order not to waste a lot of time waiting for the memory, different techniques are used, the most notable being \emph{CPU caches}.
+Different techniques are used to avoid wasting a lot of time waiting for the memory, the most notable being \emph{CPU caches}: processor-internal memory that is smaller but a lot faster than main memory.
 
-The \emph{principle of locality} states that memory access patterns of programs tend to be fairly predictable.
+% segue
+CPU caches work by exploiting the \emph{principle of locality}, which states that memory access patterns of programs tend to be fairly predictable.
 Temporal locality means that recently accessed data is often accessed again shortly afterwards;
 spatial locality means that consecutive memory accesses are usually accessing memory locations close to one another.
-This behavior is exploited by CPU caches, processor-internal memory that is smaller but a lot faster than main memory.
 For each memory access, the processor checks whether the requested data is already present in one of the CPU caches.
 If that is the case (\emph{cache hit}), that value can be used and the main memory does not need to be accessed.
 If the cache does not contain the requested data (\emph{cache miss}), the value has to be loaded from main memory and is then stored in the cache (potentially replacing other data).
 Most modern processors have multiple layers of caches; see table~\ref{tbl:caches} for typical sizes and access times of caches from different layers.
 
-To use the spatial locality of programs, data is always loaded in \emph{cache lines}, blocks of memory typically 64 bytes long (on current x86 processors).
+To use the spatial locality of programs, data is always loaded in \emph{cache lines}, blocks of memory typically 64 bytes long.
 That way, accessing multiple values in one cache line only requires accessing main memory at most once.
-Additionally, the \emph{prefetcher} -- also a part of the CPU -- is used to load new cache lines from main memory even before the program requests them (it does this by predicting what memory is likely to be accessed next).
-
-\vspace{5mm}
-\newpage
+Additionally, the \emph{prefetcher} -- also a part of the CPU -- loads new cache lines from main memory even before the program requests them by predicting what memory is likely to be accessed next.
 
 \begin{table}[t]
   \centering
