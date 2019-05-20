@@ -1,14 +1,14 @@
 \chapter{Introduction}
 
-\emph{Polygon meshes} are an essential tool in many domains of computer graphics, particularly in the field \emph{geometry processing}.
-For algorithms operating on a polygon mesh to function, the data structure representing that mesh needs to offer certain capabilities, such as fast access to certain neighborhood-information or support for non-triangular faces.
+\emph{Polygon meshes} are an essential tool in many domains of computer graphics, particularly in the field of \emph{geometry processing}.
+For algorithms operating on a polygon mesh to work, the data structure representing that mesh needs to offer certain capabilities, such as fast access to neighborhood-information or support for non-triangular faces.
 To satisfy these requirements (which are widely varying between different algorithms) while still being as fast and as memory-efficient as possible, various mesh data structures have been developed over time.
 
-Interestingly, most existing geometry processing libraries offer only one particular of those data structures: the \emph{half edge mesh}.
-While the half edge mesh is suitable for most applications due to its large set of capabilities, in many cases, not all of them are needed and a less capable but faster data structure could be used instead.
-A library offering multiple different data structures would need to abstract over them to avoid having to write all algorithms and utility procedures for each data structure separately.
+Interestingly, most existing geometry processing libraries offer only one particular such data structure: the \emph{half edge mesh}.
+While the half edge mesh is suitable for most applications due to its large set of capabilities, in many cases not all of them are needed and a less capable but faster data structure could be used instead.
+A library offering multiple different data structures would need to abstract over them to avoid having to write all the algorithms and utility procedures for each data structure separately.
 As the vast majority of existing libraries are written in \cpp, it can be conjectured that their reason for only offering one data structure is \cpp lacking the means to express this abstraction in a fast and convenient way.
-Specifically, abstraction via abstract classes with virtual methods incurs a runtime overhead and abstraction via \emph{\cpp templates} can be difficult due to bad compiler error messages and the absence of a formal interface.
+Specifically, abstraction via abstract classes with virtual methods incurs a runtime overhead and abstraction via \emph{\cpp templates} can be difficult due to verbose compiler error messages and the absence of a formal interface.
 
 \vspace{5mm}
 
@@ -20,9 +20,9 @@ Specifically, abstraction via abstract classes with virtual methods incurs a run
 
 \vspace{1cm}
 
-As part of this thesis, the open-source geometry processing library \code{lox} was developed.
-It is dual-licensed as \hyperlink{mit}{MIT}/\hyperlink{apache2}{Apache-2.0} and written in the programming language Rust.
-One of the main reasons for choosing Rust is its \emph{trait} system which -- as a tool for abstraction -- promises to combine the speed of \cpp templates with the convenience of a checked and explicit interface.
+The open-source geometry processing library \code{lox}, developed as part of this thesis, is an attempt at implementing such an abstraction over different data structures.
+It is dual-licensed as \hyperlink{mit}{MIT}/\hyperlink{apache2}{Apache-2.0} and written in the Rust programming language.
+One of the main reasons for choosing Rust is its \emph{trait} system which, as a tool for abstraction, promises to combine the speed of \cpp templates with the convenience of a checked and explicit interface.
 The main goal of this thesis is to release \code{lox} as a functional and well-designed library that can easily be used by other programmers in many areas related to computer graphics and geometry processing.
 
 \newpage
@@ -38,7 +38,7 @@ Using the library \code{lox} and the experience from creating it, this thesis at
 \vspace{1cm}
 
 % TODO: write out numbers?
-This paper starts by laying out some necessary background information.
+This report starts by laying out some necessary background information.
 Chapter~2 explains terminology around polygon meshes and discusses why mesh data structures are needed and what makes it hard to design fast data structures.
 This includes some information about performance on modern hardware.
 The chapter also lists and describes some existing data structures as well as existing geometry processing libraries.
@@ -46,7 +46,7 @@ Chapter~3 introduces the programming language Rust and explains its core concept
 
 Chapter~4 discusses major design decisions and notable implementation details of \code{lox}.
 In chapter~5, the library is evaluated and compared to existing libraries regarding execution speed and other factors.
-Chapter~6 briefly reviews the main advantages and problems of Rust which were noticed when creating the library.
+Chapter~6 briefly reviews the main advantages and problems of Rust which came up while creating the library.
 The last chapter summarizes all findings and lays out a plan for the near-term future of \code{lox}.
 
 
