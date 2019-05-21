@@ -190,6 +190,23 @@ The actual measurement was performed on a completely idle \textsf{Thinkpad T-460
 
 %TODO: add and discuss results
 
+\begin{figure}[p]
+  \centering
+  \vspace{-7mm}
+  \centerline{
+    \includegraphics[width=1.18\textwidth]{svg2pdf/SOAvsAOS}
+  }
+  \caption{
+    Results of the memory layout benchmark.
+    The numbers on the far left show the total number of items.
+    The label for each pair of bars encodes the number of fields: \textsf{X:Y} means that each item has \textsf{X} fields, \textsf{Y} of which are used.
+    The height of the bars is the mean of all measurements, the error bar displays the standard deviation.
+  }
+  \label{fig:memory-layout-bench}
+\end{figure}
+
+
+
 \newpage
 \section{Data Structures and Mesh Traits}
 
