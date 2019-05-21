@@ -173,10 +173,10 @@ The time required to sum up all or some of these values was measured to get an i
 The different benchmarks attempted to cover the following parameter space:
 
 \begin{itemize}
-  \item \textbf{Memory layout}: AOS or SOA.
+  \item \textbf{Memory layout}: AoS or SoA.
   \item \textbf{Traversal kind}: random or sequential.
   In the sequential benchmarks, a loop simply iterates sequentially over all indices starting from 0.
-  The random benchmarks used the first field's \code{u32} value as next index to jump to.
+  The random benchmarks use the first field's \code{u32} value as next index to jump to.
   This was done to not include the generation of random numbers in the measured time.
   Notably, these \code{u32} values were already generated to be valid indices (i.\,e. smaller than the total number of items) and thus, the timed code does not need to perform any additional work on these values.
   \item \textbf{Total number of items}: all benchmarks were performed with 10,000, 100,000, 1,000,000 and 10,000,000 items.
@@ -184,9 +184,34 @@ The different benchmarks attempted to cover the following parameter space:
   The syntax X:Y means that each item has X many fields and Y many fields were included in the sum, the other fields were ignored.
 \end{itemize}
 
+Getting reliable data from a benchmark is difficult because many factors need to be considered -- failing to pay attention to one of them could already render the measured data useless.
+To deal with the inherent noise, almost all benchmarks execute the code that needs to be measured many times and analyze all measured durations to obtain a useful point estimate (e.\,g. the mean).
+Performing a benchmark that attempts to measure the effect of CPU caches is particularly challenging, because the cache state persists over multiple iterations of the same code.
+That in turn means that repeated measurements are not independent from one another, making the measured data unusable or very hard to analyze.
+
+One idea on how to tackle this problem is to simply flush all caches.
+This is actually possible on most x86-64 CPUs with the \code{WBINVD} instruction, which first writes all cache contents back to main memory and then invalidates all CPU internal caches\footnote{There is also the \codebox{INVD} instruction which invalidates caches without writing them back, but it is highly unsafe as it globally destroys the consistency of memory operations, likely crashing or corrupting all programs currently running on the CPU (including the kernel).}.
+As \code{WBINVD} is a privileged instruction, it can only be executed in ring 0 (the kernel mode).
+But since benchmarks should not run in kernel mode, a special kernel module was loaded, allowing user-land programs to trigger execution of \code{WBINVD}.
+The benchmarking code would use that trigger before each repetition of the benchmarked code.
+
+Unfortunately, executing the instruction via the kernel module itself takes a significant amount of time (approximately 750\,µs on the benchmark machine).
+Many of the benchmarks have a per-iteration time of less than that, making \code{WBINVD} a non-tolerable overhead.
+Excluding the duration of cache invalidation from the total measured time is not easily possible either:
+because measuring short durations does not yield reliable data, multiple repetitions are measured together and not on their own.
+Because of this massive overhead, \code{WBINVD} was dropped as possible solution.
+
+Instead, each repetition of the benchmarking code was performed on separate data.
+Before executing the benchmark, a copy of the working data was prepared for each iteration, meaning that the cache state produced by one repetition does not affect other iterations.
+As CPU caches have very complex behavior, the absence of cross-repetition cache effects cannot be completely guaranteed, but the probability of them occurring was reduced substantially.
+
 The benchmark code and more details on the benchmark can be found in the repository of this thesis in the folder \code{benchmarks/memory-layout/}.
 The benchmark uses the framework \emph{Criterion} \cite{criterion} which features a sophisticated statistical analysis of the raw measurements.
-The actual measurement was performed on a completely idle \textsf{Thinkpad T-460p} (with an \textsf{Intel i7-6700\,HQ} running \textsf{Ubuntu 18.04}) and ran for approximately three hours.
+However, only the mean and standard deviation were used to produce the graph seen in this report.
+
+The actual measurements was performed on a completely idle \textsf{Thinkpad T-460p}, containing an \textsf{Intel i7-6700\,HQ} and running \textsf{Ubuntu 18.04}.
+The \textsf{Intel i7-6700\,HQ} has 6\,MB of L3 cache, 1\,MB of L2 cache and 256\,KiB of L1 cache.
+The full benchmark ran for approximately three hours.
 
 %TODO: add and discuss results
 
