@@ -369,7 +369,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -379,73 +379,9 @@
      id="layer1"
      transform="translate(-4.5425509,-159.70974)">
     <g
-       id="g2127"
-       transform="translate(53.332073,-15.041721)">
-      <rect
-         ry="0.61297292"
-         y="25.051458"
-         x="34.242199"
-         height="7.8678284"
-         width="34.283218"
-         id="rect2121"
-         style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#2980b9;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         x="51.378162"
-         y="30.69899"
-         id="text2125"><tspan
-           sodipodi:role="line"
-           x="51.378162"
-           y="30.69899"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;text-align:center;text-anchor:middle;stroke-width:0.26458332"
-           id="tspan2129">Mesh</tspan></text>
-    </g>
-    <g
-       id="g2139"
-       transform="translate(53.353679,10.824416)">
-      <rect
-         ry="0.61297292"
-         y="25.051458"
-         x="34.242199"
-         height="7.8678284"
-         width="34.283218"
-         id="rect2133"
-         style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#2980b9;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         x="51.378162"
-         y="30.69899"
-         id="text2137"><tspan
-           sodipodi:role="line"
-           id="tspan2135"
-           x="51.378162"
-           y="30.69899"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;text-align:center;text-anchor:middle;stroke-width:0.26458332">MeshMut</tspan></text>
-    </g>
-    <g
        transform="translate(11.893494,10.824416)"
-       id="g2147">
-      <rect
-         style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#b8b920;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-         id="rect2141"
-         width="34.283218"
-         height="7.8678284"
-         x="34.242199"
-         y="25.051458"
-         ry="0.61297292" />
-      <text
-         id="text2145"
-         y="30.69899"
-         x="51.378162"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;text-align:center;text-anchor:middle;stroke-width:0.26458332"
-           y="30.69899"
-           x="51.378162"
-           id="tspan2143"
-           sodipodi:role="line">TriMesh</tspan></text>
+       id="g2147"
+       style="display:inline">
       <path
          style="fill:none;stroke:#000000;stroke-width:0.64999998;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#EmptyTriangleOutM)"
          d="M 92.843993,23.609707 V 8.5611434"
@@ -494,6 +430,74 @@
          id="path3014"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="cccc" />
+      <g
+         id="g1031">
+        <rect
+           ry="0.61297292"
+           y="25.051458"
+           x="34.242199"
+           height="7.8678284"
+           width="34.283218"
+           id="rect2141"
+           style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#fcc723;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="51.378162"
+           y="30.69899"
+           id="text2145"><tspan
+             sodipodi:role="line"
+             id="tspan2143"
+             x="51.378162"
+             y="30.69899"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;text-align:center;text-anchor:middle;stroke-width:0.26458332">TriMesh</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g2127"
+       transform="translate(53.332073,-15.041721)">
+      <rect
+         ry="0.61297292"
+         y="25.051458"
+         x="34.242199"
+         height="7.8678284"
+         width="34.283218"
+         id="rect2121"
+         style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#2980b9;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         x="51.378162"
+         y="30.69899"
+         id="text2125"><tspan
+           sodipodi:role="line"
+           x="51.378162"
+           y="30.69899"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;text-align:center;text-anchor:middle;stroke-width:0.26458332"
+           id="tspan2129">Mesh</tspan></text>
+    </g>
+    <g
+       id="g2139"
+       transform="translate(53.353679,10.824416)">
+      <rect
+         ry="0.61297292"
+         y="25.051458"
+         x="34.242199"
+         height="7.8678284"
+         width="34.283218"
+         id="rect2133"
+         style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#2980b9;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         x="51.378162"
+         y="30.69899"
+         id="text2137"><tspan
+           sodipodi:role="line"
+           id="tspan2135"
+           x="51.378162"
+           y="30.69899"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444447px;font-family:Inconsolata;-inkscape-font-specification:Inconsolata;text-align:center;text-anchor:middle;stroke-width:0.26458332">MeshMut</tspan></text>
     </g>
     <g
        id="g2155"
@@ -505,7 +509,7 @@
          height="7.8678284"
          width="34.283218"
          id="rect2149"
-         style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#b8b920;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+         style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#fcc723;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -528,7 +532,7 @@
          height="7.8678284"
          width="34.283218"
          id="rect2165"
-         style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#b6b420;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#fcc723;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          inkscape:label="rect2165" />
       <text
          xml:space="preserve"

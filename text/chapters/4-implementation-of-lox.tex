@@ -8,7 +8,6 @@ The library consists of a single crate (one minor exception is explained later) 
 As \code{lox} contains a variety of features, it is likely that some users do not need all of them.
 To avoid compiling parts of the library that are unused, \code{lox} uses \emph{Cargo features} to let the user disable those parts individually.
 For example, if a user does not read from or write to files, the IO module can be disabled completely and thus will not be compiled.
-% TODO: add some feature gates
 
 % TODO: maybe put this in a box or make it stand out a bit?
 As an aside:
@@ -206,7 +205,7 @@ It can thus be beneficial to imagine what other types could reasonably implement
 This could include basic graph data structures, implicitly defined polygon meshes or other highly specialized data structures.
 To reduce the scope of this problem, this thesis focused on known mesh data structures provided by \code{lox}.
 
-Finding a good design for such a central interface requires knowledge about everything that interacts with it and a fair amount of experience from working with different solutions.
+Finding a good design for such a central interface requires knowledge about everything that interacts with it as well as a fair amount of experience from working with different solutions.
 While quite some experience was gained during \code{lox}'s development so far, it is not sufficient to commit to one specific solution (in the opinion of the author).
 Instead, a few more design iterations are to be expected.
 In particular, since the library was not yet (as time of this writing) publicly released, other programmers did not have the chance to provide feedback.
@@ -216,7 +215,7 @@ This section describes the design consideration and introduces a few possible so
 \subsubsection*{Basic and Optional Capabilities}
 
 A good starting point is to define the basic features of a \enquote{mesh} (the lowest common denominator) and to identify \emph{optional} capabilities.
-All basic features are defined in the trait \code{Mesh} (in OOP terms: the very top of the class hierarchy).
+All basic features are defined in the trait \code{Mesh} (in OOP\footnote{Object Oriented Programming} terms: the very top of the class hierarchy).
 Describing the optional capabilities (i.\,e. the features not part of \code{Mesh}) in the trait system is the main challenge in finding a good design.
 Note that for now, adjacency information are ignored.
 
@@ -250,7 +249,7 @@ Everything a mesh data structure has to offer is now in one of three categories 
   \centering
   \includegraphics[width=.98\textwidth]{svg2pdf/mesh-features}
   \caption{
-    A couple of example mesh features categorized by which capabilities they require (i.\,e. this diagram is not complete).
+    A couple of example mesh features categorized by which capabilities they require (this diagram is not complete).
   }
   \label{fig:mesh-features}
 \end{figure}
@@ -338,7 +337,8 @@ Luckily, this problem can simply be worked around by using types instead of valu
 
 \subsubsection*{Adjacency Traits}
 
-All functionality regarding adjacency information has to be defined in traits as well which has much the same design considerations.
+All functionality regarding adjacency information has to be defined in traits as well.
+This has very similar design considerations:
 Defining too many traits (e.\,g. one trait per basic adjacency query) would make the whole API more confusing while a single trait would not be flexible enough.
 The current design consists of three traits:
 
@@ -369,6 +369,78 @@ Figure~\ref{fig:mesh-traits} shows an overview of all currently existing traits.
   \label{fig:mesh-traits}
 \end{figure}
 
+
+\subsubsection*{Data Structures in \codebox{lox}}
+
+At the time of this writing, \code{lox} provides three data structures:
+the shared vertex mesh, the half edge mesh and the directed edge mesh.
+However, it is planned to add more data structures to the library in the near future.
+
+%TODO: maybe actually implement this?
+The half edge mesh and directed edge mesh can be configured at compile time.
+Both meshes allow specifying which optional fields (e.\,g. \code{prev}) are stored and the half edge mesh offers an option to restrict the mesh to triangular faces (which does not change the underlying data structure, but makes some operations faster).
+The configuration is done via a type parameter and a trait \code{Config}.
+The system for the half edge mesh looks like this:
+
+\begin{rustcode}
+trait Config {
+    type FaceKind: FaceKind;
+    type StorePrev: Bool;
+}
+
+struct HalfEdgeMesh<C: Config> { /* ... */ }
+
+// Type-level bool
+trait Bool {}
+enum True {}
+enum False {}
+impl Bool for True {}
+impl Bool for False {}
+\end{rustcode}
+
+As mentioned previously, Rust does not yet support using constants in trait bounds.
+For that reason, the \code{Config} trait uses associated types instead of associated constants to store type-level values.
+The \emph{FaceKind} trait is the one defined earlier in this section.
+
+The following table shows which traits are implemented by which data structure.
+
+\begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \setlength{\dashlinedash}{.4mm}
+  \setlength{\dashlinegap}{1mm}
+  \begin{tabular}{l|c:c:c}
+  & \code{SharedVertexMesh} & \code{DirectedEdgeMesh} & \code{HalfEdgeMesh} \\\hline
+  \code{Mesh}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
+  \code{MeshMut}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
+  \code{EdgeMesh}
+    & \textcolor{red}{\textbf{\textsf No}}
+    & \textcolor{red}{\textbf{\textsf No}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hline
+  \code{BasicAdj}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
+  \code{FullAdj}
+    & \textcolor{red}{\textbf{\textsf No}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
+  \code{EdgeAdj}
+    & \textcolor{red}{\textbf{\textsf No}}
+    & \textcolor{red}{\textbf{\textsf No}}
+    & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hline
+  Face kind
+    & \code{TriMesh}
+    & \code{TriMesh}
+    & \emph{configurable}
+  \end{tabular}
+  \renewcommand{\arraystretch}{1.0}
+\end{center}
 
 
 
