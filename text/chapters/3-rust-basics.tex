@@ -287,7 +287,7 @@ Rust supports generic programming, meaning that types and functions can be defin
 A few examples of generic types, like \code{Vec<T>} and \code{Option<T>}, were already mentioned above.
 When introducing a type parameter, a programmer cannot assume anything about it (except that its size is known at compile time and thus that an instance of that type can be stored on the stack).
 
-For example, see figure~\ref{fig:clamp}.
+See for example figure~\ref{fig:clamp}:
 It shows a function, generic over \code{T}, that returns a value clamped into the range defined by \code{min} and \code{max}.
 The code as shown does not compile, because it cannot be assumed that two instances of type \code{T} can be compared via \code{<} or \code{>}.
 To fix the problem, the function must declare its requirements on \code{T}, which is done via so called \emph{trait bounds}.
@@ -399,7 +399,7 @@ Additionally, the trait itself can already provide default implementations for i
       }
     \end{rustcode}
     \caption{
-      The standard library's \codebox{Iterator} trait (provided methods omitted here).
+      The standard library's \codebox{Iterator} trait.
       The implementing type specifies what items are yielded from the iterator via the associated type.
     }
   \end{subfigure}
@@ -426,7 +426,7 @@ Additionally, the trait itself can already provide default implementations for i
 
 
 Traits are used by many other Rust features, including operator overloading (e.\,g. the \code{PartialOrd} trait mentioned above), destructors (the \code{Drop} trait) and closures.
-Particularly interesting are the \code{Send} and \code{Sync} traits which form the foundation for memory safe concurrency (i.\,e. no data races).
+Particularly interesting are the \code{Send} and \code{Sync} traits which form the foundation for memory safe concurrency (i.\,e. preventing all data races).
 
 Traits can be used in two ways: statically and dynamically dispatched.
 The kind of dispatch is not specified in the trait definition, but in how the trait is used.
@@ -451,8 +451,8 @@ An example of the two types of usage can be seen in figure~\ref{fig:dispatch}.
   \end{minipage}
   \caption{
     The two types of dispatch.
-    On the left, static dispatch is used (via type parameter with trait bound).
-    On the right, dynamic dispatch is used (via trait object).
+    On the left, static dispatch is used (via a type parameter with trait bound).
+    On the right, dynamic dispatch is used (via a trait object).
   }
   \label{fig:dispatch}
 \end{figure}
@@ -466,7 +466,7 @@ Dynamic dispatch, on the other hand, uses \emph{vtables} and dynamic/virtual cal
 The main advantage of monomorphization over dynamic dispatch is execution speed.
 With static dispatch, the compiler has full knowledge about the type and method body and is thus able to optimize the generated code very well.
 With \emph{inlining}, the optimizer is often able to completely remove the call to the trait method, making the usage of traits completely zero-overhead.
-This is the main reason for how Rust can achieve \emph{zero cost abstractions}.
+This is the main way by which Rust is able to achieves \emph{zero cost abstractions}.
 
 An extreme case of good optimization due to static dispatch is the \code{Iterator} trait.
 An iterator is simply a sequence of items of a specific type.
@@ -477,7 +477,7 @@ This expression is an iterator over the items 2, 4, 6.
 Taking this further, with \code{map}, each item can be changed to something else.
 \code{(1..8).filter(|&x| x % 2 == 0).map(|x| x * x)} is an iterator over the items 4, 16, 36.
 
-While this high-level programming looks like it involves many method calls and significant runtime overhead, these iterator chains are compiled down to almost optimal machine code most of the time.
+While programming at this high a level looks like it involves many method calls and significant runtime overhead, these iterator chains are compiled down to almost optimal machine code most of the time.
 
 \vspace{8mm}
 \section{Ownership and Borrowing}
