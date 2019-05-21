@@ -593,3 +593,15 @@ Within such a block, the programmer can work with raw pointers and do a few othe
 But again, using \code{unsafe} is not necessary in the vast majority of Rust code.
 It is actually considered bad style to use \code{unsafe} code where it can be avoided.
 Almost all \code{unsafe} code is hidden behind safe interfaces; so while building blocks like \code{Vec<T>} and \code{Mutex<T>} cannot be efficiently implemented without \code{unsafe} code, users can use their safe interface without needing to worry about memory safety.
+
+
+\vfill
+
+\begin{center}
+\rule{.8\textwidth}{.15mm}
+\end{center}
+
+As can be seen from this chapter, Rust is a good choice for writing robust high-performance applications and libraries.
+In fact, in the opinion of the author, Rust is a better choice than \cpp for almost all new projects.
+The next chapter discusses how this language is used to create \code{lox}.
+\vspace{1cm}
