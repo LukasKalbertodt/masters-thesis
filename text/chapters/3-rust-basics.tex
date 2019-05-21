@@ -282,7 +282,7 @@ Rust supports generic programming, meaning that types and functions can be defin
 A few examples of generic types, like \code{Vec<T>} and \code{Option<T>}, were already mentioned above.
 When introducing a type parameter, a programmer cannot assume anything about it (except that its size is known at compile time and thus that an instance of that type can be stored on the stack).
 
-See figure~\ref{fig:clamp} for example.
+For example, see figure~\ref{fig:clamp}.
 It shows a function, generic over \code{T}, that returns a value clamped into the range defined by \code{min} and \code{max}.
 The code as shown does not compile, because it cannot be assumed that two instances of type \code{T} can be compared via \code{<} or \code{>}.
 To fix the problem, the function must declare its requirements on \code{T}, which is done via so called \emph{trait bounds}.
@@ -330,9 +330,8 @@ error[E0369]: binary operation `<` cannot
 A \emph{trait} defines an interface: it describes functionality without providing that functionality itself.
 The definition of a trait contains a number of items (usually methods) whose signatures are specified, but which are usually lacking an implementation (e.\,g. a method body).
 A trait can be implemented by multiple types and each type can implement multiple traits.
-This is done with an \code{impl Trait for Type} block.
-That block then needs to implement all trait items, i.\,e. provide the actual functionality.
-See figure~\ref{fig:shapes} for an example.
+This is done with an \code{impl Trait for Type} block, in which all trait items need to be implemented, i.\,e. provided with a body.
+See figure~\ref{fig:shapes} for a simple example.
 
 
 \begin{figure}[t]
@@ -379,6 +378,48 @@ See figure~\ref{fig:shapes} for an example.
   \label{fig:shapes}
 \end{figure}
 
+Apart from methods and functions, traits can contain associated types and constants, which allow the implementing type to specify a type or a constant value, respectively.
+See figure~\ref{fig:associated-type-const} for two examples.
+Additionally, the trait itself can already provide default implementations for its items, which can (but do not have to) be overwritten by \code{impl} blocks.
+
+
+\begin{figure}[b]
+  \centering
+    \begin{subfigure}[t]{.47\textwidth}
+    \begin{rustcode}
+      trait Iterator {
+          type Item;
+          fn next(&mut self)
+              -> Option<Self::Item>;
+      }
+    \end{rustcode}
+    \caption{
+      The standard library's \codebox{Iterator} trait (provided methods omitted here).
+      The implementing type specifies what items are yielded from the iterator via the associated type.
+    }
+  \end{subfigure}
+  \hspace{.04\textwidth}
+  \begin{subfigure}[t]{.47\textwidth}
+    \begin{rustcode}
+      trait Float {
+          const PI: Self;
+          const INFINITY: Self;
+          // ...
+      }
+    \end{rustcode}
+    \caption{
+      A trait that could be written to abstract over \codebox{f32} and \codebox{f64}.
+      Each implementing type needs to provide special values of itself via the associated constants.
+    }
+  \end{subfigure}
+  \caption{
+    Examples for associated types and constants.
+  }
+  \label{fig:associated-type-const}
+\end{figure}
+
+
+
 Traits are used by many other Rust features, including operator overloading (e.\,g. the \code{PartialOrd} trait mentioned above), destructors (the \code{Drop} trait) and closures.
 Particularly interesting are the \code{Send} and \code{Sync} traits which form the foundation for memory safe concurrency (i.\,e. no data races).
 
@@ -387,7 +428,7 @@ The kind of dispatch is not specified in the trait definition, but in how the tr
 This means that a single trait can be used with dynamic dispatch in one situation and with static dispatch in another.
 An example of the two types of usage can be seen in figure~\ref{fig:dispatch}.
 
-\begin{figure}[b]
+\begin{figure}[t]
   \centering
     \begin{minipage}[t]{.49\textwidth}
     \begin{rustcode}
@@ -431,7 +472,7 @@ This expression is an iterator over the items 2, 4, 6.
 Taking this further, with \code{map}, each item can be changed to something else.
 \code{(1..8).filter(|&x| x % 2 == 0).map(|x| x * x)} is an iterator over the items 4, 16, 36.
 
-While this high-level programming looks like it involves many method calls, these iterator chains are compiled down to almost optimal machine code most of the time.
+While this high-level programming looks like it involves many method calls and significant runtime overhead, these iterator chains are compiled down to almost optimal machine code most of the time.
 
 \vspace{8mm}
 \section{Ownership and Borrowing}
@@ -451,7 +492,7 @@ In Rust, after the assignment, the original collection can be accessed through t
 The latter is checked by the compiler and compilation will fail with an error when a moved value is accessed (see figure~\ref{fig:string-move}).
 
 
-\begin{figure}[b]
+\begin{figure}[t]
   \centering
   \begin{minipage}[t]{.5\textwidth}
     \begin{rustcode}
@@ -510,7 +551,7 @@ In only a very few situations, it is necessary to work around this problem, whic
 One notable \enquote{escape hatch} is called \emph{interior mutability}, which describes the ability to mutate some data through a \code{&T} reference.
 This is only possible via carefully designed interface, like the type \code{Mutex} from the standard library.
 
-\begin{figure}[b]
+\begin{figure}[t]
   \centering
     \begin{minipage}[t]{.49\textwidth}
     \begin{rustcode}
