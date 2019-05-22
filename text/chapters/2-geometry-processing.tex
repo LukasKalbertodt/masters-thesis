@@ -169,7 +169,6 @@ Additionally, the \emph{prefetcher} -- also a part of the CPU -- loads new cache
 
 \begin{table}[t]
   \centering
-  \small
   \sffamily
   \begin{tabular}{llllll}
   & \textbf{CPU registers} & \textbf{L1 cache} & \textbf{L2 cache} & \textbf{L3 cache} & \textbf{Main memory} \\\hline
@@ -196,7 +195,7 @@ Unfortunately, all ways of achieving stable pointers (e.\,g. by using a linked l
 A faster alternative is to store all elements in a growing array and refer to them via their index in that array (pointers cannot be used since they are invalidated when the growing array has to reallocate).
 This can be less convenient but has the additional benefit that the indices can often be stored with only 32 bits, reducing the memory consumption of the data structure on 64-bit platforms.
 
-Furthermore, storing dynamic lists (a sequence of elements whose length is not known at compile time) should be avoided.
+Furthermore, storing dynamic lists -- a sequence of elements whose length is not known at compile time -- should be avoided.
 That's because the list data cannot be stored inline, requiring additional allocations and causing cache misses when accessing the data.
 Additionally, dynamic lists incur memory overhead as they have to store the length in some way.
 
@@ -212,7 +211,7 @@ This allows programmers to easily associate data with edges.
 Of course, edges can always be referred to by specifying the two adjacent vertices or faces, but in many situations, a single integer is preferred.
 Additionally, the edge IDs assigned by the data structure should ideally start at 0 and count up from there, as this allows to store edge properties in an array without wasting memory.
 
-Generally, two types of data structures can be distinguished: \emph{face-based} and \emph{edge-based} data structures.
+Generally, two types of data structures can be distinguished: \emph{face-based} and \emph{edge-based} ones.
 The former store the main adjacency information per face, the latter per edge.
 As discussed in the last section, storing lists with dynamic length should be avoided, meaning that only neighbors bounded in number should be stored explicitly.
 As illustrated in table~\ref{tab:max-neighbors}, the number of possible neighbors per vertex are unbounded, which is why there are no relevant vertex-based data structures.
@@ -563,7 +562,7 @@ The following table shows the most important data structures with their properti
 The column \emph{Poly} shows whether the data structure supports polygonal faces; \emph{Edges} whether it can expose full edges; and \emph{Full Adjacency} whether it supports all adjacency queries between faces and vertices.
 
 The memory column specifies the memory consumption per vertex for an average triangle mesh.
-Such a typical triangle mesh contains approximately twice as many faces and thrice as many edges as it contains vertices: $|F| \approx 2|V|$ and $|E| \approx 3|V|$) (cf.~\cite{botsch2010polygon}).
+Such a typical triangle mesh contains approximately twice as many faces and thrice as many edges as it contains vertices: $|F| \approx 2|V|$ and $|E| \approx 3|V|$ (cf.~\cite{botsch2010polygon}).
 The memory consumption $M$ is thus calculated as:
 \[
   M = \langle\text{bytes per vertex}\rangle + 2 \cdot \langle\text{bytes per face}\rangle + 3 \cdot \langle\text{bytes per full edge}\rangle

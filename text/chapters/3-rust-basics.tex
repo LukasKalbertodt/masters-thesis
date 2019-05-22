@@ -87,13 +87,13 @@ Some explanations and remarks to the code above:
   \item A library in Rust is a single compilation unit, called a \emph{crate}.
   Each crate defines symbols in a module tree.
   Modules are similar to namespaces in \cpp, but the module trees in Rust are often deeper than nested namespaces in \cpp.
-  \code{::} is used as separator in paths to symbols (e.\,g. \code{std::time::Duration}).
+  The punctuation \code{::} is used as separator in paths to symbols (e.\,g. \code{std::time::Duration}).
   With \code{use} (line~1), symbol names can be imported into scope.
   A few very important names (listed in \code{std::prelude}) are always imported.
   \item The keyword \code{fn} defines a function.
   Parameters are listed in the parentheses after the function name (parameter name and type are swapped compared to \cpp), the return type is specified after \code{->}.
   \item The \code{main} function (line~6) is the entry point of Rust programs.
-  \item Variables (more specifically: \emph{variable bindings}) are created with \code{let} (line~9).
+  \item Variables (more precisely: \emph{variable bindings}) are created with \code{let} (line~9).
   \item Rust is completely statically typed, but very elaborate type inference allows omitting type annotations in many places.
   They are usually only necessary in function signatures, types and \code{const} definitions.
   \item \code{println} (line~10) is a macro which is used for printing to stdout.
@@ -264,7 +264,7 @@ This works for all enums that are defined like \code{Option<T>} (the standard li
 
 \subsubsection*{Error Handling}
 
-In Rust, errors are logically divided into two kinds: recoverable errors and bugs (or unrecoverable errors).
+In Rust, errors are logically divided into two kinds: recoverable errors and bugs (unrecoverable errors).
 Errors of the former kind are to be expected and occur because the \enquote{world} is in an erroneous state.
 The latter kind of errors are caused by an incorrect program and can usually not be recovered from.
 
@@ -471,7 +471,7 @@ Dynamic dispatch, on the other hand, uses \emph{vtables} and dynamic/virtual cal
 The main advantage of monomorphization over dynamic dispatch is execution speed.
 With static dispatch, the compiler has full knowledge about the type and method body and is thus able to optimize the generated code very well.
 With \emph{inlining}, the optimizer is often able to completely remove the call to the trait method, making the usage of traits completely zero-overhead.
-This is the main way by which Rust is able to achieves \emph{zero cost abstractions}.
+This is the main way by which Rust is able to achieve \emph{zero cost abstractions}.
 
 An extreme case of good optimization due to static dispatch is the \code{Iterator} trait.
 An iterator is simply a sequence of items of a specific type.
@@ -535,7 +535,7 @@ error[E0382]: borrow of moved value: `a`
   \label{fig:string-move}
 \end{figure}
 
-Optional move semantics have been introduced in \cppeleven, but it is not as secure as in Rust.
+Optional move semantics have been introduced in \cppeleven, but they are not as secure as in Rust.
 For example, the \cpp compiler does not raise an error when the programmer accesses the variable that was moved from, although this is usually unsafe.
 
 There is one notable exception to Rust's move semantics: types that implement the trait \code{Copy} use copy semantics.
@@ -555,7 +555,7 @@ This means that there cannot exist a mutable and an immutable reference to the s
 Like the ownership analysis mentioned above, this rule is also entirely enforced at compile time.
 Rust references compile down to simple pointers.
 
-This restriction might initially sound too strict, but there are mamy reasons why it is a good idea.
+This restriction might initially sound too strict, but there are many reasons why it is a good idea.
 Figure~\ref{fig:vector-bad} illustrates one of those reasons.
 In practice, this rule is not as problematic as one might assume.
 Only in very few situations is it necessary to work around this problem, which can be done in a variety of ways.
