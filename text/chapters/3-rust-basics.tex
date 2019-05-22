@@ -280,12 +280,12 @@ This means that Rust uses \emph{return value based} error handling (like C does 
 However, in contrast to C-like error codes, with \code{Result}, it is impossible to forget to check if an error has occurred, making this solution far more robust.
 The core language makes working with \code{Result}s easier by providing the \code{?} operator which delegates errors to the calling function automatically.
 
-
+\vfill
 \section{Traits}
 
 Rust supports generic programming, meaning that types and functions can be defined by using type parameters instead of specific types.
 A few examples of generic types, like \code{Vec<T>} and \code{Option<T>}, were already mentioned above.
-When introducing a type parameter, a programmer cannot assume anything about it (except that its size is known at compile time and thus that an instance of that type can be stored on the stack).
+When introducing a type parameter, the programmer cannot assume anything about it (except that its size is known at compile time and thus that an instance of that type can be stored on the stack).
 
 See for example figure~\ref{fig:clamp}:
 It shows a function, generic over \code{T}, that returns a value clamped into the range defined by \code{min} and \code{max}.
@@ -293,7 +293,7 @@ The code as shown does not compile, because it cannot be assumed that two instan
 To fix the problem, the function must declare its requirements on \code{T}, which is done via so called \emph{trait bounds}.
 In this particular instance, it is sufficient to change the generic type declaration to \code{<T: PartialOrd>}, adding a bound for the trait \code{PartialOrd}.
 
-\vspace{4mm}
+\vspace{6mm}
 \begin{figure}[h]
   \centering
   \begin{minipage}[t]{.55\textwidth}
@@ -327,17 +327,20 @@ error[E0369]: binary operation `<` cannot
   \end{minipage}
   \caption{
     An incorrectly defined generic function (left) and the corresponding error message by the compiler (right).
+    Here, like in many other cases, the suggestion of the compiler is sufficient to solve the problem.
   }
   \label{fig:clamp}
 \end{figure}
-\vspace{4mm}
+\vspace{6mm}
 
-A \emph{trait} defines an interface: it describes functionality without providing that functionality itself.
+To declare requirements on a type parameter via a trait bound, those requirements first need to be defined -- which is done via \emph{traits}.
+A trait is a kind of interface: it describes functionality without providing that functionality itself.
 The definition of a trait contains a number of items (usually methods) whose signatures are specified, but which are usually lacking an implementation (e.\,g. a method body).
 A trait can be implemented by multiple types and each type can implement multiple traits.
 This is done with an \code{impl Trait for Type} block, in which all trait items need to be implemented, i.\,e. provided with a body.
 See figure~\ref{fig:shapes} for a simple example.
 
+\newpage
 
 \begin{figure}[t]
   \centering
@@ -381,6 +384,7 @@ See figure~\ref{fig:shapes} for a simple example.
   \end{minipage}
   \caption{Example trait with two example implementations.}
   \label{fig:shapes}
+  \vspace{5mm}
 \end{figure}
 
 Apart from methods and functions, traits can contain associated types and constants, which allow the implementing type to specify a type or a constant value, respectively.
@@ -433,6 +437,7 @@ The kind of dispatch is not specified in the trait definition, but in how the tr
 This means that a single trait can be used with dynamic dispatch in one situation and with static dispatch in another.
 An example of the two types of usage can be seen in figure~\ref{fig:dispatch}.
 
+\newpage
 \begin{figure}[t]
   \centering
     \begin{minipage}[t]{.49\textwidth}
@@ -513,7 +518,7 @@ The latter is checked by the compiler and compilation will fail with an error wh
   \hspace{2mm}
   \begin{minipage}[t]{.47\textwidth}
     \footnotesize
-    \vspace{3mm}
+    \vspace{1mm}
     \begin{verbatim}
 error[E0382]: borrow of moved value: `a`
  --> src/main.rs:5:20
