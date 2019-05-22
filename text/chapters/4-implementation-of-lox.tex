@@ -217,7 +217,6 @@ Both layouts use almost the same amount of memory and do not differ in capabilit
 The only difference is in how they interact with CPU caches.
 To find an answer to what strategy should be preferred, a number of different benchmarks were conducted.
 
-
 In these benchmarks, many items with a few random \code{u32} fields were stored in either one of the two memory layouts.
 The time required to sum up all or some of these values was measured to get an idea of the respective speeds.
 The different benchmarks attempted to cover the following parameter space:
@@ -260,10 +259,10 @@ The benchmark uses the framework \emph{Criterion} \cite{criterion} which feature
 However, only the mean and standard deviation were used to produce the graph seen in this report.
 
 The actual measurements was performed on a completely idle \textsf{Thinkpad T-460p}, containing an \textsf{Intel i7-6700\,HQ} and running \textsf{Ubuntu 18.04}.
-The \textsf{Intel i7-6700\,HQ} has 6\,MB of L3 cache, 1\,MB of L2 cache and 256\,KiB of L1 cache.
+The \textsf{Intel i7-6700\,HQ} has 6\,MiB of L3 cache, 1\,MiB of L2 cache and 256\,KiB of L1 cache.
 The full benchmark ran for approximately three hours.
+The results can be seen in figure~\ref{fig:memory-layout-bench} and are discussed on the page thereafter.
 
-%TODO: add and discuss results
 
 \begin{figure}[p]
   \centering
@@ -279,6 +278,67 @@ The full benchmark ran for approximately three hours.
   }
   \label{fig:memory-layout-bench}
 \end{figure}
+\newpage
+
+The results of the benchmark allow various interesting observations:
+
+\begin{itemize}
+  \item The type of traversal plays a massive role in performance: in the 10M items benchmarks, random traversal is approximately 50 to 70 times slower than the sequential traversal.
+  The difference is a bit smaller for the benchmark with fewer items, but still substantially.
+  This effect is very much expected.
+  \item The durations for sequential traversal scale pretty perfectly with the number of items.
+  This is to be expected, because in the sequential benchmarks any effects due to caching should be very small and all other operations should scale linearly.
+  On the other hand, the durations for random traversal do \emph{not} scale linearly with number of items, due to non-linear cache effects.
+  The difference between 1M and 10M items is particularly high.
+  \item The durations of \textsf{1:1} benchmarks do not differ between memory layouts, which is expected, as they should not differ for only one field.
+  This is a confirmation that there are no unexpected differences in the benchmarks of different memory layouts.
+  \item The duration for SoA benchmarks does not depend on the total number of fields, but just on the used number of fields; e.\,g. \textsf{1:1}, \textsf{2:1}, \textsf{4:1} and \textsf{6:1} take the same time.
+  This makes sense because adding additional, unused fields does not affect which memory is accessed by the SoA benchmark.
+  \item For random traversal with 10K, 100K or 1M items in AoS layout, the benchmarks with two total fields take longer than the benchmarks with four (and sometimes six) total fields.
+  This is not expected and could thus point to a flaw in the benchmark.
+  The benchmark was checked again, but no reasons for this behavior could be found.
+\end{itemize}
+
+Comparing the two memory layouts, one important first observation is that SoA always outperforms AoS for sequential traversal, especially so for benchmarks where only a small number of total fields is used.
+The latter is expected: when loading one cache line, the cache line in the SoA case only contains values that are actually used; in the AoS case, the cache line also contains unused fields.
+As a consequence, if some fields are unused, SoA benchmark require fewer cache lines to be loaded from main memory compared to AoS.
+
+
+The comparison becomes more complicated for random traversal.
+In general, the expected behavior is that AoS causes one cache miss per item, while SoA causes one cache miss per field.
+This would mean that AoS should outperform SoA for multiple fields.
+This is not always the case, however.
+For 10K items, both memory layouts perform mostly equally well.
+With 100K items, SoA outperforms AoS if only one field is used, but is up to two times slower than AoS if two or more fields are used.
+The benchmarks where SoA is faster can be explained by the denser packing of the one used field: all cache lines contain only useful data, increasing the number of items fitting into the cache which in turn increases the chance of finding a random item in the cache.
+
+Completely unexpectedly, for 1M items, SoA significantly outperforms AoS in all benchmarks.
+Something that might explain this behavior is the size of the test CPU's L3 cache (6\,MiB) compared to the total size of test data:
+one million items with \code{u32} fields corresponds to 4\,MiB (one field) to 24\,MiB (six fields) of data.
+In the \textsf{1:1} case, all data fits into the L3 cache, meaning that on average, the main memory only needs to be accessed $4 \text{\,MiB} / 64 \text{ Bytes (the size of one cache line)} = 65,536$ times.
+For more fields, the full data does not fit into the L3 cache, meaning that the some cache lines might need to be loaded multiple times from main memory.
+The difference between memory layouts \emph{might} be due the specific associativity and replacement strategy of the L3 cache.
+
+For 10M items, SoA slightly outperforms AoS for one or two used fields, but is slightly slower for four used fields and twice as slow for six used fields.
+Due to the total size of the data (40\,MiB to 240\,MiB), the probability to find a value in the L3 cache is very low: between 15\% and 2.5\%.
+Hence, most memory reads actually need to access main memory.
+The rather small difference in duration between one and two used fields for the SoA layout can be explained by CPU pipelining: two memory operations can potentially be executed in parallel, meaning that the wait time for both accesses overlap.
+
+\vspace{1.5cm}
+
+In summary, neither memory layout is superior in all situations.
+While many memory access patterns for mesh operations (e.\,g. depth first search) tend to have a very random nature, iterating sequentially over all elements of a mesh is not uncommon either.
+Thus, benchmarks of both traversal kinds are important to consider.
+Analyzing this benchmark lead to the following consequences for the development of \code{lox}:
+
+\begin{itemize}
+  \item Using multiple external property maps is usually fine.
+  For that reason, \code{lox} does not yet allow to store mesh properties next to adjacency information, i.\,e. a \code{HalfEdgeMesh} cannot store vertex positions.
+  This feature might be added in the future, though.
+  \item If an algorithm defines multiple mesh properties that are always used together, it is often preferred to cluster them into one property map.
+  \item Generally, the more convenient solution can be used.
+  To improve performance of a specific algorithm, that algorithm should be benchmarked with both memory layouts, as these specific benchmarks are often more useful than highly artificial ones, like this one.
+\end{itemize}
 
 
 
