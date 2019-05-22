@@ -599,8 +599,153 @@ The following table shows which traits are implemented by which data structure.
 \newpage
 \section{Input/Output Module}
 
+Reading meshes from files and writing meshes to files is a feature required by most programmers using a geometry processing library.
+The library \code{lox} also offers various functionality for \enquote{IO} (input/output), including file operations.
+Most of it is defined in the module \code{lox::io}.
 
+Before implementing the functionality, the following goals were set:
+
+\begin{itemize}
+  \item \textbf{Speed}: loading and writing even very large meshes should not keep the user waiting.
+  \item \textbf{Convenience}: most of the time, programmers do not care about the specifics of IO and should thus be able to use most of the IO functionality very easily.
+  \item \textbf{Flexibility}: somewhat contrasting the previous goal, the IO module should be flexible enough so that it can be used in virtually all situations.
+  In particular, users should be able to tweak details of IO operations.
+  And even if users need to load very abnormal meshes, they should never be required to write their own parser for a specific file format but be able to use functionality of \code{lox}.
+  \item \textbf{Not only files}: similar to flexibility, the IO functionality should not be restricted to files.
+  For example, there are sources of mesh data other than files.
+  Everything that can provide or receive mesh data should be able to use the IO interface like a file.
+  \item \textbf{Correct and robust}: invalid input should never crash the library.
+  Instead, an error indicating the problem should be emitted.
+  Additionally, reader and writers of file formats should stick to the specification as closely as possible.
+  \item \textbf{Compile time correctness}: unless this conflicts with the other goals, as many programmer errors as possible should be caught at compile time.
+\end{itemize}
+
+\vfill
+At the core of the IO module, a set of traits is required to abstract over all types that can provide or receive mesh data (including files).
+In \code{lox}'s design, everything that can provide mesh data is called a \emph{source}, everything that can receive it is called a \emph{sink}.
+The exact design of these traits is of uppermost importance for meeting the goals defined above.
+
+An early important realization is that there are two kinds of sources and sinks each: those which can provide/receive data in any order and those who are restricted to a particular order of data.
+For example, files are restricted to the specific order defined by their file format which can differ between different formats, e.\,g. \textsc{Ply} and \textsc{Obj}.
+Those files have to be read/written from front to back and usually do not allow random access.
+Similarly, meshes defined algorithmically provide the mesh data in the order that the algorithm creates it.
+On the other hand, in-memory mesh data structures and property maps allow arbitrary access to their data.
+
+This important distinction is reflected in the trait system by exposing \code{MemSource} and \code{MemSink} (allowing random access) as well as \code{StreamSource} and \code{StreamSink} (restricted to one order).
+These traits are also shown in figure~\ref{fig:io-traits}.
+This system has some similarities to \code{Reader}/\code{Writer} and \code{Importer}/\code{Exporter} system of OpenMesh.
+
+\begin{figure}[t]
+  \centering
+  TODO
+  \vspace{2cm}
+  \caption{
+    The core IO traits of \codebox{lox}.
+    To transfer mesh data, the source or the sink (or both) has to provide random access to the
+    data.
+  }
+  \label{fig:io-traits}
+\end{figure}
+
+\newpage
+
+Since the \code{Stream*} versions of these traits are restricted ones, they have to define the main procedure as this defines the order of mesh data.
+This results in fairly minimal trait interfaces for those two traits:
+
+\begin{rustcode}
+  pub trait StreamSource {
+      fn transfer_to<SinkT: MemSink>(self, sink: &mut SinkT) -> Result<(), Error>;
+  }
+
+  pub trait StreamSink {
+      fn transfer_from<SrcT: MemSource>(self, src: &SrcT) -> Result<(), Error>;
+  }
+\end{rustcode}
+
+The \code{Mem*} variants of those traits have a significantly larger interface.
+\code{MemSource} contains a method to return a reference to the \enquote{core mesh} (containing the connectivity) which is required to at least implement the traits \code{Mesh} and \code{BasicAdj}.
+The trait also contains methods for every predefined mesh property, a list that currently includes vertex positions, vertex normals, vertex colors, face normals and face colors.
+The \code{MemSink} has a similar interface that allows adding connectivity and property data.
+
+A difficult part of the design was to allow for different types of mesh properties.
+This is required because different file formats store mesh properties with different types and some file formats even allow storing multiple types (e.\,g. \textsc{Ply}).
+For example, \code{lox} should be able to read and write \code{f32} \emph{and} \code{f64} vertex positions;
+reading and writing color data should work with \code{f32} \emph{and} \code{u8} channels -- with or without alpha channel.
+This flexibility was achieved by making all property methods of the \code{Mem*} traits generic and providing a separate method to ask for the preferred data type.
+This made the interface notably more complex, but this was accepted in order to provide a fast and flexible core interface.
+Most users do not need to interact with these core traits directly anyway, making the complexity increase less of an issue.
+
+As the core data structures (e.\,g. \code{HalfEdgeMesh}) cannot store mesh properties, external property maps are needed for those.
+The user is then supposed to create a struct type that contains the core mesh and all required property meshes.
+These types are called \enquote{fat meshes} in the context of \code{lox}.
+In order to read mesh data from a file and store it in a fat mesh or to write fat mesh to file, the fat mesh type needs to implement \code{MemSource} and \code{MemSink}.
+However, implementing those traits is not trivial and requires a lot of boilerplate code.
+Requiring the user to write those implementations would make using the library a lot less convenient.
+
+Two features are offered to solve this problem.
+First, \code{lox} implements and exposes a small number of fat meshes in the module \code{lox::fat}.
+For example, \code{fat::MiniMesh} stores the core mesh and \code{f32} vertex positions.
+The more important feature is a \emph{custom derive} for both \code{Mem*} traits which allows annotating the struct definition to simply implement the traits.
+Example:
+
+\begin{rustcode}
+#[derive(MemSource, MemSink)]
+struct MyMesh {
+    #[lox(core_mesh)]
+    mesh: HalfEdgeMesh,
+
+    #[lox(vertex_position)]
+    positions: VecMap<VertexHandle, Point3<f32>>,
+}
+\end{rustcode}
+
+These \emph{custom derives} are implemented as \emph{procedural macros}: functions that operate on the source code and emit new source code.
+Unfortunately, completely explaining procedural macros in this chapter is not possible.
+In short, a function defined by \code{lox} receives the definition of the struct \code{MyMesh} in form of a token stream, parses it into an abstract syntax tree, inspects it and generates new Rust code in form of a token stream that contains an \code|impl Mem* for MyMesh { ... }| block.
+This function is called by the compiler during compilation and the generated code is then fed back into the compilation process.
+This has the effect, that the \code{Mem*} traits are implemented for \code{MyMesh} without the user having to write any boilerplate code.
+
+
+
+% The first conflict between goals can be seen in choosing the kind of dispatch:
+% dynamic dispatch would increase flexibility as it allows to use trait objects, but static dispatch is needed for performance in many places.
+% IO operations include a lot of communication between the source and the sink.
+% Implementing this communication as dynamically dispatched calls would add lot of overhead, which would make clashes with the \emph{speed} goal.
+
+
+
+% - Goals:
+%   - convenient but also allow for low level access (avoid writing parsers themelves)
+%   - Acceptable error reporting, not crashing (but not decreasing performance)
+%   - catch as many errors as possible at compile time
+%   - implement file formats correctly, always
+%   - not restricted to only files
+%
+% - done
+%   - mem/streaming discintions
+%   - system similar to OpenMesh
+%   - we use these traits
+%
+% - many small operations -> these should be fast
+% - allow for some kind of dynamic dispatch
+% - `with_' adaptors
+% - cast
+% - derive
+% - fat meshes
+% - shapes
+
+
+
+
+\newpage
 \section{Optimizations}
 
+% - IO
+%   - Error smaller
+%   -
 
-\section{Overview of all Library Features}
+\newpage
+\section{Summary}
+
+
+% TODO: unit tests
