@@ -161,7 +161,57 @@ With \code{FnMap} a face~$\rightarrow$~color mapping can be created easily witho
 
 Having property maps to store mesh properties externally brings up an interesting consideration: is it faster to use one property map per property kind or to use as few different maps as possible (e.\,g. by clustering different property kinds).
 This problem is very similar to the \enquote{Array of Structs} (\emph{AoS}) vs. \enquote{Struct of Arrays} (\emph{SoA}) choice.
-The two different layout strategies are visualized in figure X (TODO).
+The two different layout strategies are visualized in figure~\ref{fig:mem-layout-visualization}.
+
+\begin{figure}[b]
+  \centering
+  \newcommand{\pointerbox}{%
+    \parbox{1.2cm}{%
+      \tikz{%
+        \draw (-3.2mm,-3.2mm) rectangle (3.2mm,3.2mm);
+        \draw[line width=.4mm, {Circle[length=1.5mm,width=1.5mm]}-{Triangle[length=2.2mm,width=2.7mm]}](-0.75mm,0)--(1.2cm,0);
+      }%
+    }
+    \hspace{2mm}
+  }
+  \renewcommand{\arraystretch}{1.1}
+  \setlength{\dashlinedash}{.4mm}
+  \setlength{\dashlinegap}{.4mm}
+
+  \begin{subfigure}[b]{.55\textwidth}
+    \centering
+    \setlength{\tabcolsep}{0mm}
+    \pointerbox
+    \begin{tabular}{|C{6.2mm}:C{6.2mm}:C{6.2mm}|C{6.2mm}:C{6.2mm}:C{6.2mm}|C{6.2mm}:C{6.2mm}:C{6.2mm}|}\hline
+      $a_0$ & $b_0$ & $c_0$ & $a_1$ & $b_1$ & $c_1$ & $a_2$ & $b_2$ & $c_2$ \\\hline
+    \end{tabular}
+    \vspace{7mm}
+    \caption{Array of Structs.}
+  \end{subfigure}%
+  %
+  \begin{subfigure}[b]{.35\textwidth}
+    \centering
+    \setlength{\tabcolsep}{0mm}
+    \pointerbox
+    \begin{tabular}{|C{6.2mm}|C{6.2mm}|C{6.2mm}|}\hline
+      $a_0$ & $a_1$ & $a_2$ \\\hline
+    \end{tabular}\\[-.5mm]
+    \pointerbox
+    \begin{tabular}{|C{6.2mm}|C{6.2mm}|C{6.2mm}|}\hline
+      $b_0$ & $b_1$ & $b_2$ \\\hline
+    \end{tabular}\\[-.5mm]
+    \pointerbox
+    \begin{tabular}{|C{6.2mm}|C{6.2mm}|C{6.2mm}|}\hline
+      $c_0$ & $c_1$ & $c_2$ \\\hline
+    \end{tabular}
+    \caption{Struct of Arrays.}
+  \end{subfigure}
+
+  \renewcommand{\arraystretch}{1.0}
+
+  \caption{The two different memory layouts (three items with three fields each).}
+  \label{fig:mem-layout-visualization}
+\end{figure}
 
 Both layouts use almost the same amount of memory and do not differ in capabilities.
 The only difference is in how they interact with CPU caches.
