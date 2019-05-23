@@ -704,8 +704,6 @@ In short, a function defined by \code{lox} receives the definition of the struct
 This function is called by the compiler during compilation and the generated code is then fed back into the compilation process.
 This has the effect, that the \code{Mem*} traits are implemented for \code{MyMesh} without the user having to write any boilerplate code.
 
-\vfill
-
 Another important part of the IO functionality is \emph{type casting}.
 In a fat mesh, the types of mesh properties are usually fixed, e.\,g. \code{Point3<f32>} vertex positions or \code{[u8; 3]} colors.
 As files may contain or require properties with a different type, the IO code should be able to deal with that type mismatch.
@@ -715,8 +713,8 @@ Casting between different numeric types often requires clamping or rounding (cf.
 
 As with the order of data, the type of properties is ultimately determined by the \code{Stream*} sinks and sources, meaning that the responsibility for type casting lies with the \code{Mem*} part.
 Those can either cast to the destination type or raise an error if they cannot handle that specific type conversion.
-To make this choice easily available to the user, the custom derives support annotating one of five \emph{casting modes}: \code{none}, \code{lossless}, \code{clamping}, \code{rounding} and \code{lossy} -- the last one allows casts involving both, clamping and rounding.
-Example:
+To make this choice easily available to the user, the custom derives support annotating one of five \emph{casting modes}: \code{none}, \code{lossless}, \code{clamping}, \code{rounding} and \code{lossy} -- the last one is the default and allows casts involving both, clamping and rounding.
+A simple example:
 
 \begin{rustcode}
 #[lox(vertex_normal, cast = "lossless")]
