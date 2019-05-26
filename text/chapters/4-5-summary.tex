@@ -1,1 +1,36 @@
 \section{Summary}
+
+The library \code{lox} consists of more than the parts discussed in the previous sections.
+A brief overview of \code{lox} is presented in this summary.
+
+The project consists of three crates: \code{lox} (the main one), \code{lox-macros} and \code{lox-cli}.
+The crate \code{lox-macros} is a library crate defining some procedural macros, which are reexported by \code{lox}.
+It exists for a purely technical reason: currently, Rust requires procedural macros to be defined in their own crate.
+This restriction is likely to be lifted in the future, meaning the procedural macro definitions will be moved to the crate \code{lox} and \code{lox-macros} will be removed.
+
+Unlike the others, \code{lox-cli} is an application crate that is not part of the library \code{lox}, i.\,e. it is not included in external projects that use \code{lox}.
+Instead, it exists for three different purposes: it serves as an example for how to use \code{lox}, it is used as a test for \code{lox}'s capabilities and it is supposed to become a handy helper application for everyone working with meshes.
+Currently, it supports converting meshes between different files formats (the ones supported by \code{lox}) and displaying various information about a mesh file.
+Both operations can be tweaked via various command line parameters.
+More features will be added in the near future.
+
+The following list shows \code{lox}'s modules, excluding very small ones.
+Modules marked with~* are or will be optional modules that can be disabled via Cargo features.
+
+\begin{itemize}
+  % TODO: maybe add more algorithms if you manage to implement more
+  \item \textbf{\codebox{algo}}*: will offer various different mesh algorithms.
+  Currently very incomplete: only a couple of example algorithms are implemented, including the subdivision algorithm \enquote{sqrt3} \cite{kobbelt20003}, Dijkstra's algorithm \cite{dijkstra1959note} and a simple smoothing algorithm.
+  \item \textbf{\codebox{cast}}: utilities for casting numerical types (see chapter~4.3).
+  \item \textbf{\codebox{ds}}: implementations of shared vertex mesh, half edge mesh and directed edge mesh (see chapter~4.2) plus various helper utilities.
+  \item \textbf{\codebox{fat}}: fat meshes (see chapter~4.3).
+  \item \textbf{\codebox{handle}}: handle types for faces, edges and vertices, the \code{Handle} trait and some utility functions (cf. chapter~4.1).
+  \item \textbf{\codebox{io}}*: IO traits, implementation of file formats (currently \textsc{Ply} and \textsc{Stl}) and other IO related functionality.
+  \item \textbf{\codebox{map}}: property map traits and implementations (cf. chapter~4.1).
+  \item \textbf{\codebox{prop}}: abstractions over everything that can be treated like a 3D position (\code{Pos3Like}), a 3D vector (\code{Vec3Like}) or a color (\code{ColorLike}).
+  \item \textbf{\codebox{refs}}: defines types that store a handle and a reference to the mesh, therefore representing a reference to a specific element of a mesh.
+  These types expose various convenience methods which are defined in terms of methods of the mesh.
+  \item \textbf{\codebox{shape}}*: will offer different shape definitions that can be used as a \code{StreamSource} to easily crate meshes from abstract shape definitions.
+  Currently, only UV-spheres, 2D-discs and tetrahedra are implemented.
+  \item \textbf{\codebox{traits}}: defines all mesh traits (cf. chapter~4.2).
+\end{itemize}
