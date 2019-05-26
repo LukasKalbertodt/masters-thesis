@@ -21,16 +21,16 @@ Modules marked with~* are or will be optional modules that can be disabled via C
   % TODO: maybe add more algorithms if you manage to implement more
   \item \textbf{\codebox{algo}}*: will offer various different mesh algorithms.
   Currently very incomplete: only a couple of example algorithms are implemented, including the subdivision algorithm \enquote{sqrt3} \cite{kobbelt20003}, Dijkstra's algorithm \cite{dijkstra1959note} and a simple smoothing algorithm.
-  \item \textbf{\codebox{cast}}: utilities for casting numerical types (see chapter~4.3).
-  \item \textbf{\codebox{ds}}: implementations of shared vertex mesh, half edge mesh and directed edge mesh (see chapter~4.2) plus various helper utilities.
-  \item \textbf{\codebox{fat}}: fat meshes (see chapter~4.3).
-  \item \textbf{\codebox{handle}}: handle types for faces, edges and vertices, the \code{Handle} trait and some utility functions (cf. chapter~4.1).
+  \item \textbf{\codebox{cast}}: utilities for casting numerical types (see \autoref{chap:io}).
+  \item \textbf{\codebox{ds}}: implementations of shared vertex mesh, half edge mesh and directed edge mesh (see \autoref{chap:mesh-traits}) plus various helper utilities.
+  \item \textbf{\codebox{fat}}: fat meshes (see \autoref{chap:io}).
+  \item \textbf{\codebox{handle}}: handle types for faces, edges and vertices, the \code{Handle} trait and some utility functions (cf. \autoref{chap:memory-layout}).
   \item \textbf{\codebox{io}}*: IO traits, implementation of file formats (currently \textsc{Ply} and \textsc{Stl}) and other IO related functionality.
-  \item \textbf{\codebox{map}}: property map traits and implementations (cf. chapter~4.1).
+  \item \textbf{\codebox{map}}: property map traits and implementations (cf. \autoref{chap:memory-layout}).
   \item \textbf{\codebox{prop}}: abstractions over everything that can be treated like a 3D position (\code{Pos3Like}), a 3D vector (\code{Vec3Like}) or a color (\code{ColorLike}).
   \item \textbf{\codebox{refs}}: defines types that store a handle and a reference to the mesh, therefore representing a reference to a specific element of a mesh.
   These types expose various convenience methods which are defined in terms of methods of the mesh.
   \item \textbf{\codebox{shape}}*: will offer different shape definitions that can be used as a \code{StreamSource} to easily crate meshes from abstract shape definitions.
   Currently, only UV-spheres, 2D-discs and tetrahedra are implemented.
-  \item \textbf{\codebox{traits}}: defines all mesh traits (cf. chapter~4.2).
+  \item \textbf{\codebox{traits}}: defines all mesh traits (cf. \autoref{chap:mesh-traits}).
 \end{itemize}
