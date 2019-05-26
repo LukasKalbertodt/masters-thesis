@@ -9,6 +9,11 @@ As \code{lox} contains a variety of features, it is likely that some users do no
 To avoid compiling parts of the library that are unused, \code{lox} uses \emph{Cargo features} to let the user disable those parts individually.
 For example, if a user does not read from or write to files, the IO module can be disabled completely and thus will not be compiled.
 
+To maintain a high code quality, various automated tests and checks are used.
+These are further explained in the respective sections in this chapter.
+All of these tests are automatically executed on a \emph{continuous integration} (CI) server whenever commits are pushed to the repository or a \emph{pull request} is created.
+The CI also builds the documentation and makes sure that no compiler warnings are produced.
+
 % TODO: maybe put this in a box or make it stand out a bit?
 As an aside:
 the term \enquote{lox} is often used as an abbreviation for \emph{\textbf{l}iquid \textbf{ox}ygen}, a pale-blue liquid usually obtained by cooling elemental oxygen below its boiling point of 90.188\,K.
@@ -18,7 +23,7 @@ However, the name was mainly chosen because it is short and pronounceable.
 
 % TODO: lox logo?
 
-\vspace{1cm}
+\newpage
 \input{chapters/4-1-basic-layout-considerations}
 
 \newpage
@@ -33,5 +38,3 @@ However, the name was mainly chosen because it is short and pronounceable.
 
 \newpage
 \input{chapters/4-5-summary}
-
-% TODO: unit tests

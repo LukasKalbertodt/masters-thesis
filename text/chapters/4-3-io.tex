@@ -233,7 +233,26 @@ fn write_file<SrcT: MemSource>(path: &Path, src: &SrcT)
 This allows users to write \code{let mesh: MyMesh = io::load_file("foo.ply");}, for example.
 That code automatically detects the correct file format, instantiates the corresponding \code{Reader}, uses the source/sink traits to transfer mesh data and returns the new instance of \code{MyMesh}.
 
-\vfill
+\vspace{1.5cm}
+
+Currently, \code{lox} has full support for the \textsc{Ply} and \textsc{Stl} file formats, with more file formats (including \textsc{Obj}) planned for the near future.
+To guarantee a high implementation quality and adherence to the (unfortunately often very imprecise) format's specifications, different tests are used.
+For one, a number of unit tests read and write various meshes with various properties and check if the written file or the read mesh is correct.
+
+Furthermore, so called \emph{fuzzing} tests are used.
+In those, a \emph{fuzzer} automatically generates a large number of inputs that are given to the parsers of the different file formats.
+The inputs are not completely random, however.
+Instead, the fuzzer tries to achieve a high code coverage by analyzing which statements and branches are executed for what inputs and then tries to systematically generate inputs to reach previously unreached code.
+That way, advanced fuzzers can generate valid input files from just analyzing and trying to optimize code coverage (cf. \cite{jpegfuzzing}).
+
+The goal of fuzzing tests is usually to find crashes and other unexpected behavior.
+This is particularly useful for parsers, as they often have to deal with many obscure edges cases.
+Due to fuzzing tests, a couple of bugs were found and fixed in \code{lox}'s parsers.
+
+
+
+\vspace{1.5cm}
+
 
 With this core system of traits and the three different layers of convenience/abstraction, all initial goals are met for the most part.
 There are still a number of possible improvements, but the system as offered is already fairly fast, flexible and convenient to use.

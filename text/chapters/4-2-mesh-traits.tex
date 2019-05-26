@@ -248,3 +248,12 @@ The following table shows which traits are implemented by which data structure.
   \end{tabular}
   \renewcommand{\arraystretch}{1.0}
 \end{center}
+
+Each data structure is tested rigorously by a number of unit tests.
+Fortunately, due to the mesh abstractions, the test suite for data structure needs to be defined only once and can then be used for each data structure.
+Configurable data structures are tested for multiple different configurations.
+With these unit tests, new data structure implementations can be added by using \emph{test driven development}.
+
+The unit tests construct different mesh topologies, execute various operations on them and test almost all observable properties at every step.
+To avoid repetitive code, Rust macros and helper functions are use extensively, making test definitions very concise.
+The test suite definition can be found in \code{src/ds/tests.rs}.
