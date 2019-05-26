@@ -30,7 +30,11 @@ pub fn do_bench<R>(mut bench: impl FnMut() -> R) -> Outcome {
         black_box(bench());
     }
 
-    // Actually measuring
+    // Actually measuring.
+    //
+    // We measure each iteration individually. We can do that because all
+    // benchmarks take around a milli second or way longer. The overhead/delay
+    // by the measurement is not relevant in those time scales.
     let mut durations = Vec::with_capacity(ITERS);
     for _ in 0..ITERS {
         let before = Instant::now();

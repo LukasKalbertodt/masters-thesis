@@ -6,6 +6,7 @@ use failure::Error;
 use libtest_mimic::{Arguments, Test, Outcome, run_tests};
 
 mod read;
+mod write;
 mod util;
 
 
@@ -30,15 +31,29 @@ fn main() {
         bench!(read::ply_hem_tri_tiger),
         bench!(read::ply_dem_tiger),
         bench!(read::ply_sv_tiger),
-        bench!(read::stl_hem_tri_tiger),
-        bench!(read::stl_dem_tiger),
-        bench!(read::stl_sv_tiger),
         bench!(read::ply_hem_tri_cat),
         bench!(read::ply_dem_cat),
         bench!(read::ply_sv_cat),
+        bench!(read::stl_hem_tri_tiger),
+        bench!(read::stl_dem_tiger),
+        bench!(read::stl_sv_tiger),
         bench!(read::stl_hem_tri_cat),
         bench!(read::stl_dem_cat),
         bench!(read::stl_sv_cat),
+
+        // IO write benchmark
+        bench!(write::ply_hem_tri_tiger),
+        bench!(write::ply_dem_tiger),
+        bench!(write::ply_sv_tiger),
+        bench!(write::ply_hem_tri_cat),
+        bench!(write::ply_dem_cat),
+        bench!(write::ply_sv_cat),
+        bench!(write::stl_hem_tri_tiger),
+        bench!(write::stl_dem_tiger),
+        bench!(write::stl_sv_tiger),
+        bench!(write::stl_hem_tri_cat),
+        bench!(write::stl_dem_cat),
+        bench!(write::stl_sv_cat),
     ];
 
 
