@@ -10,6 +10,9 @@ serde_json = "1"
 
 [dev-dependencies]
 criterion = { version = "0.2", features = ["real_blackbox"] }
+failure = "0.1"
+libtest-mimic = "0.1"
+lox = { path = "../../mesh/lox" } # TODO: git link with commit hash
 rand = "0.6"
 
 [[bin]]
@@ -20,3 +23,12 @@ path = "util/main.rs"
 name = "memory-layout"
 path = "memory-layout/main.rs"
 harness = false
+
+[[bench]]
+name = "compare-lox"
+path = "comparison/lox/main.rs"
+harness = false
+
+
+[replace]
+"libtest-mimic:0.1.0" = { path = "../../libtest-mimic" }
