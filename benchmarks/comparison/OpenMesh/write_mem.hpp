@@ -8,20 +8,22 @@ Outcome write_mem_bench(const char* filename, const char* ext) {
         throw "reading failed in write bench";
     }
 
-    return run_bench([&mesh, ext]() {
-        // Stream from memory
-        auto writer = std::ostringstream();
+    // Tell OpenMesh to write the file in binary mode
+    OpenMesh::IO::Options wopt;
+    wopt += OpenMesh::IO::Options::Binary;
+    wopt += OpenMesh::IO::Options::LSB;
 
-        // Tell OpenMesh to write the file in binary mode
-        OpenMesh::IO::Options wopt;
-        wopt += OpenMesh::IO::Options::Binary;
-        wopt += OpenMesh::IO::Options::MSB;
+    // Write to memory
+    auto writer = std::ostringstream();
+
+    return run_bench([&mesh, &writer, ext, wopt]() {
+        writer.seekp(0);
 
         if (!OpenMesh::IO::write_mesh(mesh, writer, ext, wopt)) {
             throw "writing failed"; // should never happen
         }
 
-        return writer;
+        return writer.str();
     });
 }
 
