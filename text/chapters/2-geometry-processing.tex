@@ -5,7 +5,7 @@
 \chapter{Background: Geometry Processing}
 
 The field of \emph{geometry processing} is concerned with acquiring, manipulating and analyzing 3D surfaces.
-Applications include simulations, modeling in industrial contexts, biomedical processing, and real-time 3D graphics (mostly but not exclusively for entertainment purposes).
+Applications include simulations, modeling in industrial contexts, biomedical processing, and real-time 3D graphics (mostly but not exclusively for entertainment purposes) \cite{wikigeometryproc, botsch2010polygon}.
 
 A 3D surface can be acquired through different means.
 In many areas, humans manually model 3D objects with modeling software (like Blender\footnote{Blender website: \url{https://www.blender.org/}}), while in other cases, 3D surfaces are algorithmically created from mathematical definitions or 3D scans (like MRI\footnote{Magnetic resonance imaging} or laser scan data).
@@ -93,7 +93,7 @@ In general, it is necessary to be able to associated arbitrary values with mesh 
 
 As long as each mesh element can be uniquely identified, storing mesh properties is easy (e.\,g. using a hash map).
 Storing the connectivity of a mesh is difficult, however, because algorithms operating on meshes require various kinds of adjacency information.
-For example, a simple way to smooth a mesh is to replace each vertex position with the centroid of all adjacent vertices.
+For example, a simple way to smooth a mesh is to replace each vertex position with the centroid of all adjacent vertices \cite[Chapter~3]{botsch2010polygon}.
 That algorithm needs to be able to enumerate all neighboring vertices of a specific vertex.
 
 Generally, an algorithm might request all the neighbors of any mesh element (see the table below).
@@ -208,7 +208,6 @@ This chapter will give an overview over the most commonly used ones, but will ex
 In addition to the amount of provided adjacency information and the ability to store arbitrary polygons, another important characteristic of data structures is whether they can expose edges in their API.
 In this context, \enquote{expose} means that the data structure offers a way to refer to edges in a consistent way using a single integer.
 This allows programmers to easily associate data with edges.
-Of course, edges can always be referred to by specifying the two adjacent vertices or faces, but in many situations, a single integer is preferred.
 Additionally, the edge IDs assigned by the data structure should ideally start at 0 and count up from there, as this allows to store edge properties in an array without wasting memory.
 
 Generally, two types of data structures can be distinguished: \emph{face-based} and \emph{edge-based} ones.
@@ -218,7 +217,7 @@ As illustrated in table~\ref{tab:max-neighbors}, the number of possible neighbor
 The table also shows that face-based data structures are only efficient if the valence of faces is fixed (e.\,g. a triangle or quad mesh), as otherwise dynamic lists are required.
 
 \begin{table}[h]
-\vspace{5mm}
+  \vspace{8mm}
   \centering
   \renewcommand{\arraystretch}{1.1}
   \begin{tabular}{|l|c|c|c|}
@@ -231,7 +230,7 @@ The table also shows that face-based data structures are only efficient if the v
   \renewcommand{\arraystretch}{1}
   \caption{Maximum number of neighbors of mesh elements. }
   \label{tab:max-neighbors}
-  \vspace{5mm}
+  \vspace{8mm}
 \end{table}
 
 Note that mesh properties, including vertex positions, are completely ignored in this subsection.
