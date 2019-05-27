@@ -1,3 +1,6 @@
 [submodule "benchmarks/ext/OpenMesh"]
 	path = benchmarks/comparison/OpenMesh/ext/OpenMesh
 	url = https://www.graphics.rwth-aachen.de:9000/OpenMesh/OpenMesh.git
+[submodule "benchmarks/comparison/pmp/ext/pmp"]
+	path = benchmarks/comparison/pmp/ext/pmp
+	url = https://github.com/pmp-library/pmp-library.git
