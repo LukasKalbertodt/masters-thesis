@@ -1,27 +1,40 @@
 \chapter{Implementation of \enquote{lox}}
 
-This chapter discusses the major design decisions and notable implementation details behind \code{lox}.
-The last section contains a short overview over all features offered by the library. As already mentioned in the introduction, \code{lox} is licensed as MIT/Apache-2.0 and can be found here: \url{https://github.com/LukasKalbertodt/lox}.
+\vspace{-8mm}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.2\textwidth]{svg2pdf/logo-lox-preliminary}
+  \caption{Preliminary logo of \codebox{lox}.}
+\end{figure}
+\vspace{8mm}
 
-% TODO: one crate, many Cargo features
-The library consists of a single crate (one minor exception is explained later) which is very common for small to medium-sized Rust libraries.
+This chapter discusses the major design decisions and notable implementation details behind \code{lox}.
+The last section contains a short overview over all features offered by the library. As already mentioned in the introduction, \code{lox} is licensed as MIT/Apache-2.0 and is developed here: \url{https://github.com/LukasKalbertodt/lox}.
+
+The library consists of a single crate (one minor exception is explained later) which is very common for medium-sized Rust libraries.
 As \code{lox} contains a variety of features, it is likely that some users do not need all of them.
 To avoid compiling parts of the library that are unused, \code{lox} uses \emph{Cargo features} to let the user disable those parts individually.
-For example, if a user does not read from or write to files, the IO module can be disabled completely and thus will not be compiled.
+For example, if a user does not read from or write to files, the IO module can be disabled completely and thus will not be compiled or linked.
 
 To maintain a high code quality, various automated tests and checks are used.
-These are further explained in the respective sections in this chapter.
+These are further explained in the respective sections of this chapter.
 All of these tests are automatically executed on a \emph{continuous integration} (CI) server whenever commits are pushed to the repository or a \emph{pull request} is created.
-The CI also builds the documentation and makes sure that no compiler warnings are produced.
+The CI also builds the documentation and makes sure that no compiler warnings are emitted.
 
-% TODO: maybe put this in a box or make it stand out a bit?
-As an aside:
-the term \enquote{lox} is often used as an abbreviation for \emph{\textbf{l}iquid \textbf{ox}ygen}, a pale-blue liquid usually obtained by cooling elemental oxygen below its boiling point of 90.188\,K.
-This substance is used in many areas, playing a particularly important role in the aerospace industry where it is commonly used as a cryogenic oxidizer in rockets.
-Since rust (as a chemical compound\footnote{The programming language \emph{Rust} is not even named after the chemical compound, but after the \enquote{Rust} family of fungi. Source: \url{https://www.reddit.com/r/rust/comments/27jvdt/}}) is a product of an oxidation reaction and rockets are usually fast, using \enquote{lox} as name for this library seemed fitting.
-However, the name was mainly chosen because it is short and pronounceable.
 
-% TODO: lox logo?
+\vfill
+\begin{center}
+  \begin{minipage}{.9\textwidth}
+    \small
+    As an aside:
+    the term \enquote{lox} is often used as an abbreviation for \emph{\textbf{l}iquid \textbf{ox}ygen}, a pale-blue liquid usually obtained by cooling elemental oxygen below its boiling point of 90.188\,K.
+    This substance is used in many areas, playing a particularly important role in the aerospace industry where it is commonly used as a cryogenic oxidizer in rockets.
+    Since rust (the chemical compound\footnotemark) is a product of an oxidation reaction and rockets are usually fast, using \enquote{lox} as name for this library seemed fitting.
+    However, the name was mainly chosen because it is short and pronounceable.
+  \end{minipage}
+\footnotetext{The programming language \emph{Rust} is not even named after the chemical compound, but after the \enquote{Rust} family of fungi. Source: \url{https://www.reddit.com/r/rust/comments/27jvdt/}}
+\end{center}
+
 
 \newpage
 \input{chapters/4-1-basic-layout-considerations}
