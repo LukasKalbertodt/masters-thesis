@@ -5,7 +5,8 @@ extern crate test;
 use failure::Error;
 use libtest_mimic::{Arguments, Test, Outcome, run_tests};
 
-mod read;
+mod read_mem;
+mod read_file;
 mod write;
 mod util;
 
@@ -28,18 +29,31 @@ fn main() {
 
     let benches = vec![
         // IO read benchmark
-        bench!(read::ply_hem_tri_tiger),
-        bench!(read::ply_dem_tiger),
-        bench!(read::ply_sv_tiger),
-        bench!(read::ply_hem_tri_cat),
-        bench!(read::ply_dem_cat),
-        bench!(read::ply_sv_cat),
-        bench!(read::stl_hem_tri_tiger),
-        bench!(read::stl_dem_tiger),
-        bench!(read::stl_sv_tiger),
-        bench!(read::stl_hem_tri_cat),
-        bench!(read::stl_dem_cat),
-        bench!(read::stl_sv_cat),
+        bench!(read_mem::ply_hem_tri_tiger),
+        bench!(read_mem::ply_dem_tiger),
+        bench!(read_mem::ply_sv_tiger),
+        bench!(read_mem::ply_hem_tri_cat),
+        bench!(read_mem::ply_dem_cat),
+        bench!(read_mem::ply_sv_cat),
+        bench!(read_mem::stl_hem_tri_tiger),
+        bench!(read_mem::stl_dem_tiger),
+        bench!(read_mem::stl_sv_tiger),
+        bench!(read_mem::stl_hem_tri_cat),
+        bench!(read_mem::stl_dem_cat),
+        bench!(read_mem::stl_sv_cat),
+
+        bench!(read_file::ply_hem_tri_tiger),
+        bench!(read_file::ply_dem_tiger),
+        bench!(read_file::ply_sv_tiger),
+        bench!(read_file::ply_hem_tri_cat),
+        bench!(read_file::ply_dem_cat),
+        bench!(read_file::ply_sv_cat),
+        bench!(read_file::stl_hem_tri_tiger),
+        bench!(read_file::stl_dem_tiger),
+        bench!(read_file::stl_sv_tiger),
+        bench!(read_file::stl_hem_tri_cat),
+        bench!(read_file::stl_dem_cat),
+        bench!(read_file::stl_sv_cat),
 
         // IO write benchmark
         bench!(write::ply_hem_tri_tiger),

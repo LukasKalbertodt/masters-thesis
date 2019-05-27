@@ -27,7 +27,7 @@ Outcome read_bench(const char* filename, const char* ext) {
     return read_bench("../../../data/" mesh "." ext, ext);     \
 }
 
-GEN_READ_BENCH(read_ply_cat, "cat", "ply")
-GEN_READ_BENCH(read_stl_cat, "cat", "stl")
-GEN_READ_BENCH(read_ply_tiger, "tiger", "ply")
-GEN_READ_BENCH(read_stl_tiger, "tiger", "stl")
+GEN_READ_BENCH(read_mem_ply_cat, "cat", "ply")
+GEN_READ_BENCH(read_mem_stl_cat, "cat", "stl")
+GEN_READ_BENCH(read_mem_ply_tiger, "tiger", "ply")
+GEN_READ_BENCH(read_mem_stl_tiger, "tiger", "stl")

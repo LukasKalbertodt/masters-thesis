@@ -1,7 +1,3 @@
-use std::{
-    io::Cursor,
-};
-
 use failure::Error;
 use libtest_mimic::Outcome;
 use lox::{
@@ -10,19 +6,18 @@ use lox::{
         half_edge::TriConfig,
     },
     fat::MiniMesh,
-    io::{self, FileFormat},
+    io,
 };
 
-use crate::util::{load_file, do_bench};
+use crate::util::do_bench;
 
 
 macro_rules! gen_read_bench {
     ($fn_name:ident, $format:ident, $file:literal, $mesh:ty) => {
         pub fn $fn_name() -> Result<Outcome, Error> {
-            let file = load_file(&format!("data/{}", $file))?;
-
             let out = do_bench(|| {
-                io::read_from::<MiniMesh<$mesh>, _>(FileFormat::$format, Cursor::new(&file))
+                io::read_file::<MiniMesh<$mesh>, _>(format!("/mnt/ramdisk/{}", $file))
+                    .expect("failed to read from ramdisk")
             });
             Ok(out)
         }
