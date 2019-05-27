@@ -1,87 +1,28 @@
-// #include <iostream>
-
-
-// using std::cout;
-// using std::endl;
-
-// void main() {
-//     cout << "Hallo" << endl;
-// }
-
-#include <iostream>
-// -------------------- OpenMesh
 #include <OpenMesh/Core/IO/MeshIO.hh>
-#include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
-// ----------------------------------------------------------------------------
-typedef OpenMesh::PolyMesh_ArrayKernelT<>  MyMesh;
-// ----------------------------------------------------------------------------
-// Build a simple cube and write it to std::cout
+#include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 
-int main()
-{
-  MyMesh mesh;
-  // generate vertices
-  MyMesh::VertexHandle vhandle[8];
-  vhandle[0] = mesh.add_vertex(MyMesh::Point(-1, -1,  1));
-  vhandle[1] = mesh.add_vertex(MyMesh::Point( 1, -1,  1));
-  vhandle[2] = mesh.add_vertex(MyMesh::Point( 1,  1,  1));
-  vhandle[3] = mesh.add_vertex(MyMesh::Point(-1,  1,  1));
-  vhandle[4] = mesh.add_vertex(MyMesh::Point(-1, -1, -1));
-  vhandle[5] = mesh.add_vertex(MyMesh::Point( 1, -1, -1));
-  vhandle[6] = mesh.add_vertex(MyMesh::Point( 1,  1, -1));
-  vhandle[7] = mesh.add_vertex(MyMesh::Point(-1,  1, -1));
-  // generate (quadrilateral) faces
-  std::vector<MyMesh::VertexHandle>  face_vhandles;
-  face_vhandles.clear();
-  face_vhandles.push_back(vhandle[0]);
-  face_vhandles.push_back(vhandle[1]);
-  face_vhandles.push_back(vhandle[2]);
-  face_vhandles.push_back(vhandle[3]);
-  mesh.add_face(face_vhandles);
+#include "../util.hpp"
 
-  face_vhandles.clear();
-  face_vhandles.push_back(vhandle[7]);
-  face_vhandles.push_back(vhandle[6]);
-  face_vhandles.push_back(vhandle[5]);
-  face_vhandles.push_back(vhandle[4]);
-  mesh.add_face(face_vhandles);
-  face_vhandles.clear();
-  face_vhandles.push_back(vhandle[1]);
-  face_vhandles.push_back(vhandle[0]);
-  face_vhandles.push_back(vhandle[4]);
-  face_vhandles.push_back(vhandle[5]);
-  mesh.add_face(face_vhandles);
-  face_vhandles.clear();
-  face_vhandles.push_back(vhandle[2]);
-  face_vhandles.push_back(vhandle[1]);
-  face_vhandles.push_back(vhandle[5]);
-  face_vhandles.push_back(vhandle[6]);
-  mesh.add_face(face_vhandles);
-  face_vhandles.clear();
-  face_vhandles.push_back(vhandle[3]);
-  face_vhandles.push_back(vhandle[2]);
-  face_vhandles.push_back(vhandle[6]);
-  face_vhandles.push_back(vhandle[7]);
-  mesh.add_face(face_vhandles);
-  face_vhandles.clear();
-  face_vhandles.push_back(vhandle[0]);
-  face_vhandles.push_back(vhandle[3]);
-  face_vhandles.push_back(vhandle[7]);
-  face_vhandles.push_back(vhandle[4]);
-  mesh.add_face(face_vhandles);
-  // write mesh to output.obj
-  try
-  {
-    if ( !OpenMesh::IO::write_mesh(mesh, "output.off") )
-    {
-      std::cerr << "Cannot write mesh to file 'output.off'" << std::endl;
-      return 1;
-    }
-  }
-  catch( std::exception& x )
-  {
-    std::cerr << x.what() << std::endl;
-    return 1;
-  }
-  return 0;
+
+
+// Define mesh type: HEM without `prev`
+struct MyTraits: public OpenMesh::DefaultTraits {
+    // Do not store the previous half edge.
+    HalfedgeAttributes(0);
+};
+
+using MyMesh = OpenMesh::TriMesh_ArrayKernelT<MyTraits>;
+
+
+#include "read.hpp"
+
+
+
+int main(int argc, const char* argv[]) {
+    run_all_benches(argc, argv, {
+        BENCH(read_ply_cat),
+        BENCH(read_stl_cat),
+        BENCH(read_ply_tiger),
+        BENCH(read_stl_tiger),
+    });
 }
