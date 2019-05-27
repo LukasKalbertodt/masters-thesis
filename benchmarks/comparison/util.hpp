@@ -86,7 +86,7 @@ void run_all_benches(const int argc, const char* argv[], const vector<Bench> ben
 
         // Padding (assuming ASCII names)
         const auto padding = bench.name.size() > WIDTH ? 0 : WIDTH - bench.name.size();
-        for (int i = 0; i < padding; i++) {
+        for (size_t i = 0; i < padding; i++) {
             cout << " ";
         }
 

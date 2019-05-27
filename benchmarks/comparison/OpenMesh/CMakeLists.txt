@@ -10,6 +10,8 @@ add_subdirectory(ext/OpenMesh/)
 # Add OpenMesh include directories
 include_directories(ext/OpenMesh/src)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pedantic -Wall -Wextra")
+
 # Add benchmark executable
 set(name om-bench)
 add_executable (${name} main.cpp)
