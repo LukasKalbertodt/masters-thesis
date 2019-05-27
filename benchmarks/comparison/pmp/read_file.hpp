@@ -1,8 +1,6 @@
 using pmp::SurfaceMesh;
 
-// NOTE: PMP cannot read files from memory, thus this has disc access overhead.
-// However, usually, operation systems cache files aggressively meaning that
-// the file should already be completely in memory after the warmup.
+
 Outcome read_bench(const char* filename) {
     return run_bench([filename]() {
         SurfaceMesh mesh;

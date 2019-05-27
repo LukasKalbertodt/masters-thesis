@@ -2,6 +2,7 @@
 #include "../util.hpp"
 
 #include "read_file.hpp"
+#include "write_file.hpp"
 
 
 int main(int argc, const char *argv[]) {
@@ -11,9 +12,9 @@ int main(int argc, const char *argv[]) {
         BENCH(read_file_ply_tiger),
         BENCH(read_file_stl_tiger),
 
-        // BENCH(write_ply_cat),
-        // BENCH(write_stl_cat),
-        // BENCH(write_ply_tiger),
-        // BENCH(write_stl_tiger),
+        BENCH(write_file_ply_cat),
+        BENCH(write_file_stl_cat),
+        BENCH(write_file_ply_tiger),
+        BENCH(write_file_stl_tiger),
     });
 }
