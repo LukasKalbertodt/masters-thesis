@@ -19,8 +19,9 @@ macro_rules! gen_write_bench {
 
             let out = do_bench(|| {
                 let mut out = Vec::new();
-                let r = io::write_to(FileFormat::$format, &mesh, &mut out);
-                (r, out)
+                io::write_to(FileFormat::$format, &mesh, &mut out)
+                    .expect("failed to write to mem");
+                out
             });
             Ok(out)
         }

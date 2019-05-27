@@ -1,7 +1,7 @@
 #include <OpenMesh/Core/IO/MeshIO.hh>
 
 
-Outcome write_bench(const char* filename, const char* ext) {
+Outcome write_mem_bench(const char* filename, const char* ext) {
     MyMesh mesh;
 
     if (!OpenMesh::IO::read_mesh(mesh, filename)) {
@@ -26,11 +26,11 @@ Outcome write_bench(const char* filename, const char* ext) {
 }
 
 
-#define GEN_WRITE_BENCH(name, mesh, ext) Outcome name() {       \
-    return write_bench("../../../data/" mesh ".ply", ext);     \
+#define GEN_WRITE_MEM_BENCH(name, mesh, ext) Outcome name() {       \
+    return write_mem_bench("../../../data/" mesh ".ply", ext);     \
 }
 
-GEN_WRITE_BENCH(write_ply_cat, "cat", "ply")
-GEN_WRITE_BENCH(write_stl_cat, "cat", "stl")
-GEN_WRITE_BENCH(write_ply_tiger, "tiger", "ply")
-GEN_WRITE_BENCH(write_stl_tiger, "tiger", "stl")
+GEN_WRITE_MEM_BENCH(write_mem_ply_cat, "cat", "ply")
+GEN_WRITE_MEM_BENCH(write_mem_stl_cat, "cat", "stl")
+GEN_WRITE_MEM_BENCH(write_mem_ply_tiger, "tiger", "ply")
+GEN_WRITE_MEM_BENCH(write_mem_stl_tiger, "tiger", "stl")

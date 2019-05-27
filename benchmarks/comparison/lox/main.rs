@@ -7,7 +7,8 @@ use libtest_mimic::{Arguments, Test, Outcome, run_tests};
 
 mod read_mem;
 mod read_file;
-mod write;
+mod write_mem;
+mod write_file;
 mod util;
 
 
@@ -56,18 +57,31 @@ fn main() {
         bench!(read_file::stl_sv_cat),
 
         // IO write benchmark
-        bench!(write::ply_hem_tri_tiger),
-        bench!(write::ply_dem_tiger),
-        bench!(write::ply_sv_tiger),
-        bench!(write::ply_hem_tri_cat),
-        bench!(write::ply_dem_cat),
-        bench!(write::ply_sv_cat),
-        bench!(write::stl_hem_tri_tiger),
-        bench!(write::stl_dem_tiger),
-        bench!(write::stl_sv_tiger),
-        bench!(write::stl_hem_tri_cat),
-        bench!(write::stl_dem_cat),
-        bench!(write::stl_sv_cat),
+        bench!(write_mem::ply_hem_tri_tiger),
+        bench!(write_mem::ply_dem_tiger),
+        bench!(write_mem::ply_sv_tiger),
+        bench!(write_mem::ply_hem_tri_cat),
+        bench!(write_mem::ply_dem_cat),
+        bench!(write_mem::ply_sv_cat),
+        bench!(write_mem::stl_hem_tri_tiger),
+        bench!(write_mem::stl_dem_tiger),
+        bench!(write_mem::stl_sv_tiger),
+        bench!(write_mem::stl_hem_tri_cat),
+        bench!(write_mem::stl_dem_cat),
+        bench!(write_mem::stl_sv_cat),
+
+        bench!(write_file::ply_hem_tri_tiger),
+        bench!(write_file::ply_dem_tiger),
+        bench!(write_file::ply_sv_tiger),
+        bench!(write_file::ply_hem_tri_cat),
+        bench!(write_file::ply_dem_cat),
+        bench!(write_file::ply_sv_cat),
+        bench!(write_file::stl_hem_tri_tiger),
+        bench!(write_file::stl_dem_tiger),
+        bench!(write_file::stl_sv_tiger),
+        bench!(write_file::stl_hem_tri_cat),
+        bench!(write_file::stl_dem_cat),
+        bench!(write_file::stl_sv_cat),
     ];
 
 
