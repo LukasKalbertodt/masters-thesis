@@ -3,7 +3,7 @@
     Status Quo in the Domain of Geometry Processing?
 </h2>
 
-My master thesis. Abstract:
+My master's thesis. Abstract:
 
 > TODO
 
