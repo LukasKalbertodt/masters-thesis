@@ -135,8 +135,17 @@ With \code{FnMap} a face~$\rightarrow$~color mapping can be created easily witho
     \end{rustcode}
   \end{minipage}
 \end{center}
+\vspace{1cm}
 
-\vfill
+An alternative to external maps is managing all properties in the main mesh type, which is done in OpenMesh and PMP.
+Their mesh type has methods like \code{add_face_property} which creates an additional property map managed by that mesh.
+Having all mesh data in one object is certainly convenient in many situations, but has disadvantages, too:
+it adds a bit of overhead for managing maps dynamically and it is less flexible than having each map as a separate variable.
+For these reasons, \code{lox} uses \emph{external} maps.
+Users can still create their own struct type with property maps as fields to store all mesh properties in a single type.
+
+
+\newpage
 \subsubsection*{\enquote{Array of Structs} vs. \enquote{Struct of Arrays}}
 
 Having property maps to store mesh properties externally brings up an interesting consideration: is it faster to use one property map per property kind or to use as few different maps as possible (e.\,g. by clustering different property kinds).
@@ -147,8 +156,7 @@ Both layouts use almost the same amount of memory and do not differ in capabilit
 The only difference is in how they interact with CPU caches.
 To find an answer to what strategy should be preferred, a number of different benchmarks were conducted.
 
-\vspace{8mm}
-\begin{figure}[b]
+\begin{figure}[t]
   \centering
   \newcommand{\pointerbox}{%
     \parbox{1.2cm}{%
@@ -198,7 +206,6 @@ To find an answer to what strategy should be preferred, a number of different be
   \label{fig:mem-layout-visualization}
 \end{figure}
 
-\newpage
 In these benchmarks, many items with a few random \code{u32} fields were stored in either one of the two memory layouts.
 The time required to sum up all or some of these values was measured to get an idea of the respective speeds.
 The different benchmarks attempted to cover the following parameter space:
@@ -222,6 +229,7 @@ To deal with the inherent noise, almost all benchmarks execute the code that nee
 Performing a benchmark that attempts to measure the effect of CPU caches is particularly challenging, because the cache state persists over multiple iterations of the same code.
 That in turn means that repeated measurements are not independent of one another, making the measured data unusable or very hard to analyze.
 
+\newpage
 One idea on how to tackle this problem is to simply flush all caches.
 This is actually possible on most x86-64 CPUs with the \code{WBINVD} instruction, which first writes all cache contents back to main memory and then invalidates all CPU internal caches\footnote{There is also the \codebox{INVD} instruction which invalidates caches without writing them back, but it is highly unsafe as it globally destroys the consistency of memory operations, likely crashing or corrupting all programs currently running on the CPU (including the kernel).}.
 As \code{WBINVD} is a privileged instruction, it can only be executed in ring 0 (the kernel mode).
@@ -234,8 +242,7 @@ Excluding the duration of cache invalidation from the total measured time is not
 Since measuring short durations does not yield reliable data, multiple repetitions are measured together and not on their own.
 Because of this massive overhead, \code{WBINVD} was dropped as possible solution.
 
-\newpage
-As an alternative, each repetition of the benchmark was performed on separate data.
+Instead, each repetition of the benchmark was performed on separate data.
 Before executing the benchmarked code, a copy of the working data was prepared for each iteration, meaning that the cache state produced by one repetition does not affect other iterations.
 As CPU caches have very complex behavior, the absence of cross-repetition cache effects cannot be completely guaranteed, but the probability of them occurring was reduced substantially.
 
