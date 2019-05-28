@@ -5,6 +5,7 @@ extern crate test;
 use failure::Error;
 use libtest_mimic::{Arguments, Test, Outcome, run_tests};
 
+mod algo;
 mod read_mem;
 mod read_file;
 mod write_mem;
@@ -82,6 +83,12 @@ fn main() {
         bench!(write_file::stl_hem_tri_cat),
         bench!(write_file::stl_dem_cat),
         bench!(write_file::stl_sv_cat),
+
+        // Algorithm
+        bench!(algo::smooth_cat_hem),
+        bench!(algo::smooth_cat_dem),
+        bench!(algo::smooth_tiger_hem),
+        bench!(algo::smooth_tiger_dem),
     ];
 
 
