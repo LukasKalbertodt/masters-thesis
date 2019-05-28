@@ -2,17 +2,17 @@
 \label{chap:io}
 
 Reading and writing meshes from/to files is a feature required by most programmers using a geometry processing library.
-The library \code{lox} also offers various functionality for \enquote{IO} (input/output), including file operations.
+As such, \code{lox} offers various functionality for \enquote{IO} (input/output), including file operations.
 Most of it is defined in the module \code{lox::io}.
 
 Before implementing the functionality, the following goals were set:
 
 \begin{itemize}
-  \item \textbf{Speed}: loading and writing even large meshes should not keep the user waiting.
+  \item \textbf{Speed}: loading and writing meshes should not waste time or resources needlessly.
   \item \textbf{Convenience}: most of the time, programmers do not care about the specifics of IO and should thus be able to use most of the IO functionality very easily.
   \item \textbf{Flexibility}: somewhat contrasting the previous goal, the IO module should be flexible enough so that it can be used in virtually all situations.
   In particular, users should be able to tweak details of IO operations.
-  And even if users need to load very abnormal meshes, they should never be required to write their own parser for a specific file format but be able to use the functionality of \code{lox}.
+  And even if users need to load unusual data, they should never be required to write their own parser for a specific file format, but instead be able to use the functionality of \code{lox}.
   \item \textbf{More than files}: the IO functionality should not be restricted to files.
   For example, there are sources of mesh data other than files.
   Everything that can provide or receive mesh data should be able to use the IO interface like a file.
@@ -23,7 +23,7 @@ Before implementing the functionality, the following goals were set:
 \end{itemize}
 
 \vfill
-At the core of the IO module, a set of traits is required to abstract over all types that can provide or receive mesh data (including files).
+A set of traits is required at the core of the IO module in order to abstract over all types that can provide or receive mesh data (including files).
 In \code{lox}'s design, everything that can provide mesh data is called a \emph{source}, everything that can receive it is called a \emph{sink}.
 The exact design of these traits is of uppermost importance for meeting the goals defined above.
 
@@ -42,7 +42,7 @@ This system has some similarities to the \code{Reader}/\code{Writer} and \code{I
   \includegraphics[width=.6\textwidth]{svg2pdf/io-traits}
   \caption{
     The core IO traits of \codebox{lox}.
-    To transfer mesh data, the source or the sink (or both) has to provide random access to the
+    To transfer mesh data, the source, the sink or both have to provide random access to the
     data.
   }
   \label{fig:io-traits}
@@ -50,15 +50,15 @@ This system has some similarities to the \code{Reader}/\code{Writer} and \code{I
 
 \newpage
 
-Since the \code{Stream*} versions of these traits are restricted ones, they have to define the main procedure as this specifies the order of mesh data.
+Since the \code{Stream*} versions of these traits are the restricted ones, they have to define the main procedure as this specifies the order of mesh data.
 This results in fairly minimal trait interfaces for those two traits:
 
 \begin{rustcode}
-  pub trait StreamSource {
+  trait StreamSource {
       fn transfer_to<SinkT: MemSink>(self, sink: &mut SinkT) -> Result<(), Error>;
   }
 
-  pub trait StreamSink {
+  trait StreamSink {
       fn transfer_from<SrcT: MemSource>(self, src: &SrcT) -> Result<(), Error>;
   }
 \end{rustcode}
@@ -85,7 +85,7 @@ Requiring the user to write those implementations would make using the library a
 
 Two features are offered to solve this problem.
 First, \code{lox} implements and exposes a small number of predefined fat meshes in the module \code{lox::fat}.
-For example, \code{fat::MiniMesh} stores the core mesh and \code{f32} vertex positions.
+For example, \code{fat::MiniMesh} stores the core mesh and \code{f32} vertex positions, making it applicable in many situations.
 But more importantly, \code{lox} provides a \emph{custom derive} for both \code{Mem*} traits which allows to implement the traits by simply annotating the struct definition.
 Example:
 
@@ -232,12 +232,12 @@ fn write_file<SrcT: MemSource>(path: &Path, src: &SrcT)
 \end{rustcode}
 
 This allows users to write \code{let mesh: MyMesh = io::load_file("foo.ply");}, for example.
-That code automatically detects the correct file format, instantiates the corresponding \code{Reader}, uses the source/sink traits to transfer mesh data and returns the new instance of \code{MyMesh}.
+That code automatically detects the correct file format, instantiates the corresponding \code{Reader}, uses the source/sink traits to transfer mesh data and returns the new \code{MyMesh} instance.
 
 \vspace{1.5cm}
 
 Currently, \code{lox} has full support for the \textsc{Ply} and \textsc{Stl} file formats, with more file formats (including \textsc{Obj}) planned for the near future.
-To guarantee a high implementation quality and adherence to the (unfortunately often very imprecise) format's specifications, different tests are used.
+To guarantee a high implementation quality and adherence to the (unfortunately often very imprecise) format specifications, different tests are used.
 For one, a number of unit tests read and write various meshes with various properties and check if the written file or the read mesh is correct.
 
 Furthermore, so called \emph{fuzzing} tests are used.

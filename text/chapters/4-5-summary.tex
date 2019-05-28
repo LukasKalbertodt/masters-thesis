@@ -1,10 +1,7 @@
-\section{Summary}
-
-The library \code{lox} consists of more than the parts discussed in the previous sections.
-A brief overview of \code{lox} is presented in this summary.
+\section{Overview}
 
 The project consists of three crates: \code{lox} (the main one), \code{lox-macros} and \code{lox-cli}.
-The crate \code{lox-macros} is a library crate defining some procedural macros, which are reexported by \code{lox}.
+The crate \code{lox-macros} is a library crate defining the procedural macros reexported by \code{lox}.
 It exists for a purely technical reason: currently, Rust requires procedural macros to be defined in their own crate.
 This restriction is likely to be lifted in the future, meaning the procedural macro definitions will be moved to the crate \code{lox} and \code{lox-macros} will be removed.
 
@@ -23,7 +20,7 @@ Modules marked with~* are or will be optional modules that can be disabled via C
   Currently very incomplete: only a couple of example algorithms are implemented, including the subdivision algorithm \enquote{sqrt3} \cite{kobbelt20003}, Dijkstra's algorithm \cite{dijkstra1959note} and a simple smoothing algorithm.
   \item \textbf{\codebox{cast}}: utilities for casting numerical types (see \autoref{chap:io}).
   \item \textbf{\codebox{ds}}: implementations of shared vertex mesh, half edge mesh and directed edge mesh (see \autoref{chap:mesh-traits}) plus various helper utilities.
-  \item \textbf{\codebox{fat}}: fat meshes (see \autoref{chap:io}).
+  \item \textbf{\codebox{fat}}: fat meshes \code{MiniMesh} and \code{AnyMesh} (see \autoref{chap:io}).
   \item \textbf{\codebox{handle}}: handle types for faces, edges and vertices, the \code{Handle} trait and some utility functions (cf. \autoref{chap:memory-layout}).
   \item \textbf{\codebox{io}}*: IO traits, implementation of file formats (currently \textsc{Ply} and \textsc{Stl}) and other IO related functionality.
   \item \textbf{\codebox{map}}: property map traits and implementations (cf. \autoref{chap:memory-layout}).
