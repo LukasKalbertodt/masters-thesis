@@ -9,7 +9,7 @@ For one, a couple of benchmarks comparing \code{lox} to OpenMesh in different si
 The programs \emph{perf}\footnote{Performance analyzer for Linux} and Intel$^\text{\tiny ®}$~VTune$^\text{\tiny ™}$~Amplifier\footnote{Website: \url{https://software.intel.com/en-us/vtune}} were used for profiling, i.\,e. to gather different information about a program's runtime behavior.
 To inspect generated machine code, the tools Cutter\footnote{Website: \url{https://github.com/radareorg/cutter}} and Godbolt Compiler Explorer\footnote{Website: \url{https://godbolt.org/}} were used.
 
-By profiling different workloads and inspecting the machine code, many different performance problems and hotspots were identified across the code base.
+By profiling different workloads and inspecting the machine code, many performance problems and hotspots were identified across the code base.
 Generally, those problems were fixed by rewriting small parts of the code or providing hints to the compiler.
 In some cases, the optimizer did not inline tiny functions.
 This could be fixed by adding the \code{#[inline(always)]} attribute to those functions, often resulting in a measurable increase in performance.
@@ -27,7 +27,7 @@ As a consequence, many functions in \code{lox::io} return \code{Result<_, Error>
 This error type was an enum listing all potential error cases, with some variants storing several fields to describe the error.
 Over time, the size of this type grew to 56 bytes.
 
-This is a problem as the return type of many function would have a significant size, increasing the size of many stack frames.
+This is a problem as the return type of many functions would have a significant size, increasing the size of many stack frames.
 Functions that were not inlined required a fairly long function prologue and epilogue to prepare this stack data.
 To solve this problem, \code{Error} was renamed to \code{ErrorKind} and a new type \code{Error} was defined with a single field of type \code{Box<ErrorKind>}.
 In short: the actual error data is now heap allocated and \code{Error} itself is only 8 bytes large.
@@ -65,5 +65,5 @@ These optimizations improved overall performance by roughly 20\%.
 Another important optimization is based on an additional invariant held by the half edge mesh and directed edge mesh.
 Chapter~2 states that these data structures store one arbitrary outgoing half edge per vertex.
 The implementations in \code{lox} make sure that if a vertex is a boundary vertex, the half edge stored in the \code{outgoing} field is a boundary half edge as well.
-This requires only a little bit more work in methods mutating the mesh, but means that checking whether a vertex lies on the boundary is a lot faster, as only one adjacent half edge has to be checked.
+This requires only a bit more work in methods mutating the mesh, but means that checking whether a vertex lies on the boundary is a lot faster, as only one adjacent half edge has to be checked.
 This optimization is also used in OpenMesh.

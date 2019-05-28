@@ -84,7 +84,7 @@ However, implementing those traits is not trivial and requires a lot of boilerpl
 Requiring the user to write those implementations would make using the library a lot less convenient.
 
 Two features are offered to solve this problem.
-First, \code{lox} implements and exposes a small number of predefined fat meshes in the module \code{lox::fat}.
+First, \code{lox} implements and exposes a few predefined fat meshes in the module \code{lox::fat}.
 For example, \code{fat::MiniMesh} stores the core mesh and \code{f32} vertex positions, making it applicable in many situations.
 But more importantly, \code{lox} provides a \emph{custom derive} for both \code{Mem*} traits which allows to implement the traits by simply annotating the struct definition.
 Example:
@@ -238,7 +238,7 @@ That code automatically detects the correct file format, instantiates the corres
 
 Currently, \code{lox} has full support for the \textsc{Ply} and \textsc{Stl} file formats, with more file formats (including \textsc{Obj}) planned for the near future.
 To guarantee a high implementation quality and adherence to the (unfortunately often very imprecise) format specifications, different tests are used.
-For one, a number of unit tests read and write various meshes with various properties and check if the written file or the read mesh is correct.
+For one, a number of unit tests read and write various meshes with various properties and check if the written file or the loaded mesh is correct.
 
 Furthermore, so called \emph{fuzzing} tests are used.
 In those, a \emph{fuzzer} automatically generates a large number of inputs that are given to the parsers of the different file formats.
