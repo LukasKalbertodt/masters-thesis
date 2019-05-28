@@ -1,23 +1,23 @@
 \section{Data Structures and Mesh Traits}
 \label{chap:mesh-traits}
 
-One of the main challenges in creating this library was to find a suitable set of traits that would serve as a reasonable abstraction.
+One of the main challenges in creating this library was to find a suitable set of traits that would serve as a reasonable abstraction over different mesh data structures.
 A single trait is not sufficient because not all data structures offer the same set of capabilities.
-On the other hand, having one trait for each individual feature of data structures (i.\,e. for each neighborhood information, each mutating operation, \dots) would result in a very large number of traits, making the library's API much harder to understand and more difficult to work with.
+On the other hand, having one trait for each individual feature (i.\,e. for each neighborhood information, each mutating operation, \dots) would result in a very large number of traits, making the library's API much harder to understand and more difficult to work with.
 Finding a good solution in between those extremes is crucial for the usefulness of the abstraction.
+This section describes the design considerations and introduces a few possible solutions.
 
 As a first step, it is important to define what entities should be abstracted over.
 As mentioned, the main goal is to be able to easily switch between different mesh data structures, which are provided by \code{lox} itself.
-But users of this library can also implement the traits for their own data structures, allowing them to use many features (like mesh algorithms or IO) without \code{lox} even knowing about those types.
+But users of this library can also implement the traits for their own types, allowing them to use many features (like mesh algorithms or IO) without \code{lox} even knowing about those data structures.
 It can thus be beneficial to imagine what other types could reasonably implement the mesh traits.
 This could include basic graph data structures, implicitly defined polygon meshes or other highly specialized data structures.
 To reduce the scope of this problem, this thesis focused on known mesh data structures provided by \code{lox}.
 
-Finding a good design for such a central interface requires knowledge about everything that interacts with it as well as a fair amount of experience from working with different solutions.
+Finding a good design for such a central interface requires knowledge about everything that interacts with it and a fair amount of experience from working with different solutions.
 While quite some experience was gained during \code{lox}'s development so far, it is not sufficient to commit to one specific solution (in the opinion of the author).
 Instead, a few more design iterations are to be expected.
 In particular, since the library was not yet (as time of this writing) publicly released, other programmers did not have the chance to provide feedback.
-This section describes the design consideration and introduces a few possible solutions.
 
 
 \subsubsection*{Basic and Optional Capabilities}
@@ -25,9 +25,9 @@ This section describes the design consideration and introduces a few possible so
 A good starting point is to define the basic features of a \enquote{mesh} (the lowest common denominator) and to identify \emph{optional} capabilities.
 All basic features are defined in the trait \code{Mesh} (in OOP\footnote{Object Oriented Programming} terms: the very top of the class hierarchy).
 Describing the optional capabilities (i.\,e. the features not part of \code{Mesh}) in the trait system is the main challenge in finding a good design.
-Note that for now, adjacency information are ignored.
+Note that for now, adjacency information is ignored.
 
-Different data structures can expose different elements in their API: faces, vertices, edge and half-edges.
+Different data structures can expose different elements in their API: faces, vertices, edges and half-edges.
 Elements that are not exposed cannot be referred to and thus, associating data with those elements is not possible.
 For exposed elements, we expect the data structure to be able to enumerate all elements of that kind (i.\,e. iterate over them).
 As faces and vertices are needed in almost all situation and since it can be exposed by all data structures discussed so far, they are considered a basic part of meshes and are included in \code{Mesh}.
@@ -37,7 +37,7 @@ Because of this and to reduce the scope during initial development, half-edges w
 
 Another optional capability is \emph{mutability}.
 Not all algorithms need to modify meshes and it is conceivable that some more exotic data structures (e.\,g. implicitly defining the mesh) do not support mutation.
-As such, it makes sense to treat the ability to mutate the mesh as optional capability, called \code{MeshMut}.
+As such, it makes sense to treat the ability to mutate the mesh as an optional capability, called \code{MeshMut}.
 
 The distinction between pure triangle meshes and polygon meshes also needs to be considered.
 While it makes intuitive sense that polygon meshes offer an additional feature by letting algorithms create non-triangular faces, pure triangle meshes also offer additional features as some operations are only possible on triangle meshes.
@@ -88,7 +88,7 @@ The current solution is to define all methods in either \code{Mesh} or \code{Mes
 Traits \code{EdgeMesh}, \code{TriMesh} and \code{PolyMesh} are added, but just serve as markers.
 Methods requiring additional capabilities declare that via bounds on \code{Self}.
 This design avoids having a large number of traits and all functionality is found in only two traits, making it easy to discover for users.
-Also see figure~TODO.
+Also see figure~\ref{fig:mesh-traits}.
 
 \subsubsection*{Mutually exclusive traits}
 
@@ -113,7 +113,7 @@ To solve this problem, the trait \code{Mesh} could declare an \emph{associated c
 \end{rustcode}
 
 Implementors need to define a value for the constant when implementing the trait.
-\code{TriMesh} and \code{PolyMesh} are automatically implemented for these types implementing \code{Mesh} with the corresponding value set.
+\code{TriMesh} and \code{PolyMesh} are automatically implemented for these types implementing \code{Mesh} with the corresponding value.
 The only problem with this approach is that it does not compile yet:
 the Rust compiler still lacks the ability to check value equality within trait bounds.
 Luckily, this problem can simply be worked around by using types instead of values and using an associated type instead of an associated constant.
@@ -146,9 +146,8 @@ Luckily, this problem can simply be worked around by using types instead of valu
 \subsubsection*{Adjacency Traits}
 
 All functionality regarding adjacency information has to be defined in traits as well.
-This has very similar design considerations:
-Defining too many traits (e.\,g. one trait per basic adjacency query) would make the whole API more confusing while a single trait would not be flexible enough.
-The current design consists of three traits:
+As before, defining too many traits (e.\,g. one trait per basic adjacency query) would make the whole API more confusing while a single trait would not be flexible enough.
+The current design consists of three traits (cf. figure~\ref{fig:mesh-traits}):
 
 \begin{itemize}
   \item \textbf{\codebox{BasicAdj}}: this trait only defines \adj{F}{V} adjacency.
@@ -156,15 +155,13 @@ The current design consists of three traits:
   The trait is implemented by all mesh data structures within \code{lox}.
   \item \textbf{\codebox{FullAdj}}: requires \code{BasicAdj} and adds \adj{F}{F}, \adj{V}{F} and \adj{V}{V} queries, meaning that all queries between faces and vertices are supported.
   It is implemented by all data structures except for \code{SharedVertexMesh}.
-  \item \textbf{\codebox{EdgeAdj}}: requires \code{BasicAdj} and adds \adj{E}{F}, \adj{E}{V}, \adj{F}{E} and \adj{V}{E}.
+  \item \textbf{\codebox{EdgeAdj}}: requires \code{FullAdj} and adds \adj{E}{F}, \adj{E}{V}, \adj{F}{E} and \adj{V}{E}.
   This is currently only implemented by \code{HalfEdgeMesh}.
 \end{itemize}
 
 This solution works fairly well for mesh data structures defined within \code{lox}, but has not been evaluated for potential external data structures:
 The main advantage is the low number of traits which simplifies the API.
 But as mentioned above, this design is likely to change in the future.
-
-Figure~\ref{fig:mesh-traits} shows an overview of all currently existing traits.
 
 \begin{figure}[th]
   \centering
@@ -178,6 +175,7 @@ Figure~\ref{fig:mesh-traits} shows an overview of all currently existing traits.
 \end{figure}
 
 
+\vfill
 \subsubsection*{Data Structures in \codebox{lox}}
 
 At the time of this writing, \code{lox} provides three data structures:
@@ -210,6 +208,7 @@ As mentioned previously, Rust does not yet support using constants in trait boun
 For that reason, the \code{Config} trait uses associated types instead of associated constants to store type-level values.
 The \emph{FaceKind} trait is the one defined earlier in this section.
 
+\newpage
 The following table shows which traits are implemented by which data structure.
 
 \begin{center}
@@ -251,7 +250,7 @@ The following table shows which traits are implemented by which data structure.
 \end{center}
 
 Each data structure is tested rigorously by a number of unit tests.
-Fortunately, due to the mesh abstractions, the test suite for data structure needs to be defined only once and can then be used for each data structure.
+Fortunately, due to the mesh abstractions, the test suite needs to be defined only once and can then be used for each data structure.
 Configurable data structures are tested for multiple different configurations.
 With these unit tests, new data structure implementations can be added by using \emph{test driven development}.
 
