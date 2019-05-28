@@ -215,6 +215,8 @@ The different benchmarks attempted to cover the following parameter space:
   The syntax X:Y means that each item has X many fields and Y many fields were included in the sum, the other fields were ignored.
 \end{itemize}
 
+\vfill
+
 Getting reliable data from a benchmark is difficult because many factors need to be considered -- failing to pay attention to one of them could render the measured data useless.
 To deal with the inherent noise, almost all benchmarks execute the code that needs to be measured many times and analyze all measured durations to obtain a useful point estimate (e.\,g. the mean).
 Performing a benchmark that attempts to measure the effect of CPU caches is particularly challenging, because the cache state persists over multiple iterations of the same code.
@@ -228,12 +230,13 @@ The benchmarking code would use that trigger before each repetition of the bench
 
 Unfortunately, executing the instruction via the kernel module itself takes a significant amount of time (approximately 750\,µs on the benchmark machine).
 Many of the benchmarks have a per-iteration time of less than that, making \code{WBINVD} a non-tolerable overhead.
-Excluding the duration of cache invalidation from the total measured time is not easily possible either:
-because measuring short durations does not yield reliable data, multiple repetitions are measured together and not on their own.
+Excluding the duration of cache invalidation from the total measured time is not easily possible either.
+Since measuring short durations does not yield reliable data, multiple repetitions are measured together and not on their own.
 Because of this massive overhead, \code{WBINVD} was dropped as possible solution.
 
-Instead, each repetition of the benchmarking code was performed on separate data.
-Before executing the benchmark, a copy of the working data was prepared for each iteration, meaning that the cache state produced by one repetition does not affect other iterations.
+\newpage
+As an alternative, each repetition of the benchmark was performed on separate data.
+Before executing the benchmarked code, a copy of the working data was prepared for each iteration, meaning that the cache state produced by one repetition does not affect other iterations.
 As CPU caches have very complex behavior, the absence of cross-repetition cache effects cannot be completely guaranteed, but the probability of them occurring was reduced substantially.
 
 The benchmark code and more details on the benchmark can be found in the repository of this thesis in the folder \code{benchmarks/memory-layout/}.
@@ -244,7 +247,6 @@ The actual measurements was performed on a completely idle \textsf{Thinkpad T-46
 The \textsf{Intel i7-6700\,HQ} has 6\,MiB of L3 cache, 1\,MiB of L2 cache and 256\,KiB of L1 cache.
 The full benchmark ran for approximately three hours.
 The results can be seen in figure~\ref{fig:memory-layout-bench} and are discussed on the page thereafter.
-
 
 \begin{figure}[p]
   \centering
@@ -260,6 +262,7 @@ The results can be seen in figure~\ref{fig:memory-layout-bench} and are discusse
   }
   \label{fig:memory-layout-bench}
 \end{figure}
+
 \newpage
 
 The results of the benchmark allow various interesting observations:
@@ -268,13 +271,14 @@ The results of the benchmark allow various interesting observations:
   \item The type of traversal plays a massive role in performance: in the 10M items benchmarks, random traversal is approximately 50 to 70 times slower than the sequential traversal.
   The difference is a bit smaller for the benchmark with fewer items, but still substantially.
   This effect is very much expected.
-  \item The durations for sequential traversal scale pretty perfectly with the number of items.
-  This is to be expected, because in the sequential benchmarks any effects due to caching should be very small and all other operations should scale linearly.
+  \item The durations for sequential traversal scale pretty closely with the number of items.
+  This is to be expected, because in those benchmarks, any caching effects should be very small and all other operations should scale linearly.
   On the other hand, the durations for random traversal do \emph{not} scale linearly with number of items, due to non-linear cache effects.
   The difference between 1M and 10M items is particularly high.
-  \item The durations of \textsf{1:1} benchmarks do not differ between memory layouts, which is expected, as they should not differ for only one field.
+  \item The durations of \textsf{1:1} benchmarks do not differ between memory layouts, which is expected: for one field, the memory layouts are the same.
   This is a confirmation that there are no unexpected differences in the benchmarks of different memory layouts.
-  \item The duration for SoA benchmarks does not depend on the total number of fields, but just on the used number of fields; e.\,g. \textsf{1:1}, \textsf{2:1}, \textsf{4:1} and \textsf{6:1} take the same time.
+  \item The duration for SoA benchmarks does not depend on the total number of fields, but just on the number of \emph{used} fields.
+  For example, \textsf{1:1}, \textsf{2:1}, \textsf{4:1} and \textsf{6:1} take the same time.
   This makes sense because adding additional, unused fields does not affect which memory is accessed by the SoA benchmark.
   \item For random traversal with 10K, 100K or 1M items in AoS layout, the benchmarks with two total fields take longer than the benchmarks with four (and sometimes six) total fields.
   This is not expected and could thus point to a flaw in the benchmark.
@@ -282,8 +286,9 @@ The results of the benchmark allow various interesting observations:
 \end{itemize}
 
 Comparing the two memory layouts, one important first observation is that SoA always outperforms AoS for sequential traversal, especially so for benchmarks where only a small number of total fields is used.
-The latter is expected: when loading one cache line, the cache line in the SoA case only contains values that are actually used; in the AoS case, the cache line also contains unused fields.
-As a consequence, if some fields are unused, SoA benchmark require fewer cache lines to be loaded from main memory compared to AoS.
+The latter is expected: when loading one cache line, it only contains values that are actually used in the SoA case.
+In the AoS case however, the cache line also contains unused fields.
+As a consequence, if some fields are unused, SoA requires fewer cache lines to be loaded from main memory compared to AoS.
 
 
 The comparison becomes more complicated for random traversal.
