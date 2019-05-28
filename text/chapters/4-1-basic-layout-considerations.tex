@@ -23,7 +23,7 @@ With the already mentioned Cargo features, it is possible to configure \code{lox
 \vspace{2cm}
 \subsubsection*{Deleting Elements in a Growable Array}
 
-A simple growing array cannot replace a linked list in all situations, since the latter allows to remove elements anywhere in the list in $\mathcal O(1)$ whereas the former only supports removing elements from the end.
+A simple growing array cannot replace a linked list in all situations, since the latter allows removing elements anywhere in the list in $\mathcal O(1)$ whereas the former only supports removing elements from the end.
 Being able to remove arbitrary elements from a mesh required in many situations, so mesh data structures are expected to support it.
 
 There are two possibilities to remove an element at any position inside an array: (a) shift all elements right of the deleted elements one to the left, and (b) store a \code{deleted} flag for each element which is set to \code{true} once an element is deleted.
@@ -106,7 +106,7 @@ The abstraction is realized with three traits to make it as flexible as possible
 \end{description}
 
 The three data structures mentioned above (growing array, hash map, list of pairs) implement all three traits.
-The reason for using three traits instead of a single one was to allow for more exotic type to be used with that interface.
+By using three traits instead of a single one, more exotic types can be used with that interface, too.
 The following types are provided by \code{lox} and implement \code{PropMap}, but not the other traits:
 
 \newpage
@@ -220,7 +220,7 @@ The different benchmarks attempted to cover the following parameter space:
 Getting reliable data from a benchmark is difficult because many factors need to be considered -- failing to pay attention to one of them could render the measured data useless.
 To deal with the inherent noise, almost all benchmarks execute the code that needs to be measured many times and analyze all measured durations to obtain a useful point estimate (e.\,g. the mean).
 Performing a benchmark that attempts to measure the effect of CPU caches is particularly challenging, because the cache state persists over multiple iterations of the same code.
-That in turn means that repeated measurements are not independent from one another, making the measured data unusable or very hard to analyze.
+That in turn means that repeated measurements are not independent of one another, making the measured data unusable or very hard to analyze.
 
 One idea on how to tackle this problem is to simply flush all caches.
 This is actually possible on most x86-64 CPUs with the \code{WBINVD} instruction, which first writes all cache contents back to main memory and then invalidates all CPU internal caches\footnote{There is also the \codebox{INVD} instruction which invalidates caches without writing them back, but it is highly unsafe as it globally destroys the consistency of memory operations, likely crashing or corrupting all programs currently running on the CPU (including the kernel).}.
@@ -243,10 +243,9 @@ The benchmark code and more details on the benchmark can be found in the reposit
 The benchmark uses the framework \emph{Criterion} \cite{criterion} which features a sophisticated statistical analysis of the raw measurements.
 However, only the mean and standard deviation were used to produce the graph seen in this report.
 
-The actual measurements was performed on a completely idle \textsf{Thinkpad T-460p}, containing an \textsf{Intel i7-6700\,HQ} and running \textsf{Ubuntu 18.04}.
+The full benchmark ran for approximately three hours and was performed on a completely idle \textsf{Thinkpad T-460p}, containing an \textsf{Intel i7-6700\,HQ} and running \textsf{Ubuntu 18.04}.
 The \textsf{Intel i7-6700\,HQ} has 6\,MiB of L3 cache, 1\,MiB of L2 cache and 256\,KiB of L1 cache.
-The full benchmark ran for approximately three hours.
-The results can be seen in figure~\ref{fig:memory-layout-bench} and are discussed on the page thereafter.
+Figure~\ref{fig:memory-layout-bench} shows the benchmark results, which are discussed on the page thereafter.
 
 \begin{figure}[p]
   \centering
@@ -285,7 +284,7 @@ The results of the benchmark allow various interesting observations:
   The benchmark was checked again, but no reasons for this behavior could be found.
 \end{itemize}
 
-Comparing the two memory layouts, one important first observation is that SoA always outperforms AoS for sequential traversal, especially so for benchmarks where only a small number of total fields is used.
+Comparing the two memory layouts, one important first observation is that SoA always outperforms AoS for sequential traversal, especially so for benchmarks where not all fields are used.
 The latter is expected: when loading one cache line, it only contains values that are actually used in the SoA case.
 In the AoS case however, the cache line also contains unused fields.
 As a consequence, if some fields are unused, SoA requires fewer cache lines to be loaded from main memory compared to AoS.
@@ -303,7 +302,7 @@ Completely unexpectedly, for 1M items, SoA significantly outperforms AoS in all 
 Something that might explain this behavior is the size of the test CPU's L3 cache (6\,MiB) compared to the total size of test data:
 one million items with \code{u32} fields corresponds to 4\,MiB (one field) to 24\,MiB (six fields) of data.
 In the \textsf{1:1} case, all data fits into the L3 cache, meaning that on average, the main memory only needs to be accessed $4 \text{\,MiB} / 64 \text{ Bytes (the size of one cache line)} = 65,536$ times.
-For more fields, the full data does not fit into the L3 cache, meaning that the some cache lines might need to be loaded multiple times from main memory.
+For more fields, the full data does not fit into the L3 cache, meaning that some cache lines might need to be loaded multiple times from main memory.
 The difference between memory layouts \emph{might} be due the specific associativity and replacement strategy of the L3 cache.
 
 For 10M items, SoA slightly outperforms AoS for one or two used fields, but is slightly slower for four used fields and twice as slow for six used fields.
@@ -320,7 +319,7 @@ Analyzing this benchmark lead to the following consequences for the development 
 
 \begin{itemize}
   \item Using multiple external property maps is usually fine.
-  For that reason, \code{lox} does not yet allow to store mesh properties next to adjacency information, i.\,e. a \code{HalfEdgeMesh} cannot store vertex positions.
+  For that reason, \code{lox} does not yet allow storing mesh properties next to adjacency information, i.\,e. a \code{HalfEdgeMesh} cannot store vertex positions.
   This feature might be added in the future, though.
   \item If an algorithm defines multiple mesh properties that are always used together, it is often preferred to cluster them into one property map.
   \item Generally, the more convenient solution can be used.

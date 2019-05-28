@@ -92,7 +92,7 @@ Also see figure~\ref{fig:mesh-traits}.
 
 \subsubsection*{Mutually exclusive traits}
 
-Special attention has to be payed to the design of \code{TriMesh} and \code{PolyMesh}.
+Special attention has to be paid to the design of \code{TriMesh} and \code{PolyMesh}.
 Simply adding two traits would be incorrect, because types could implement neither or both of these traits which should be prohibited.
 To solve this problem, the trait \code{Mesh} could declare an \emph{associated constant} and the two traits could be defined in terms of this constant:
 
@@ -168,7 +168,7 @@ But as mentioned above, this design is likely to change in the future.
   \includegraphics[width=.98\textwidth]{svg2pdf/mesh-traits}
   \caption{
     Traits currently used in \codebox{lox} to abstract over meshes.
-    The arrows represents \emph{super trait bounds}, i.\,e. \codebox{Mesh} is a super trait of \codebox{MeshMut}.
+    The arrows represent \emph{super trait bounds}, i.\,e. \codebox{Mesh} is a super trait of \codebox{MeshMut}.
     Green boxes contain traits that deal with adjacency information, yellow boxes indicate marker traits without own methods.
   }
   \label{fig:mesh-traits}
