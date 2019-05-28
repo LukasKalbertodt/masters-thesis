@@ -54,7 +54,17 @@ However, this is not optimal as IO operations still have to communicate with the
 A better solution is to have an in-memory writer and reader in the benchmarking code to avoid interactions with the file system alltogether.
 Benchmarks with both strategies were implemented for OpenMesh and \code{lox}, revealing that the RAM disk is roughly 1\% -- 6\% slower for read benchmarks and approximately 20\% -- 70\% slower for write benchmarks.
 Unfortunately, PMP does not support reading from and writing to non-file streams.
-To obtain a fair comparison between all three libraries, the in-memory disk solution was used for the benchmark shown below.
+To obtain a fair comparison between all three libraries, the in-memory disk solution was used for the main benchmark.
+
+The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indicate a few different things:
+
+\begin{itemize}
+  \item \code{lox} outperforms the other libraries in all IO tasks, often significantly.
+  \item In the \emph{read} benchmarks, \code{lox}'s HEM and DEM perform approximately equally well, with the SVM being notably faster.
+  In the \emph{write} benchmarks however, the DEM performs as well as the SVM with the HEM being notably slower.
+  This suggest that the DEM has the same speed as the HEM for mutating operations like \code{add_face}, but is faster for non-mutating operations.
+  \item For IO operations, the choice of data structure has a notable effect on performance.
+\end{itemize}
 
 \begin{figure}[p]
   \centering
@@ -69,3 +79,7 @@ To obtain a fair comparison between all three libraries, the in-memory disk solu
   }
   \label{fig:io-benchmark}
 \end{figure}
+
+\newpage
+
+foo
