@@ -7,21 +7,11 @@ My master's thesis. Abstract:
 
 > TODO
 
----
-
 **Links**:
 - **Download thesis as PDF** TODO
 - [Repository of polygon library `lox`](https://github.com/LukasKalbertodt/lox)
 
 
---
+---
 
-## Installation Requirements
-
-### To built the LaTeX file
-
-- XeTeX
-- *Inconsolata* font installed locally
-- *Pygments* (command `pygmentize`) installed
-    - Install `mysolarized` style (see `text/solarized` for more info)
-- Inkscape
+TODO: license
