@@ -89,6 +89,21 @@ fn main() {
         bench!(algo::smooth_cat_dem),
         bench!(algo::smooth_tiger_hem),
         bench!(algo::smooth_tiger_dem),
+
+        bench!(algo::sqrt3_cat_hem),
+        bench!(algo::sqrt3_tiger_hem),
+
+        bench!(algo::boundary_count_cat_hem),
+        bench!(algo::boundary_count_cat_dem),
+        bench!(algo::boundary_count_tiger_hem),
+        bench!(algo::boundary_count_tiger_dem),
+
+        bench!(algo::calc_normals_cat_hem),
+        bench!(algo::calc_normals_cat_dem),
+        bench!(algo::calc_normals_cat_svm),
+        bench!(algo::calc_normals_tiger_hem),
+        bench!(algo::calc_normals_tiger_dem),
+        bench!(algo::calc_normals_tiger_svm),
     ];
 
 

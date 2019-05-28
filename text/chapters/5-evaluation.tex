@@ -25,6 +25,8 @@ From the 100 measured durations, the mean and standard deviation are calculated.
 
 As already mentioned, the code, test meshes and raw results of all benchmarks can be found here: \url{https://github.com/LukasKalbertodt/masters-thesis}.
 
+%TODO: Mention that DEM is not yet as optimized as it can be
+
 
 \newpage
 \subsection{Input/Output}
@@ -40,7 +42,6 @@ Different IO benchmarks were executed, covering this parameter space:
   All benchmarks use little endian binary encoding.
   ASCII encoding only makes sense for tiny meshes in situations where it is necessary to manually inspect mesh data.
   Binary encoding is far more memory efficient and faster to read and write (independent of library).
-  % TODO: mention PMP only assci STL
   \item \textbf{Read or Write}
   \item \textbf{Mesh size}: the triangle meshes \enquote{cat} (59,292 faces) and \enquote{tiger} (232,956 faces) were tested.
   See \code{benchmarks/data/README.md} in the thesis' repository for more details.
