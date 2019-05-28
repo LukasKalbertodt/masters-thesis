@@ -55,3 +55,17 @@ A better solution is to have an in-memory writer and reader in the benchmarking 
 Benchmarks with both strategies were implemented for OpenMesh and \code{lox}, revealing that the RAM disk is roughly 1\% -- 6\% slower for read benchmarks and approximately 20\% -- 70\% slower for write benchmarks.
 Unfortunately, PMP does not support reading from and writing to non-file streams.
 To obtain a fair comparison between all three libraries, the in-memory disk solution was used for the benchmark shown below.
+
+\begin{figure}[p]
+  \centering
+  \centerline{
+    \includegraphics[width=1.1\textwidth]{svg2pdf/io-bench}
+  }
+  \vspace{1cm}
+  \caption{
+    Results of the IO benchmarks.
+    The height of the bars is the mean of all measurements, the error bar displays the standard deviation.
+    Values for \enquote{Write STL} benchmarks are missing for PMP, because the library only supports ASCII STL which is a lot slower than binary STL (those benchmarks took 500\,ms for \emph{cat} and 2000\,ms for \emph{tiger}).
+  }
+  \label{fig:io-benchmark}
+\end{figure}
