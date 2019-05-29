@@ -29,3 +29,6 @@ target_link_libraries (example-io pmp)
 
 add_executable (example-smooth example-smooth.cpp)
 target_link_libraries (example-smooth pmp)
+
+add_executable (example-build example-build.cpp)
+target_link_libraries (example-build pmp)
