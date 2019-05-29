@@ -23,3 +23,6 @@ add_executable (${name} main.cpp)
 target_link_libraries (${name}
   pmp
 )
+
+add_executable (example-io example-io.cpp)
+target_link_libraries (example-io pmp)
