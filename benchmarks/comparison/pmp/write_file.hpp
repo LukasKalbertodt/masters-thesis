@@ -1,3 +1,5 @@
+#include <pmp/algorithms/SurfaceNormals.h>
+
 using pmp::SurfaceMesh;
 using pmp::Normal;
 using pmp::Point;
@@ -10,21 +12,7 @@ Outcome write_bench(const char* infile, const char* outfile, const char* ext) {
 
     // Generate face normals if we are writing STL
     if (string(ext) == "stl") {
-        auto normals = mesh.add_face_property<Normal>("f:normal");
-        auto points = mesh.get_vertex_property<Point>("v:point");
-
-        auto vertices = vector<Point>();
-        for (auto f: mesh.faces()) {
-            vertices.clear();
-            for (auto v: mesh.vertices(f)) {
-                vertices.push_back(points[v]);
-            }
-
-            auto diff_a = vertices[1] - vertices[0];
-            auto diff_b = vertices[2] - vertices[0];
-            auto normal = pmp::normalize(pmp::cross(diff_a, diff_b));
-            normals[f] = normal;
-        }
+        pmp::SurfaceNormals::compute_face_normals(mesh);
     }
 
     auto flags = IOFlags();
