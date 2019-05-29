@@ -21,3 +21,6 @@ target_link_libraries (${name}
 
 add_executable (example-io example-io.cpp)
 target_link_libraries (example-io OpenMeshCore)
+
+add_executable (example-smooth example-smooth.cpp)
+target_link_libraries (example-smooth OpenMeshCore)

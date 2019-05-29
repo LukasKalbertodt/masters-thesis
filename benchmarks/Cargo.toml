@@ -23,6 +23,10 @@ path = "util/main.rs"
 name = "example-io"
 path = "comparison/lox/example-io.rs"
 
+[[bin]]
+name = "example-smooth"
+path = "comparison/lox/example-smooth.rs"
+
 [[bench]]
 name = "memory-layout"
 path = "memory-layout/main.rs"
