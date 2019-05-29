@@ -23,7 +23,6 @@ Outcome smooth_bench(const char* file) {
         auto new_pos = mesh.add_vertex_property<Point>("v:new_pos");
         auto points = mesh.get_vertex_property<Point>("v:point");
 
-        auto vertices = vector<Point>();
         for (auto v: mesh.vertices()) {
             if (mesh.is_boundary(v)) {
                 new_pos[v] = points[v];
@@ -33,6 +32,7 @@ Outcome smooth_bench(const char* file) {
 
                 for (auto neighbor: mesh.vertices(v)) {
                     total_displacement += points[neighbor];
+                    valence += 1;
                 }
 
                 new_pos[v] = total_displacement / valence;
