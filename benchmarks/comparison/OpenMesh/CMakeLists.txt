@@ -27,3 +27,6 @@ target_link_libraries (example-smooth OpenMeshCore)
 
 add_executable (example-build example-build.cpp)
 target_link_libraries (example-build OpenMeshCore)
+
+add_executable (example-sqrt3 example-sqrt3.cpp)
+target_link_libraries (example-sqrt3 OpenMeshCore)
