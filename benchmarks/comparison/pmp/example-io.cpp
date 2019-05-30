@@ -1,3 +1,4 @@
+#include <iostream>
 #include <pmp/SurfaceMesh.h>
 
 using pmp::SurfaceMesh;

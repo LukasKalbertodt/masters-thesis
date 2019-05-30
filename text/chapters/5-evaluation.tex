@@ -91,6 +91,37 @@ The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indica
 \newpage
 \section{Example Code}
 
+Speed is by far not the only factor determining the quality of a software library.
+For example, if the library is hard to understand and use, the increase in development time usually outweighs the gains due to higher execution speed.
+Unfortunately, it is often not possible to objectively evaluate a library's ease of use or the \enquote{readability} of its code -- particularly when comparing different languages.
+However, to get a sense for the differences between \code{lox}, OpenMesh and PMP, this chapters shows a few example tasks realized with the different libraries.
+
+Figure~\ref{fig:example-io} shows an example that reads the file \code{input.stl} and writes the mesh back into \code{output.ply}.
+Two main differences between the \code{lox} version and the two other versions can be observed.
+Firstly, with \code{lox}, the mesh is returned by the \code{read_file} function, while OpenMesh and PMP already require an instance of a mesh to read into, i.\,e. a variable has to created before reading.
+Secondly, \code{lox}'s IO functions report errors via \code{io::Error} which includes information about the underlying cause, whereas OpenMesh's and PMP's functions signal success or failure via a single \code{bool} which does not carry any additional information.
+
+In figure~\ref{fig:example-build}, code manually building a simple mesh is shown.
+While most of the time, meshes are loaded from files, creating small meshes by hand is useful for examples and unit tests.
+While the two snippets using OpenMesh and PMP are very similar, the code using \code{lox} differs substantially.
+That is because with \code{lox}, mesh properties -- including vertex positions -- have to be stored in external property maps.
+The \code{mesh!} macro is offered to make creating meshes more convenient by allowing the user to specify mesh connectivity and properties with a custom syntax.
+However, it is possible that more methods are added to \enquote{fat meshes} in the future, which would allow them to be used just like the mesh types in OpenMesh and PMP.
+
+The small code snippets in figure~\ref{fig:example-sqrt3} show how to run the \emph{sqrt3} algorithm \cite{kobbelt20003} on a mesh.
+In \code{lox}, the algorithm is a simple function, while the other libraries require the instantiation of a class, a method of which performs the actual algorithm.
+
+Lastly, figure~\ref{fig:example-smooth} shows a simple smoothing algorithm (used for the \enquote{smooth} benchmarks in the previous section) that moves each vertex to the centroid of all neighbor vertices.
+This shows a number of differences between the libraries.
+For one, \code{lox}'s vertex iterator iterates over \code{VertexRef}s, allowing features like \code{v.adjacent_vertices()} and \code{v.is_boundary()}, while the other two libraries iterate over vertex handles.
+In OpenMesh and PMP, the property map for the new positions is created from the mesh and filled afterwards; in \code{lox} it is created by collecting an iterator over \code{(VertexHandle, Point3)} pairs.
+An iterator method \code{centroid} is offered by \code{lox}, while the versions implement that logic themselves.
+
+In general, in situations in which \code{lox} code is more concise than equivalent code for the two other libraries, this advantage is mostly due to Rust's powerful iterator system.
+It allows defining new methods (like \code{centroid}), but even the built-in methods can make some code notably shorter.
+As another example, this code counts the number of boundary faces: \code{mesh.faces().filter(|f| f.is_boundary()).count()}.
+
+
 \begin{figure}[p]
   \begin{minipage}{.04\textwidth}
     \rotatebox{90}{\textsf{\Large \textbf{lox}}}
@@ -145,6 +176,7 @@ The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indica
   \end{minipage}
   \begin{minipage}{.9\textwidth}
     \begin{cppcode*}{fontsize=\footnotesize}
+      #include <iostream>
       #include <pmp/SurfaceMesh.h>
 
       using pmp::SurfaceMesh;
@@ -167,7 +199,9 @@ The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indica
   \caption{
     Example code loading one mesh file and writing the same mesh into another file.
     OpenMesh and PMP default to ASCII encoding when writing files, \codebox{lox} uses binary encoding by default.
+    This is the only example that includes imports and function declarations.
   }
+  \label{fig:example-io}
 \end{figure}
 
 \begin{figure}[p]
@@ -230,10 +264,11 @@ The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indica
   \caption{
     Example code manually creating a mesh with two triangles.
   }
+  \label{fig:example-build}
 \end{figure}
 
 \begin{figure}[p]
-\vspace{2mm}
+  \vspace{2mm}
   \rotatebox{0}{\textsf{\Large \textbf{lox}}}\\[-3mm]
 
   \hspace{.04\textwidth}
@@ -267,6 +302,7 @@ The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indica
   \caption{
     Example code executing the \enquote{sqrt3} algorithm offered by the libraries.
   }
+  \label{fig:example-sqrt3}
 \end{figure}
 
 \begin{figure}[p]
@@ -348,6 +384,7 @@ The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indica
   \caption{
     Example code performing a simple mesh smoothing.
   }
+  \label{fig:example-smooth}
 \end{figure}
 
 
