@@ -1,3 +1,77 @@
-\chapter{Rust: Advantages and Problems}
+\chapter{Rust: Obstacles and Limitations}
 
-\lipsum[1]
+While using Rust in this project had many advantages, the language also created a number of problems, ranging from minor inconveniences to major limitations.
+This chapter briefly explores these complications and explains how they were solved in \code{lox}.
+
+\vspace{1cm}
+
+Many mesh algorithms need to iterate over elements of the mesh while simultaneously mutating the mesh.
+For example, to add an isolated vertex in the center of each face, it is required to iterate over all faces while adding vertices.
+Regardless of language, the programmer has to pay attention in these situations to not accidentally invalidate the iterator (e.\,g. by removing elements) and to not iterate forever (e.\,g. by adding faces while iterating over all faces).
+In Rust, mutation during iteration is usually not accepted by the compiler, due to one of Rust's most central rules: \emph{aliasing nand mutability}.
+
+Most iteration in Rust is done by obtaining an iterator object from the container and calling \code{next()} repeatedly until \code{None} is returned.
+This can be done manually or by using a \code{for} loop, which performs both steps automatically.
+The key to the problem is that the iterator object has a reference to the container and lives for the whole iteration, meaning that the container is \emph{borrowed} for the whole time.
+The code below demonstrates this problem.
+Compiling the code on the left fails with \enquote{cannot borrow \codebox{v} as mutable because it is also borrowed as immutable}.
+The code snippet on the right works around the problem by using an iterator that does not borrow \code{v} (the vector is only briefly borrowed to obtain the length).
+
+\vspace{5mm}
+\begin{minipage}{0.49\textwidth}
+  \begin{rustcode}
+    let mut v = vec![1, 2, 3];
+    for item in &v {
+        v[0] += item;
+    }
+  \end{rustcode}
+\end{minipage}
+\begin{minipage}{0.49\textwidth}
+  \begin{rustcode}
+    let mut v = vec![1, 2, 3];
+    for i in 0..v.len() {
+        v[0] += v[i];
+    }
+  \end{rustcode}
+\end{minipage}
+\vspace{5mm}
+
+This solution only works because the user code can reliably perform the same iteration the container's iterator would have performed: in this case, just iterating over all valid indices.
+For meshes, that is usually not the case as meshes can implement their own iteration logic, mostly to skip deleted elements.
+
+Instead, the workaround used by \code{lox} is to add a way to mutate the container through the iterator object.
+This has the disadvantage that the user has to deal with the iterator objects themselves (i.\,e. they cannot use a \code{for} loop) and that the iterator logic might get a bit more complicated to ensure that mutation of the container does not invalidate the iterator.
+On the other hand, the iterator object can precisely control which mutating operations are performed, which potentially makes this solution more robust.
+The solution works fine for \code{lox}, but the exact iterator interface is not fixed yet.
+
+\newpage
+
+A less problematic limitation is the lack of \enquote{const generics}, a term that refers to a number of extensions to the Rust type system.
+Most importantly, it would allow items to be generic not only over types and lifetimes, but also over compile-time values.\footnote{This is possible in \cpp via \codebox{template <int N>}, for example.}.
+The other important part is the ability to use equality constraints for these values in trait bounds; usable not only with constant generic parameters, but also with associated constants.
+The latter would have been useful for \code{lox} in a few situation, as already mentioned in \autoref{chap:mesh-traits}.
+The workaround, also already mentioned in said section, is to use types instead of values.
+This is only a viable solution if the number of different values is fairly small, but since that is the case for \code{lox}, this limitation could easily be worked around.
+
+Some Rust features are implemented, but have not been stabilized yet.
+To stabilize a feature means to commit to all details of it and to never change it in a backwards-incompatible way.
+As stabilizing too early could mean supporting a flawed feature forever, all additions to the language are tested and evaluated for some time before a decision is made.
+An unstable feature can only be used with a \emph{nightly} compiler, a version built from the \code{master} branch every night.
+Currently, \code{lox} can only be compiled with a nightly compiler because some unstable features are used.
+However, only one of those features is critical (i.\,e. not just for convenience): \emph{specialization}.
+
+Usually, Rust maintains a property called \emph{coherence}, meaning that for any given type and trait, exactly one specific, unambiguous implementation applies (or none, if the type does not implement the trait).
+This property is important in several situations to guarantee soundness, but it is of course limiting in some other situations.
+To somewhat relax the restrictions, specialization was introduced, providing the ability to have some forms overlapping trait implementations.
+Unfortunately, it is not yet stabilized as there are a few problems with the current system.
+But as this feature is crucial for \code{lox} in a couple of situations, \code{lox} is forced to use the nightly compiler until it has been stabilized.
+
+
+
+% - Const generics: face kind
+% - Advantages apart from traits
+% - Roadmap 2019
+% - GATs und Iteratoren sowie `PropMap`
+% - Specialization (FnMap) ~
+% - Aliasing xor Mutability teilweise problematisch
+% -

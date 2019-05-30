@@ -108,7 +108,7 @@ That is because with \code{lox}, mesh properties -- including vertex positions -
 The \code{mesh!} macro is offered to make creating meshes more convenient by allowing the user to specify mesh connectivity and properties with a custom syntax.
 However, it is possible that more methods are added to \enquote{fat meshes} in the future, which would allow them to be used just like the mesh types in OpenMesh and PMP.
 
-The small code snippets in figure~\ref{fig:example-sqrt3} show how to run the \emph{sqrt3} algorithm \cite{kobbelt20003} on a mesh.
+The small code snippets in figure~\ref{fig:example-sqrt3} show how to run the $\sqrt{3}$-subdivision algorithm \cite{kobbelt20003} on a mesh.
 In \code{lox}, the algorithm is a simple function, while the other libraries require the instantiation of a class, a method of which performs the actual algorithm.
 
 Lastly, figure~\ref{fig:example-smooth} shows a simple smoothing algorithm (used for the \enquote{smooth} benchmarks in the previous section) that moves each vertex to the centroid of all neighbor vertices.
@@ -300,7 +300,7 @@ As another example, this code counts the number of boundary faces: \code{mesh.fa
   \end{minipage}
 
   \caption{
-    Example code executing the \enquote{sqrt3} algorithm offered by the libraries.
+    Example code executing the $\sqrt{3}$-subdivision algorithm offered by the libraries.
   }
   \label{fig:example-sqrt3}
 \end{figure}
