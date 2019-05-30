@@ -391,4 +391,22 @@ As another example, this code counts the number of boundary faces: \code{mesh.fa
 \newpage
 \section{Summary}
 
-\lipsum[1]
+% As can be seen from this chapter, \code{lox} is certainly usable and offers the basic features expected from a mesh processing library.
+As can be seen from the previous chapters, \code{lox} is a viable mesh processing library which offers the basic features expected from such a package.
+It allows implementing sophisticated mesh algorithms (like $\sqrt{3}$-subdivision) and it has been successfully used to create two useful applications: \code{lox-cli} and an SVG renderer.
+Compared to two existing \cpp libraries, OpenMesh and PMP, \code{lox} has advantages in some areas but disadvantages in others.
+Currently, \code{lox} is not as complete as the other two libraries, particularly regarding mesh algorithms.
+Naturally, the library is also not nearly as mature as OpenMesh.
+
+The main benefit of \code{lox} comes from having achieved its central goal:
+to provide an abstraction over different data structures and let the programmer decide which data structure to use in which situation.
+This works well and does not incur any significant runtime overhead, as shown in the benchmarks where \code{lox} outperforms the other libraries.
+Additional advantages of \code{lox} include the superior performance of IO operations and being able to use Rust, which in itself has several advantages over \cpp.
+
+In some areas, \code{lox} could not improve the status-quo yet.
+For example, while some operations can be expressed more concisely due to \code{lox}'s use of Rust features, some other tasks require slightly more code using \code{lox} than existing \cpp libraries.
+Particularly problematic for \code{lox} is the use of indices to refer to data, because generally, each array access has to be bound checked to avoid reading uninitialized memory.
+Unfortunately the optimizer is not able to remove those bound checks most of the time in the context of this library, meaning that this safety guarantee incurs notable runtime overhead.
+This can be seen in some of the benchmarks.
+The problem could potentially be solved by using Rust's type system to \enquote{sign} (or \enquote{brand}) valid indices at compile time, a pattern explored in \cite[Chapter~6.3]{beingessner2016you}.
+This, however, was not attempted in this thesis.
