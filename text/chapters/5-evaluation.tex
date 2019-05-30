@@ -83,4 +83,275 @@ The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indica
 
 \newpage
 
-foo
+\subsection{Algorithms}
+
+\lipsum[1]
+
+
+\newpage
+\section{Example Code}
+
+\begin{figure}[p]
+  \begin{minipage}{.04\textwidth}
+    \rotatebox{90}{\textsf{\Large \textbf{lox}}}
+  \end{minipage}
+  \begin{minipage}{.9\textwidth}
+    \begin{rustcode*}{fontsize=\footnotesize}
+      use lox::{
+          ds::SharedVertexMesh,
+          fat::MiniMesh,
+          io,
+      };
+
+      fn main() -> Result<(), io::Error> {
+          type MyMesh = MiniMesh<SharedVertexMesh>;
+
+          let mesh: MyMesh = io::read_file("input.stl")?;
+          io::write_file(&mesh, "output.ply")?;
+
+          Ok(())
+      }
+    \end{rustcode*}
+  \end{minipage}\vspace{2mm}
+
+  \begin{minipage}{.04\textwidth}
+    \rotatebox{90}{\textsf{\Large \textbf{OpenMesh}}}
+  \end{minipage}
+  \begin{minipage}{.9\textwidth}
+    \begin{cppcode*}{fontsize=\footnotesize}
+      #include <iostream>
+      #include <OpenMesh/Core/IO/MeshIO.hh>
+      #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
+
+      typedef OpenMesh::TriMesh_ArrayKernelT<> MyMesh;
+
+      int main() {
+          MyMesh mesh;
+          if (!OpenMesh::IO::read_mesh(mesh, "input.stl")) {
+              std::cerr << "Error reading file" << std::endl;
+              return 1;
+          }
+
+          if (!OpenMesh::IO::write_mesh(mesh, "output.ply")) {
+              std::cerr << "Error writing file" << std::endl;
+              return 1;
+          }
+      }
+    \end{cppcode*}
+  \end{minipage}\vspace{2mm}
+
+  \begin{minipage}{.04\textwidth}
+    \rotatebox{90}{\textsf{\Large \textbf{PMP}}}
+  \end{minipage}
+  \begin{minipage}{.9\textwidth}
+    \begin{cppcode*}{fontsize=\footnotesize}
+      #include <pmp/SurfaceMesh.h>
+
+      using pmp::SurfaceMesh;
+
+      int main() {
+          SurfaceMesh mesh;
+          if (!mesh.read("input.stl")) {
+              std::cerr << "Error reading file" << std::endl;
+              return 1;
+          }
+
+          if (!mesh.write("output.ply")) {
+              std::cerr << "Error writing file" << std::endl;
+              return 1;
+          }
+      }
+    \end{cppcode*}
+  \end{minipage}
+
+  \caption{
+    Example code loading one mesh file and writing the same mesh into another file.
+    OpenMesh and PMP default to ASCII encoding when writing files, \codebox{lox} uses binary encoding by default.
+  }
+\end{figure}
+
+\begin{figure}[p]
+  \begin{minipage}{.04\textwidth}
+    \rotatebox{90}{\textsf{\Large \textbf{lox}}}
+  \end{minipage}
+  \begin{minipage}{.9\textwidth}
+    \begin{rustcode*}{fontsize=\footnotesize}
+      let (mesh, vertex_positions) = mesh! {
+          type: SharedVertexMesh,
+          vertices: [
+              v0: Point3::new(0.0, 0.0, 0.0),
+              v1: Point3::new(0.0, 1.0, 0.0),
+              v2: Point3::new(1.0, 0.0, 0.0),
+              v3: Point3::new(1.0, 1.0, 0.0),
+          ],
+          faces: [
+              [v0, v2, v1],
+              [v2, v3, v1],
+          ]
+      };
+      let mesh = MiniMesh { mesh, vertex_positions };
+    \end{rustcode*}
+  \end{minipage}\vspace{2mm}
+
+  \begin{minipage}{.04\textwidth}
+    \rotatebox{90}{\textsf{\Large \textbf{OpenMesh}}}
+  \end{minipage}
+  \begin{minipage}{.9\textwidth}
+    \begin{cppcode*}{fontsize=\footnotesize}
+      MyMesh mesh;
+
+      const auto v0 = mesh.add_vertex(MyMesh::Point(0.0, 0.0, 0.0));
+      const auto v1 = mesh.add_vertex(MyMesh::Point(0.0, 1.0, 0.0));
+      const auto v2 = mesh.add_vertex(MyMesh::Point(1.0, 0.0, 0.0));
+      const auto v3 = mesh.add_vertex(MyMesh::Point(1.0, 1.0, 0.0));
+
+      mesh.add_face(v0, v2, v1);
+      mesh.add_face(v2, v3, v1);
+    \end{cppcode*}
+  \end{minipage}\vspace{2mm}
+
+  \begin{minipage}{.04\textwidth}
+    \rotatebox{90}{\textsf{\Large \textbf{PMP}}}
+  \end{minipage}
+  \begin{minipage}{.9\textwidth}
+    \begin{cppcode*}{fontsize=\footnotesize}
+      SurfaceMesh mesh;
+
+      const auto v0 = mesh.add_vertex(Point(0.0, 0.0, 0.0));
+      const auto v1 = mesh.add_vertex(Point(0.0, 1.0, 0.0));
+      const auto v2 = mesh.add_vertex(Point(1.0, 0.0, 0.0));
+      const auto v3 = mesh.add_vertex(Point(1.0, 1.0, 0.0));
+
+      mesh.add_triangle(v0, v2, v1);
+      mesh.add_triangle(v2, v3, v1);
+    \end{cppcode*}
+  \end{minipage}
+
+  \caption{
+    Example code manually creating a mesh with two triangles.
+  }
+\end{figure}
+
+\begin{figure}[p]
+\vspace{2mm}
+  \rotatebox{0}{\textsf{\Large \textbf{lox}}}\\[-3mm]
+
+  \hspace{.04\textwidth}
+  \begin{minipage}{.9\textwidth}
+    \begin{rustcode*}{fontsize=\footnotesize}
+      algo::subdivision::sqrt3(&mut mesh.mesh, &mut mesh.vertex_positions, 1);
+    \end{rustcode*}
+  \end{minipage}\vspace{2mm}
+
+  \vspace{2mm}
+  \rotatebox{0}{\textsf{\Large \textbf{OpenMesh}}}\\[-3mm]
+
+  \hspace{.04\textwidth}
+  \begin{minipage}{.9\textwidth}
+    \begin{cppcode*}{fontsize=\footnotesize}
+      OpenMesh::Subdivider::Uniform::Sqrt3T<MyMesh, float>()(mesh, 1);
+    \end{cppcode*}
+  \end{minipage}\vspace{2mm}
+
+  \vspace{2mm}
+  \rotatebox{0}{\textsf{\Large \textbf{PMP}}}\\[-3mm]
+
+  \hspace{.04\textwidth}
+  \begin{minipage}{.9\textwidth}
+    \begin{cppcode*}{fontsize=\footnotesize}
+      auto sub = SurfaceSubdivision(mesh);
+      sub.sqrt3();
+    \end{cppcode*}
+  \end{minipage}
+
+  \caption{
+    Example code executing the \enquote{sqrt3} algorithm offered by the libraries.
+  }
+\end{figure}
+
+\begin{figure}[p]
+  \begin{minipage}{.04\textwidth}
+    \rotatebox{90}{\textsf{\Large \textbf{lox}}}
+  \end{minipage}
+  \begin{minipage}{.9\textwidth}
+    \begin{rustcode*}{fontsize=\footnotesize}
+      mesh.vertex_positions = mesh.mesh.vertices().map(|v| {
+          let old_pos = mesh.vertex_positions[v.handle()];
+          let new_pos = if v.is_boundary() {
+              old_pos
+          } else {
+              v.adjacent_vertices()
+                  .map(|n| mesh.vertex_positions[n.handle()])
+                  .centroid()
+                  .unwrap()
+          };
+          (v.handle(), new_pos)
+      }).collect();
+    \end{rustcode*}
+  \end{minipage}\vspace{2mm}
+
+  \begin{minipage}{.04\textwidth}
+    \rotatebox{90}{\textsf{\Large \textbf{OpenMesh}}}
+  \end{minipage}
+  \begin{minipage}{.9\textwidth}
+    \begin{cppcode*}{fontsize=\footnotesize}
+      auto cogs = OpenMesh::makeTemporaryProperty<VertexHandle, MyMesh::Point>(mesh);
+      for (const auto& vh : mesh.vertices()) {
+          if (mesh.is_boundary(vh)) {
+              cogs[vh] = mesh.point(vh);
+          } else {
+              cogs[vh] = {0, 0, 0};
+              int valence = 0;
+              for (const auto& vvh : mesh.vv_range(vh)) {
+                  cogs[vh] += mesh.point(vvh);
+                  valence += 1;
+              }
+              cogs[vh] /= valence;
+          }
+      }
+
+      for (const auto& vh : mesh.vertices()) {
+          mesh.point(vh) = cogs[vh];
+      }
+    \end{cppcode*}
+  \end{minipage}\vspace{2mm}
+
+  \begin{minipage}{.04\textwidth}
+    \rotatebox{90}{\textsf{\Large \textbf{PMP}}}
+  \end{minipage}
+  \begin{minipage}{.9\textwidth}
+    \begin{cppcode*}{fontsize=\footnotesize}
+      auto new_pos = mesh.add_vertex_property<Point>("v:new_pos");
+      auto points = mesh.get_vertex_property<Point>("v:point");
+
+      for (const auto v: mesh.vertices()) {
+          if (mesh.is_boundary(v)) {
+              new_pos[v] = points[v];
+          } else {
+              auto total_displacement = vec3(0, 0, 0);
+              size_t valence = 0;
+              for (const auto neighbor: mesh.vertices(v)) {
+                  total_displacement += points[neighbor];
+                  valence += 1;
+              }
+              new_pos[v] = total_displacement / valence;
+          }
+      }
+
+      for (const auto v: mesh.vertices()) {
+          points[v] = new_pos[v];
+      }
+      mesh.remove_vertex_property(new_pos);
+    \end{cppcode*}
+  \end{minipage}
+
+  \caption{
+    Example code performing a simple mesh smoothing.
+  }
+\end{figure}
+
+
+\newpage
+\section{Summary}
+
+\lipsum[1]
