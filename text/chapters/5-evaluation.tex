@@ -1,8 +1,7 @@
 \chapter{Evaluation}
 
 In order to answer the questions raised in the introduction, the library \code{lox} is evaluated in this chapter.
-This is done by, for example, comparing the execution speeds of \code{lox}, OpenMesh and PMP in several different benchmarks.
-Furthermore, example code written with these three libraries is compared.  TODO: write this better.
+For example, \code{lox} is compared to the \cpp libraries OpenMesh and PMP by measuring the difference in execution speed and examining some example programs written with those libraries.
 
 Already during development, \code{lox}'s capabilities and ease of use were constantly tested by writing example programs and other tools.
 As mentioned in the previous chapter, the command line utility \code{lox-cli} is developed alongside the main library to make sure the library offers all features such an application might require from it.
@@ -12,20 +11,23 @@ That application is not technically part of this master's thesis, but was used t
 
 \section{Execution Speed}
 
-Geometry processing often has to deal with very large meshes, making the performance of geometry processing libraries very important.
+Geometry processing often has to deal with very large meshes, making the performance of geometry processing libraries highly important.
 Additionally, comparing the speed of \code{lox} to existing libraries is necessary in order to determine whether the abstractions employed by \code{lox} can be used without runtime overhead.
 This chapter presents and discusses a number of different benchmarks.
 
 All benchmarks were performed on a completely idle \textsf{Thinkpad T-460p} which, as already mentioned in chapter~4, contains an \textsf{Intel i7-6700\,HQ} and runs \textsf{Ubuntu 18.04}.
 Of course, the notebook was \emph{not} running on battery during the benchmarks.
 Additionally, at all times during the benchmarks, plenty of free main memory was available.
-Each benchmark first executes the to be measured code 20~times as a warm-up without measuring anything.
+The benchmarking routine first executes the code to be tested 20~times as a warm-up without measuring the time.
 Afterwards, the code is repeated 100 times and each iteration is measured individually.
 From the 100 measured durations, the mean and standard deviation are calculated.
 
-As already mentioned, the code, test meshes and raw results of all benchmarks can be found here: \url{https://github.com/LukasKalbertodt/masters-thesis}.
+Some benchmarks also test the directed edge mesh implemented in \code{lox}.
+It needs to be noted that this DEM implementation, unlike the HEM implementation, is fairly young, meaning that it was not yet optimized in any way.
+Consequently, performance of DEM operations might increase in the future.
+These benchmark results are not a fair comparison between the two different data structures.
 
-%TODO: Mention that DEM is not yet as optimized as it can be
+As already mentioned, the code, test meshes and raw results of all benchmarks can be found here: \url{https://github.com/LukasKalbertodt/masters-thesis}.
 
 
 \newpage
