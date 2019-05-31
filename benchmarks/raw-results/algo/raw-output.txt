@@ -1,0 +1,58 @@
+# lox
+
+test algo::smooth_cat_hem            ... bench:   1,995,655 ns/iter (+/- 164,145)
+test algo::smooth_cat_dem            ... bench:   2,105,982 ns/iter (+/- 241,378)
+test algo::smooth_tiger_hem          ... bench:  15,796,940 ns/iter (+/- 598,619)
+test algo::smooth_tiger_dem          ... bench:  15,358,631 ns/iter (+/- 1,061,168)
+test algo::sqrt3_cat_hem             ... bench:  10,248,138 ns/iter (+/- 593,291)
+test algo::sqrt3_tiger_hem           ... bench:  63,209,865 ns/iter (+/- 1,209,223)
+test algo::boundary_vcount_cat_hem   ... bench:     166,121 ns/iter (+/- 89,925)
+test algo::boundary_vcount_cat_dem   ... bench:     171,177 ns/iter (+/- 87,379)
+test algo::boundary_vcount_tiger_hem ... bench:   1,383,433 ns/iter (+/- 165,897)
+test algo::boundary_vcount_tiger_dem ... bench:     633,488 ns/iter (+/- 37,168)
+test algo::boundary_fcount_cat_hem   ... bench:     559,539 ns/iter (+/- 130,885)
+test algo::boundary_fcount_cat_dem   ... bench:     286,729 ns/iter (+/- 40,532)
+test algo::boundary_fcount_tiger_hem ... bench:   4,730,240 ns/iter (+/- 269,709)
+test algo::boundary_fcount_tiger_dem ... bench:   1,120,416 ns/iter (+/- 82,610)
+test algo::calc_fnormals_cat_hem     ... bench:   1,814,048 ns/iter (+/- 234,543)
+test algo::calc_fnormals_cat_dem     ... bench:   1,223,829 ns/iter (+/- 78,066)
+test algo::calc_fnormals_cat_svm     ... bench:   1,337,606 ns/iter (+/- 68,073)
+test algo::calc_fnormals_tiger_hem   ... bench:  14,748,256 ns/iter (+/- 554,600)
+test algo::calc_fnormals_tiger_dem   ... bench:   5,032,780 ns/iter (+/- 267,647)
+test algo::calc_fnormals_tiger_svm   ... bench:   5,476,567 ns/iter (+/- 278,578)
+test algo::calc_vnormals_cat_hem     ... bench:   1,644,256 ns/iter (+/- 211,340)
+test algo::calc_vnormals_cat_dem     ... bench:   1,579,200 ns/iter (+/- 235,814)
+test algo::calc_vnormals_tiger_hem   ... bench:  15,433,170 ns/iter (+/- 484,208)
+test algo::calc_vnormals_tiger_dem   ... bench:  16,698,585 ns/iter (+/- 956,998)
+
+
+# OpenMesh
+
+Running 'algo_smooth_cat' ...          1,603,495ns  (std dev: 269,082ns)
+Running 'algo_smooth_tiger' ...        15,036,711ns  (std dev: 367,815ns)
+Running 'algo_sqrt3_cat' ...           26,851,681ns  (std dev: 871,437ns)
+Running 'algo_sqrt3_tiger' ...         128,893,228ns  (std dev: 735,879ns)
+Running 'algo_vcount_boundary_cat' ... 86,451ns  (std dev: 5,270ns)
+Running 'algo_vcount_boundary_tiger' ...1,389,881ns  (std dev: 44,775ns)
+Running 'algo_fcount_boundary_cat' ... 700,029ns  (std dev: 166,146ns)
+Running 'algo_fcount_boundary_tiger' ...7,162,179ns  (std dev: 285,547ns)
+Running 'algo_calc_fnormals_cat' ...   1,380,948ns  (std dev: 200,903ns)
+Running 'algo_calc_fnormals_tiger' ... 14,472,853ns  (std dev: 348,505ns)
+Running 'algo_calc_vnormals_cat' ...   1,337,992ns  (std dev: 154,912ns)
+Running 'algo_calc_vnormals_tiger' ... 15,970,962ns  (std dev: 542,701ns)
+
+
+# PMP
+
+Running 'algo_smooth_cat' ...          1,339,662ns  (std dev: 220,488ns)
+Running 'algo_smooth_tiger' ...        11,725,431ns  (std dev: 289,955ns)
+Running 'algo_sqrt3_cat' ...           13,908,760ns  (std dev: 791,779ns)
+Running 'algo_sqrt3_tiger' ...         81,767,587ns  (std dev: 751,828ns)
+Running 'algo_boundary_vcount_cat' ... 77,101ns  (std dev: 9,231ns)
+Running 'algo_boundary_vcount_tiger' ...906,808ns  (std dev: 48,999ns)
+Running 'algo_boundary_fcount_cat' ... 405,296ns  (std dev: 139,280ns)
+Running 'algo_boundary_fcount_tiger' ...5,240,390ns  (std dev: 217,331ns)
+Running 'algo_calc_fnormals_cat' ...   2,406,786ns  (std dev: 355,115ns)
+Running 'algo_calc_fnormals_tiger' ... 21,496,745ns  (std dev: 445,273ns)
+Running 'algo_calc_vnormals_cat' ...   1,137,158ns  (std dev: 224,266ns)
+Running 'algo_calc_vnormals_tiger' ... 12,853,205ns  (std dev: 284,214ns)
