@@ -27,10 +27,16 @@ int main(int argc, const char *argv[]) {
         BENCH(algo_sqrt3_cat),
         BENCH(algo_sqrt3_tiger),
 
-        BENCH(algo_boundary_count_cat),
-        BENCH(algo_boundary_count_tiger),
+        BENCH(algo_boundary_vcount_cat),
+        BENCH(algo_boundary_vcount_tiger),
 
-        BENCH(algo_calc_normals_cat),
-        BENCH(algo_calc_normals_tiger),
+        BENCH(algo_boundary_fcount_cat),
+        BENCH(algo_boundary_fcount_tiger),
+
+        BENCH(algo_calc_fnormals_cat),
+        BENCH(algo_calc_fnormals_tiger),
+
+        BENCH(algo_calc_vnormals_cat),
+        BENCH(algo_calc_vnormals_tiger),
     });
 }

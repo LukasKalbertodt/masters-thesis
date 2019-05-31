@@ -71,8 +71,8 @@ GEN_SQRT3_BENCH(algo_sqrt3_cat, "cat", "ply")
 GEN_SQRT3_BENCH(algo_sqrt3_tiger, "tiger", "ply")
 
 
-// ===== Boundary Count ========================================================================
-Outcome boundary_count_bench(const char* filename) {
+// ===== Boundary Count Vertices ================================================================
+Outcome boundary_vcount_bench(const char* filename) {
     MyMesh original;
     if (!OpenMesh::IO::read_mesh(original, filename)) {
         throw "reading failed"; // should never happen
@@ -82,7 +82,7 @@ Outcome boundary_count_bench(const char* filename) {
     return run_bench([&mesh]() {
         size_t count = 0;
         for (const auto& vh: mesh.vertices()) {
-            if (!mesh.is_boundary(vh)) {
+            if (mesh.is_boundary(vh)) {
                 count += 1;
             }
         }
@@ -92,16 +92,46 @@ Outcome boundary_count_bench(const char* filename) {
 }
 
 
-#define GEN_BOUNDARY_COUNT_BENCH(name, mesh, ext) Outcome name() {       \
-    return boundary_count_bench("../../../data/" mesh "." ext);     \
+#define GEN_BOUNDARY_VCOUNT_BENCH(name, mesh, ext) Outcome name() {       \
+    return boundary_vcount_bench("../../../data/" mesh "." ext);     \
 }
 
-GEN_BOUNDARY_COUNT_BENCH(algo_count_boundary_cat, "cat", "ply")
-GEN_BOUNDARY_COUNT_BENCH(algo_count_boundary_tiger, "tiger", "ply")
+GEN_BOUNDARY_VCOUNT_BENCH(algo_vcount_boundary_cat, "cat", "ply")
+GEN_BOUNDARY_VCOUNT_BENCH(algo_vcount_boundary_tiger, "tiger", "ply")
+
+
+
+// ===== Boundary Count Faces ===================================================================
+Outcome boundary_fcount_bench(const char* filename) {
+    MyMesh original;
+    if (!OpenMesh::IO::read_mesh(original, filename)) {
+        throw "reading failed"; // should never happen
+    }
+
+    const auto& mesh = original;
+    return run_bench([&mesh]() {
+        size_t count = 0;
+        for (const auto& vh: mesh.faces()) {
+            if (mesh.is_boundary(vh)) {
+                count += 1;
+            }
+        }
+
+        return count;
+    });
+}
+
+
+#define GEN_BOUNDARY_FCOUNT_BENCH(name, mesh, ext) Outcome name() {       \
+    return boundary_fcount_bench("../../../data/" mesh "." ext);     \
+}
+
+GEN_BOUNDARY_FCOUNT_BENCH(algo_fcount_boundary_cat, "cat", "ply")
+GEN_BOUNDARY_FCOUNT_BENCH(algo_fcount_boundary_tiger, "tiger", "ply")
 
 
 // ===== Normals ============================================================================
-Outcome calc_normals_bench(const char* filename) {
+Outcome calc_fnormals_bench(const char* filename) {
     MyMesh original;
     if (!OpenMesh::IO::read_mesh(original, filename)) {
         throw "reading failed"; // should never happen
@@ -121,9 +151,45 @@ Outcome calc_normals_bench(const char* filename) {
 }
 
 
-#define GEN_CALC_NORMALS_BENCH(name, mesh, ext) Outcome name() {       \
-    return calc_normals_bench("../../../data/" mesh "." ext);     \
+#define GEN_CALC_FNORMALS_BENCH(name, mesh, ext) Outcome name() {       \
+    return calc_fnormals_bench("../../../data/" mesh "." ext);     \
 }
 
-GEN_CALC_NORMALS_BENCH(algo_calc_normals_cat, "cat", "ply")
-GEN_CALC_NORMALS_BENCH(algo_calc_normals_tiger, "tiger", "ply")
+GEN_CALC_FNORMALS_BENCH(algo_calc_fnormals_cat, "cat", "ply")
+GEN_CALC_FNORMALS_BENCH(algo_calc_fnormals_tiger, "tiger", "ply")
+
+
+// ===== Normals ============================================================================
+Outcome calc_vnormals_bench(const char* filename) {
+    MyMesh original;
+    if (!OpenMesh::IO::read_mesh(original, filename)) {
+        throw "reading failed"; // should never happen
+    }
+
+    original.request_face_normals();
+    original.update_normals();
+
+    const auto& mesh = original;
+    return run_bench([&mesh]() {
+        std::vector<MyMesh::Point> normals;
+        normals.reserve(mesh.n_vertices());
+
+        for (const auto& vh: mesh.vertices()) {
+            auto sum = MyMesh::Point(0, 0, 0);
+            for (const auto& fh: mesh.vf_range(vh)) {
+                sum += mesh.normal(fh);
+            }
+            normals.push_back(sum.normalize());
+        }
+
+        return normals;
+    });
+}
+
+
+#define GEN_CALC_VNORMALS_BENCH(name, mesh, ext) Outcome name() {       \
+    return calc_vnormals_bench("../../../data/" mesh "." ext);     \
+}
+
+GEN_CALC_VNORMALS_BENCH(algo_calc_vnormals_cat, "cat", "ply")
+GEN_CALC_VNORMALS_BENCH(algo_calc_vnormals_tiger, "tiger", "ply")

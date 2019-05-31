@@ -6,6 +6,7 @@ using pmp::SurfaceMesh;
 using pmp::SurfaceSubdivision;
 using pmp::Normal;
 using pmp::Point;
+using pmp::Vector;
 using pmp::IOFlags;
 using pmp::vec3;
 
@@ -82,7 +83,7 @@ GEN_SQRT3_BENCH(algo_sqrt3_tiger, "tiger.ply")
 
 
 // ===== Boundary Count ========================================================================
-Outcome boundary_count_bench(const char* file) {
+Outcome boundary_vcount_bench(const char* file) {
     SurfaceMesh original;
     original.read(file);
 
@@ -99,18 +100,44 @@ Outcome boundary_count_bench(const char* file) {
     });
 }
 
-#define GEN_BOUNDARY_COUNT_BENCH(name, mesh) Outcome name() {       \
-    return boundary_count_bench("../../../data/" mesh);     \
+#define GEN_BOUNDARY_VCOUNT_BENCH(name, mesh) Outcome name() {       \
+    return boundary_vcount_bench("../../../data/" mesh);     \
 }
 
-GEN_BOUNDARY_COUNT_BENCH(algo_boundary_count_cat, "cat.ply")
-GEN_BOUNDARY_COUNT_BENCH(algo_boundary_count_tiger, "tiger.ply")
+GEN_BOUNDARY_VCOUNT_BENCH(algo_boundary_vcount_cat, "cat.ply")
+GEN_BOUNDARY_VCOUNT_BENCH(algo_boundary_vcount_tiger, "tiger.ply")
 
+
+
+// ===== Boundary Count ========================================================================
+Outcome boundary_fcount_bench(const char* file) {
+    SurfaceMesh original;
+    original.read(file);
+
+    const auto& mesh = original;
+    return run_bench([&mesh]() {
+        size_t count = 0;
+        for (auto f: mesh.faces()) {
+            if (mesh.is_boundary(f)) {
+                count += 1;
+            }
+        }
+
+        return count;
+    });
+}
+
+#define GEN_BOUNDARY_FCOUNT_BENCH(name, mesh) Outcome name() {       \
+    return boundary_fcount_bench("../../../data/" mesh);     \
+}
+
+GEN_BOUNDARY_FCOUNT_BENCH(algo_boundary_fcount_cat, "cat.ply")
+GEN_BOUNDARY_FCOUNT_BENCH(algo_boundary_fcount_tiger, "tiger.ply")
 
 
 
 // ===== Normals ============================================================================
-Outcome calc_normals_bench(const char* file) {
+Outcome calc_fnormals_bench(const char* file) {
     SurfaceMesh original;
     original.read(file);
 
@@ -127,9 +154,42 @@ Outcome calc_normals_bench(const char* file) {
     });
 }
 
-#define GEN_CALC_NORMALS_BENCH(name, mesh) Outcome name() {       \
-    return calc_normals_bench("../../../data/" mesh);     \
+#define GEN_CALC_FNORMALS_BENCH(name, mesh) Outcome name() {       \
+    return calc_fnormals_bench("../../../data/" mesh);     \
 }
 
-GEN_CALC_NORMALS_BENCH(algo_calc_normals_cat, "cat.ply")
-GEN_CALC_NORMALS_BENCH(algo_calc_normals_tiger, "tiger.ply")
+GEN_CALC_FNORMALS_BENCH(algo_calc_fnormals_cat, "cat.ply")
+GEN_CALC_FNORMALS_BENCH(algo_calc_fnormals_tiger, "tiger.ply")
+
+
+// ===== Normals ============================================================================
+Outcome calc_vnormals_bench(const char* file) {
+    SurfaceMesh original;
+    original.read(file);
+    pmp::SurfaceNormals::compute_face_normals(original);
+    auto face_normals = original.get_face_property<Normal>("f:normal");
+
+    const auto& mesh = original;
+    return run_bench([&mesh, &face_normals]() {
+        std::vector<Normal> normals;
+        normals.reserve(mesh.faces_size());
+
+        for (auto v: mesh.vertices()) {
+            auto sum = vec3(0, 0, 0);
+            for (auto f: mesh.faces(v)) {
+                sum += face_normals[f];
+            }
+            sum.normalize();
+            normals.push_back(sum);
+        }
+
+        return normals;
+    });
+}
+
+#define GEN_CALC_VNORMALS_BENCH(name, mesh) Outcome name() {       \
+    return calc_vnormals_bench("../../../data/" mesh);     \
+}
+
+GEN_CALC_VNORMALS_BENCH(algo_calc_vnormals_cat, "cat.ply")
+GEN_CALC_VNORMALS_BENCH(algo_calc_vnormals_tiger, "tiger.ply")

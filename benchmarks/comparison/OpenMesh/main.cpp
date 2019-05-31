@@ -54,11 +54,17 @@ int main(int argc, const char* argv[]) {
             BENCH(algo_sqrt3_cat),
             BENCH(algo_sqrt3_tiger),
 
-            BENCH(algo_count_boundary_cat),
-            BENCH(algo_count_boundary_tiger),
+            BENCH(algo_vcount_boundary_cat),
+            BENCH(algo_vcount_boundary_tiger),
 
-            BENCH(algo_calc_normals_cat),
-            BENCH(algo_calc_normals_tiger),
+            BENCH(algo_fcount_boundary_cat),
+            BENCH(algo_fcount_boundary_tiger),
+
+            BENCH(algo_calc_fnormals_cat),
+            BENCH(algo_calc_fnormals_tiger),
+
+            BENCH(algo_calc_vnormals_cat),
+            BENCH(algo_calc_vnormals_tiger),
         });
     } catch (const char* e) {
         cout << endl;
