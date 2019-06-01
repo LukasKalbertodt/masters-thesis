@@ -16,7 +16,7 @@ Geometry processing often has to deal with very large meshes, making the perform
 Additionally, comparing the speed of \code{lox} to existing libraries is necessary in order to determine whether the abstractions employed by \code{lox} can be used without runtime overhead.
 This chapter presents and discusses a number of different benchmarks.
 
-All benchmarks were performed on a completely idle \textsf{Thinkpad T-460p} which, as already mentioned in chapter~4, contains an \textsf{Intel i7-6700\,HQ} and runs \textsf{Ubuntu 18.04}.
+All benchmarks were performed on a completely idle \textsf{Thinkpad T-460p} which, as already mentioned in \autoref{chap:memory-layout}, contains an \textsf{Intel i7-6700\,HQ} and runs \textsf{Ubuntu 18.04}.
 Of course, the notebook was \emph{not} running on battery during the benchmarks.
 Additionally, plenty of free main memory was available at all times.
 The benchmarking routine first executes the code to be tested $\frac{N}{5}$~times as a warm-up without measuring any durations.
@@ -56,7 +56,7 @@ Most importantly, it does not make sense to test the speed of the actual hardwar
 To avoid this problem, a RAM disk\footnote{An allocated part of the main memory which is mounted into the file system.} can be used to store the input mesh files and as a target for all write operations.
 However, this is not optimal as IO operations still have to communicate with the operating system, adding some overhead.
 
-A better solution is to have an in-memory writer and reader in the benchmarking code to avoid interactions with the file system alltogether.
+A better solution is to have an in-memory writer and reader in the benchmarking code to avoid interactions with the file system altogether.
 Benchmarks with both strategies were implemented for OpenMesh and \code{lox}, revealing that the RAM disk is roughly 1\% -- 6\% slower for read benchmarks and approximately 20\% -- 70\% slower for write benchmarks.
 Unfortunately, PMP does not support reading from and writing to non-file streams.
 To obtain a fair comparison between all three libraries, the RAM disk solution was used for the benchmark below.
@@ -69,7 +69,7 @@ The results of these benchmarks -- shown in figure~\ref{fig:io-benchmark} -- ind
   \item \code{lox} outperforms the other libraries in all IO tasks, often significantly.
   \item In the \emph{read} benchmarks, \code{lox}'s HEM and DEM perform approximately equally well, with the SVM being notably faster.
   In the \emph{write} benchmarks however, the DEM performs as well as the SVM with the HEM being notably slower.
-  This suggest that the DEM has the same speed as the HEM for mutating operations like \code{add_face}, but is faster for non-mutating operations.
+  This suggests that the DEM has the same speed as the HEM for mutating operations like \code{add_face}, but is faster for non-mutating operations.
   \item For IO operations, the choice of data structure has a notable effect on performance.
 \end{itemize}
 
@@ -463,7 +463,6 @@ As another example, this code counts the number of boundary faces: \code{mesh.fa
 \newpage
 \section{Summary}
 
-% As can be seen from this chapter, \code{lox} is certainly usable and offers the basic features expected from a mesh processing library.
 As can be seen from the previous chapters, \code{lox} is a viable mesh processing library which offers the basic features expected from such a package.
 It allows implementing sophisticated mesh algorithms (like $\sqrt{3}$-subdivision) and it has been successfully used to create two useful applications: \code{lox-cli} and an SVG renderer.
 Compared to two existing \cpp libraries, OpenMesh and PMP, \code{lox} has advantages in some areas but disadvantages in others.
@@ -473,7 +472,7 @@ Naturally, the library is also not nearly as mature as OpenMesh.
 The main benefit of \code{lox} comes from having achieved its central goal:
 to provide an abstraction over different data structures and let the programmer decide which data structure to use in which situation.
 This works well and does not incur any significant runtime overhead, as shown in the benchmarks where \code{lox} outperforms the other libraries.
-And as can be seen from some benchmarks, it can be very beneficial to choose a data structure other then the HEM in some situations.
+And as can be seen from some benchmarks, it can be very beneficial to choose a data structure other than the HEM in some situations.
 Additional advantages of \code{lox} include the superior performance of IO operations and being able to use Rust, which has several advantages over \cpp.
 
 In some areas, \code{lox} could not improve the status-quo yet.

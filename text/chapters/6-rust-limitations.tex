@@ -49,7 +49,7 @@ The solution works fine for \code{lox}, the exact iterator interface is not fixe
 A less problematic limitation is the lack of \enquote{const generics} \cite{rfc2000}, a term that refers to a number of extensions to the Rust type system.
 Most importantly, it would allow items to be generic not only over types and lifetimes, but also over compile-time values\footnote{This is possible in \cpp via \codebox{template <int N>}, for example.}.
 Another important feature is the ability to use equality constraints for these values in trait bounds; usable not only with constant generic parameters, but also with associated constants.
-The latter would have been useful for \code{lox} in a few situation, as already mentioned in \autoref{chap:mesh-traits}.
+The latter would have been useful for \code{lox} in a few situations, as already mentioned in \autoref{chap:mesh-traits}.
 The workaround, also already mentioned in said section, is to use types instead of values.
 This is only a viable solution if the number of different values is fairly small, but since that is the case for \code{lox}, this limitation could easily be worked around.
 
@@ -67,7 +67,6 @@ To somewhat relax the restrictions, specialization was introduced \cite{rfc1210}
 Unfortunately, it is not yet stabilized as there are a few problems with the current system.
 But as this feature is crucial for \code{lox} in a couple of situations, \code{lox} is forced to use the nightly compiler until it has been stabilized.
 
-% \vspace{1cm}
 \vfill
 
 For \code{lox}, the most critical limitation of Rust is the missing support for \emph{higher kinded types} (HKTs), particularly \emph{generic associated types} (GATs).
@@ -103,11 +102,11 @@ Unfortunately, GATs are not yet fully implemented and thus cannot be used by \co
 There are several situations in which that feature would be required:
 
 \begin{itemize}
-  \item For the \code{PropMap} trait (cf. section~4.1), the main idea is to let the implementing type decide whether a return value borrows from \code{self}.
+  \item For the \code{PropMap} trait (cf. \autoref{chap:memory-layout}), the main idea is to let the implementing type decide whether a return value borrows from \code{self}.
   This would be easily solvable with GATs, but without them, an elaborate workaround was required.
   \item All mesh adjacency traits return iterators from most methods (e.\,g. an iterator over all neighbor faces).
   The type of the iterator can be specified by the mesh type implementing the adjacency trait, but the iterator also has to borrow from \code{self}.
-  Similarly to the previous point, this also requires a verbose workaround.
+  As with the previous point, this also requires a verbose workaround.
   \item The IO reader and writer types are generic over the underlying \code{Read} or \code{Write} type, respectively.
   For example, \code{ply::Writer} can be instantiated as \code{Writer<Vec<u8>>} or as \code{Writer<File>}.
   Without GATs (and potentially additional HKT features) it is impossible to abstract over those types in a way that allows creating new instances: \code{fn new<W: Write>(w: W) -> Self<W>} does not work.
