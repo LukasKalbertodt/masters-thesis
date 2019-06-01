@@ -1,12 +1,13 @@
 \chapter{Evaluation}
 
 In order to answer the questions raised in the introduction, the library \code{lox} is evaluated in this chapter.
-For example, \code{lox} is compared to the \cpp libraries OpenMesh and PMP by measuring the difference in execution speed and examining some example programs written with those libraries.
+As part of that assessment, \code{lox} is compared to the \cpp libraries OpenMesh and PMP by measuring differences in execution speed and examining some example programs written with those libraries.
 
 Already during development, \code{lox}'s capabilities and ease of use were constantly tested by writing example programs and other tools.
 As mentioned in the previous chapter, the command line utility \code{lox-cli} is developed alongside the main library to make sure the library offers all features such an application might require from it.
-Additionally, an experimental application for rendering polygon meshes to SVG\footnote{Scalable Vector Graphic} files was developed outside of the main project, also assessing \code{lox}'s capabilities.
-That application is not technically part of this master's thesis, but was used to create the images of meshes in this report, meaning they are all vector instead of pixel graphics.
+Additionally, an experimental application for rendering polygon meshes to SVG\footnote{Scalable Vector Graphic} files was implemented outside of the main project, also evaluating \code{lox}'s capabilities.
+That application is not part of this master's thesis, but was used to create the images of meshes in this report.
+As such, all of those images are pure vector graphics.
 
 
 \section{Execution Speed}
@@ -17,14 +18,14 @@ This chapter presents and discusses a number of different benchmarks.
 
 All benchmarks were performed on a completely idle \textsf{Thinkpad T-460p} which, as already mentioned in chapter~4, contains an \textsf{Intel i7-6700\,HQ} and runs \textsf{Ubuntu 18.04}.
 Of course, the notebook was \emph{not} running on battery during the benchmarks.
-Additionally, at all times during the benchmarks, plenty of free main memory was available.
+Additionally, plenty of free main memory was available at all times.
 The benchmarking routine first executes the code to be tested $\frac{N}{5}$~times as a warm-up without measuring any durations.
 Afterwards, the code is repeated $N$ times and each iteration is measured individually.
 From the $N$ measured durations, the mean and standard deviation are calculated.
 The IO benchmarks use $N = 100$, the algorithm benchmarks use $N = 500$.
 
 Some benchmarks also test the directed edge mesh implemented in \code{lox}.
-It needs to be noted that this DEM implementation, unlike the HEM implementation, is fairly young, meaning that it was not yet optimized in any way.
+It is important to note that this DEM implementation, unlike the HEM implementation, is fairly young, meaning that only very little optimization work has been put into it.
 Consequently, performance of DEM operations might increase in the future.
 These benchmark results are not a fair comparison between the two different data structures.
 
@@ -34,9 +35,9 @@ As already mentioned, the code, test meshes and raw results of all benchmarks ca
 \newpage
 \subsection{Input/Output}
 
-Some kind of IO can be found in most applications dealing with meshes, usually as the first and last step of said program.
-While it is certainly not a particularly interesting processing step, its performance still is important to consider.
-Different IO benchmarks were executed, covering this parameter space:
+Some kind of IO operations are required in most applications dealing with meshes, usually as the first and last step of said program.
+While it is certainly not a particularly interesting processing step, due to its ubiquity, its performance still is important to consider.
+Different IO benchmarks were executed, covering the following parameter space:
 
 \begin{itemize}
   \item \textbf{Library/mesh implementation}: PMP, OpenMesh, \code{lox}'s half edge mesh (HEM), \code{lox}'s directed edge mesh (DEM) and \code{lox}'s shared vertex mesh (SVM) were tested.
@@ -58,9 +59,11 @@ However, this is not optimal as IO operations still have to communicate with the
 A better solution is to have an in-memory writer and reader in the benchmarking code to avoid interactions with the file system alltogether.
 Benchmarks with both strategies were implemented for OpenMesh and \code{lox}, revealing that the RAM disk is roughly 1\% -- 6\% slower for read benchmarks and approximately 20\% -- 70\% slower for write benchmarks.
 Unfortunately, PMP does not support reading from and writing to non-file streams.
-To obtain a fair comparison between all three libraries, the in-memory disk solution was used for the main benchmark.
+To obtain a fair comparison between all three libraries, the RAM disk solution was used for the benchmark below.
 
-The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indicate a few different things:
+\vfill
+
+The results of these benchmarks -- shown in figure~\ref{fig:io-benchmark} -- indicate a few different things:
 
 \begin{itemize}
   \item \code{lox} outperforms the other libraries in all IO tasks, often significantly.
@@ -144,13 +147,13 @@ while \enquote{tiger} has roughly four times as many faces as \enquote{cat}, the
 
 Only considering the half edge mesh implementations, \code{lox} is positioned mostly somewhere in between PMP and OpenMesh -- with two notable exceptions:
 \code{lox} performs worse than the other libraries in the smoothing benchmark, but outperforms them in the $\sqrt{3}$-subdivision benchmark.
-The reasons for these differences are not entirely clear, but profiling these benchmarks hinted at bound checks as one of the major problems for \code{lox}'s performance.
+The reasons for these differences are not entirely clear, but profiling these benchmarks hinted at bound checks being one of the major problems for \code{lox}'s performance.
 As mentioned before, bound checks have to be used when accessing arrays to guarantee memory safety.
 Unfortunately, these checks are not removed by the optimizer when accessing external property maps, meaning that benchmarks performing many of these accesses (like \enquote{smoothing}) suffer from these checks.
 There might be ways to omit these checks without sacrificing memory safety, but none of these has been tested in \code{lox} yet.
 
-The performance of the directed edge mesh differs widely between benchmarks, sometimes being significantly faster than the HEMs and being equally fast in other cases.
-It can clearly outperform the HEMs in the benchmarks \enquote{boundary face} and \enquote{face normals}, which makes sense, as these algorithms only use the face neighborhood.
+The performance of the directed edge mesh differs widely between benchmarks, sometimes being significantly faster than the HEMs, while being equally fast in other cases.
+It can clearly outperform the HEMs in the benchmarks \enquote{boundary face} and \enquote{face normals}, which makes sense, as these algorithms heavily use the face neighborhood.
 Unlike the HEM, the DEM stores the immediate face neighborhood in only one memory location, meaning that accessing it is very cache friendly.
 Additionally, when counting boundary vertices, the DEM outperforms the other data structures on the large mesh.
 This is probably caused by the DEM using less memory, meaning that more of the mesh fits into the CPU-caches, decreasing the number of cache-misses.
@@ -180,13 +183,13 @@ However, it is possible that more methods are added to \enquote{fat meshes} in t
 The small code snippets in figure~\ref{fig:example-sqrt3} show how to run the $\sqrt{3}$-subdivision algorithm \cite{kobbelt20003} on a mesh.
 In \code{lox}, the algorithm is a simple function, while the other libraries require the instantiation of a class, a method of which performs the actual algorithm.
 
-Lastly, figure~\ref{fig:example-smooth} shows a simple smoothing algorithm (used for the \enquote{smooth} benchmarks in the previous section) that moves each vertex to the centroid of all neighbor vertices.
+Lastly, figure~\ref{fig:example-smooth} shows a simple smoothing algorithm that moves each vertex to the centroid of all neighbor vertices (used for the \enquote{smooth} benchmarks).
 This shows a number of differences between the libraries.
 For one, \code{lox}'s vertex iterator iterates over \code{VertexRef}s, allowing features like \code{v.adjacent_vertices()} and \code{v.is_boundary()}, while the other two libraries iterate over vertex handles.
 In OpenMesh and PMP, the property map for the new positions is created from the mesh and filled afterwards; in \code{lox} it is created by collecting an iterator over \code{(VertexHandle, Point3)} pairs.
 An iterator method \code{centroid} is offered by \code{lox}, while the versions implement that logic themselves.
 
-In general, in situations in which \code{lox} code is more concise than equivalent code for the two other libraries, this advantage is mostly due to Rust's powerful iterator system.
+In general, in situations where \code{lox} code is more concise than equivalent code for the two other libraries, this advantage is mostly due to Rust's powerful iterator system.
 It allows defining new methods (like \code{centroid}), but even the built-in methods can make some code notably shorter.
 As another example, this code counts the number of boundary faces: \code{mesh.faces().filter(|f| f.is_boundary()).count()}.
 
@@ -471,7 +474,7 @@ The main benefit of \code{lox} comes from having achieved its central goal:
 to provide an abstraction over different data structures and let the programmer decide which data structure to use in which situation.
 This works well and does not incur any significant runtime overhead, as shown in the benchmarks where \code{lox} outperforms the other libraries.
 And as can be seen from some benchmarks, it can be very beneficial to choose a data structure other then the HEM in some situations.
-Additional advantages of \code{lox} include the superior performance of IO operations and being able to use Rust, which in itself has several advantages over \cpp.
+Additional advantages of \code{lox} include the superior performance of IO operations and being able to use Rust, which has several advantages over \cpp.
 
 In some areas, \code{lox} could not improve the status-quo yet.
 For example, while some operations can be expressed more concisely due to \code{lox}'s use of Rust features, some other tasks require slightly more code using \code{lox} than existing \cpp libraries.
