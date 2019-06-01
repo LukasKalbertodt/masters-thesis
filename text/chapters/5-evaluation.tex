@@ -18,9 +18,10 @@ This chapter presents and discusses a number of different benchmarks.
 All benchmarks were performed on a completely idle \textsf{Thinkpad T-460p} which, as already mentioned in chapter~4, contains an \textsf{Intel i7-6700\,HQ} and runs \textsf{Ubuntu 18.04}.
 Of course, the notebook was \emph{not} running on battery during the benchmarks.
 Additionally, at all times during the benchmarks, plenty of free main memory was available.
-The benchmarking routine first executes the code to be tested 20~times as a warm-up without measuring the time.
-Afterwards, the code is repeated 100 times and each iteration is measured individually.
-From the 100 measured durations, the mean and standard deviation are calculated.
+The benchmarking routine first executes the code to be tested $\frac{N}{5}$~times as a warm-up without measuring any durations.
+Afterwards, the code is repeated $N$ times and each iteration is measured individually.
+From the $N$ measured durations, the mean and standard deviation are calculated.
+The IO benchmarks use $N = 100$, the algorithm benchmarks use $N = 500$.
 
 Some benchmarks also test the directed edge mesh implemented in \code{lox}.
 It needs to be noted that this DEM implementation, unlike the HEM implementation, is fairly young, meaning that it was not yet optimized in any way.
@@ -87,7 +88,48 @@ The results of the benchmark -- shown in figure~\ref{fig:io-benchmark} -- indica
 
 \subsection{Algorithms}
 
-\lipsum[1]
+In many geometry processing applications, algorithms operating on meshes take significantly longer to execute than IO operations, making their performance particularly relevant.
+To compare the respective speeds of the libraries, many different algorithms were benchmarked.
+Most of these algorithms are fairly simple and use only a few methods of the mesh, in order to draw conclusions about the speed of particular mesh operations.
+
+Like the IO benchmarks, all algorithms were tested with the triangle meshes \enquote{cat} and \enquote{tiger}.
+Loading these meshes was done up-front and is not included in the measurements.
+The half edge meshes of all three libraries were tested in all benchmarks, with most benchmarks additionally testing \code{lox}'s directed edge mesh as well.
+The following algorithms were used:
+
+\begin{itemize}
+  \item \textbf{\enquote{Boundary Faces}}: counts the number of boundary faces.
+  \emph{Operations}: iterate over faces, face boundary check.
+  \item \textbf{\enquote{Boundary Vertices}}: counts the number of boundary vertices.
+  \emph{Operations}: iterate over vertices, vertex boundary check.
+  \item \textbf{\enquote{Face Normals}}: calculates and externally stores the normal of each face.
+  \emph{Operations}: iterate over faces, \adj{F}{V}, obtain vertex position.
+  \item \textbf{\enquote{Vertex Normals}}: calculates and externally stores the normal of each vertex, which is calculated as the normalized sum of the adjacent faces' normals.
+  The face normals are calculated up-front are not included in the measurement.
+  \emph{Operations}: iterate over vertices, \adj{V}{F}, obtain face normal.
+  \item \textbf{\enquote{Simple Smooth}}: moves each non-boundary vertex to the centroid of all neighbor vertices.
+  \emph{Operations}: iterate over vertices, \adj{V}{V}, vertex boundary check, obtain vertex position.
+  \item \textbf{\enquote{$\sqrt{3}$-subdivision}}: performs one iteration of said algorithm \cite{kobbelt20003}.
+  This algorithm is by far the most elaborate one from this list.
+  \emph{Operations}: many different ones, including face split and edge flip.
+\end{itemize}
+
+\vspace{1cm}
+
+The results of these benchmarks can be seen in figure~\ref{fig:algo-benchmark} and are discussed in the page thereafter.
+
+\begin{figure}[p]
+  \centering
+  \centerline{
+    \includegraphics[width=1.15\textwidth]{svg2pdf/algo-bench}
+  }
+  \vspace{1cm}
+  \caption{
+    Results of the algorithm benchmarks.
+    The height of the bars is the mean of all measurements, the error bar displays the standard deviation.
+  }
+  \label{fig:algo-benchmark}
+\end{figure}
 
 
 \newpage
