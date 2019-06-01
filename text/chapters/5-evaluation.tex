@@ -131,6 +131,31 @@ The results of these benchmarks can be seen in figure~\ref{fig:algo-benchmark} a
   \label{fig:algo-benchmark}
 \end{figure}
 
+\newpage
+
+These benchmarking results are a lot more mixed and less clear than the ones of the IO benchmarks.
+For one, no library clearly outperforms the others: for each library there is at least one benchmark where it performs worst.
+Additionally, in the more simple benchmarks, the order of libraries often changes between the smaller and larger mesh.
+
+Compared to the IO benchmarks, the average standard deviation is slightly higher, particularly for the benchmarks using the small \enquote{cat} mesh.
+This is probably just a consequence of the smaller durations measured here, but it \emph{could} also be an indication for the larger influence of indeterministic caching-effects.
+The fact that CPU-caches play a central role in these benchmarks can be seen in the difference between the \enquote{cat} and \enquote{tiger} meshes:
+while \enquote{tiger} has roughly four times as many faces as \enquote{cat}, the benchmarks take approximately between five and ten times as long.
+
+Only considering the half edge mesh implementations, \code{lox} is positioned mostly somewhere in between PMP and OpenMesh -- with two notable exceptions:
+\code{lox} performs worse than the other libraries in the smoothing benchmark, but outperforms them in the $\sqrt{3}$-subdivision benchmark.
+The reasons for these differences are not entirely clear, but profiling these benchmarks hinted at bound checks as one of the major problems for \code{lox}'s performance.
+As mentioned before, bound checks have to be used when accessing arrays to guarantee memory safety.
+Unfortunately, these checks are not removed by the optimizer when accessing external property maps, meaning that benchmarks performing many of these accesses (like \enquote{smoothing}) suffer from these checks.
+There might be ways to omit these checks without sacrificing memory safety, but none of these has been tested in \code{lox} yet.
+
+The performance of the directed edge mesh differs widely between benchmarks, sometimes being significantly faster than the HEMs and being equally fast in other cases.
+It can clearly outperform the HEMs in the benchmarks \enquote{boundary face} and \enquote{face normals}, which makes sense, as these algorithms only use the face neighborhood.
+Unlike the HEM, the DEM stores the immediate face neighborhood in only one memory location, meaning that accessing it is very cache friendly.
+Additionally, when counting boundary vertices, the DEM outperforms the other data structures on the large mesh.
+This is probably caused by the DEM using less memory, meaning that more of the mesh fits into the CPU-caches, decreasing the number of cache-misses.
+
+
 
 \newpage
 \section{Example Code}
@@ -445,6 +470,7 @@ Naturally, the library is also not nearly as mature as OpenMesh.
 The main benefit of \code{lox} comes from having achieved its central goal:
 to provide an abstraction over different data structures and let the programmer decide which data structure to use in which situation.
 This works well and does not incur any significant runtime overhead, as shown in the benchmarks where \code{lox} outperforms the other libraries.
+And as can be seen from some benchmarks, it can be very beneficial to choose a data structure other then the HEM in some situations.
 Additional advantages of \code{lox} include the superior performance of IO operations and being able to use Rust, which in itself has several advantages over \cpp.
 
 In some areas, \code{lox} could not improve the status-quo yet.
