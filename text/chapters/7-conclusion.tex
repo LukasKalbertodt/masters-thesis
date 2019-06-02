@@ -1,46 +1,66 @@
 \chapter{Conclusion}
 
 In this thesis, the geometry processing library \code{lox} was introduced and evaluated.
-That way, it was shown that it is possible to abstract over different mesh data structures without incurring any significant runtime overhead by using the trait system offered by the Rust programming language.
+That way, it was shown that, by using the trait system offered by the Rust programming language,  it is possible to abstract over different mesh data structures without incurring any significant runtime overhead.
 Furthermore, the benchmarks and code examples from chapter~5 demonstrate that \code{lox} is comparable to the \cpp libraries OpenMesh and PMP in terms of execution speed and ease of use.
 In some cases, it even significantly outperforms the two \cpp libraries.
-However, due to its young age, \code{lox} still offers notably fewer features (particularly, more elaborate mesh algorithms) than the other libraries.
+However, due to its young age, \code{lox} still offers notably fewer features (elaborate mesh algorithms in particular) than the other libraries.
 %TODO: autoref
 
+% After handing in this thesis, \code{lox} will be publicly released and announced to the Rust community.
+% The
 
-
-As this was not purely a research project, \code{lox} will be released as open-source library.
-It is developed in this repository: \url{https://github.com/LukasKalbertodt/lox}.
+% As this was not purely a research project, \code{lox} will be released as open-source library.
+% It is developed in this repository: \url{https://github.com/LukasKalbertodt/lox}.
 
 \vfill
 \section{Challenges}
 
 While using Rust had many advantages and made the project possible in the first place, some limitations of the language presented a number of problems, ranging from mildly inconvenient to seriously restrictive.
-Missing abilities for dealing with higher kinded types (e.\,g. GATs) posed a particularly significant obstacle, as it required elaborate workarounds and severely limited some parts of the library's interface.
+The lack of abilities for dealing with higher kinded types (e.\,g. GATs) posed a particularly significant obstacle, as it required elaborate workarounds and severely limited some parts of the library's interface.
 Less serious problems were caused by the incomplete implementations of \emph{specialization} and \emph{const generics}.
 
 Rust's memory safety guarantees unfortunately also resulted in some complications.
-For one, the central rule \emph{aliasing nand mutability} requires an API specifically designed to work with this deliberate language limitation and thus makes some common mesh operations less intuitive to use.
+For one, the central rule \emph{aliasing nand mutability} required some tweaks to the library's API to work around this deliberate language limitation, thus making some common mesh operations less intuitive to use.
 More importantly, to avoid reading uninitialized memory, bound checks are required when accessing an array.
-While most bound checks are removed by the optimizer during compilation, this is not the case for the majority of situations when using \code{lox} (particularly due to external property maps), resulting in a notable runtime overhead.
+While most bound checks are removed by the optimizer during compilation, this was not the case for the majority of situations when using \code{lox} (particularly due to external property maps), resulting in a notable runtime overhead.
 
-Finally, the design of central interfaces of the library were non-trivial and still require a lot of improvements and testing.
-For example, the traits abstracting over mesh data structures have to strike the balance between being flexible and easy to use.
-The optimal solution was certainly not found by this thesis.
+Finally, designing \code{lox}'s central interfaces proved particularly challenging.
+Trait systems like the one used to abstract over mesh data structures have to strike the balance between flexibility and ease of use:
+using fewer traits makes for a simpler API, but might exclude some use-cases.
+Further experimentation, improvements and testing is certainly required to find a solution as optimal as possible.
+
+% Finally, designing the central interfaces of \code{lox} was non-trivial still req further testing and improvements are required.
+% For example, the trait system to abstract over mesh data structures have to strike the balance between flexibility and ease of use.
+% The optimal solution was certainly not found yet.
 \vspace{1cm}
 
 \newpage
 \section{Future Work}
 
-Of course, \code{lox} is still incomplete in several regards.
+As mentioned above, there are still many ways to improve and extend \code{lox}.
 Firstly, its feature set needs to be expanded by, for example, implementing more data structures, supporting more file formats and adding more mesh algorithms.
-Furthermore, its core interface needs to be polished by testing different approaches and incorporating feedback by users.
+Furthermore, its core interfaces need to be polished and some design decisions need to be reconsidered.
+Lastly, after \code{lox}'s initial release shortly after handing in this thesis, user-feedback will be incorporated into the library's design.
 
 The library could also benefit a lot from experimenting with how Rust's strong type system can improve performance or avoid certain classes of bugs.
-For example, while using \emph{handles} has many advantages, it also introduces potential bugs like using a handle to an already deleted element and using the handle of one mesh in another one.
-It could be possible to avoid these bugs at compile-time with techniques like \enquote{tagging}, but it is not yet clear how well this would actually work.
+For example, while using \emph{handles} has many advantages, it also introduces potential bugs like using a handle to an already deleted element or using the handle of one mesh with another one.
+There has been some research on \enquote{type branding} in Rust that could be used to solves these problems \cite{beingessner2016you, indexing}.
+The same approach could potentially help to reduce the number of bound checks in certain situations.
 
-An interesting research
+After many different mesh data structures were implemented and sufficiently optimized, it would be possible to compare their respective speeds by benchmarking their performances in a large number of different benchmarks.
+This would allow creating extensive guidelines on when to best use which data structure.
+
+
+% Of course, \code{lox} is still incomplete in several regards.
+% Firstly, its feature set needs to be expanded by, for example, implementing more data structures, supporting more file formats and adding more mesh algorithms.
+% Furthermore, its core interface needs to be polished by testing different approaches and incorporating feedback by users.
+
+% The library could also benefit a lot from experimenting with how Rust's strong type system can improve performance or avoid certain classes of bugs.
+% For example, while using \emph{handles} has many advantages, it also introduces potential bugs like using a handle to an already deleted element and using the handle of one mesh in another one.
+% It could be possible to avoid these bugs at compile-time with techniques like \enquote{tagging}, but it is not yet clear how well this would actually work.
+
+% An interesting research
 
 
 
@@ -58,10 +78,10 @@ An interesting research
 %   - [ ]  Publish as 0.1 soon
 %   - [ ]  Properties stored next to adjacency data
 %   - [x]  more algorithms
-%   - [ ]  Avoid typical mistakes by smart API design:
-%     - [ ]  Use handles in wrong mesh
-%     - [ ]  Use after free/other bugs with handles, solved by slotmap
-%   - [ ]  Generally make API nicer
+%   - [x]  Avoid typical mistakes by smart API design:
+%     - [x]  Use handles in wrong mesh
+%     - [x]  Use after free/other bugs with handles, solved by slotmap
+%   - [x]  Generally make API nicer
 %   - [x]  Generally extend API
 %   - [x]  Implement and optimize more data structures
-%   - [ ]  make a big benchmark to compare all of them
+%   - [x]  make a big benchmark to compare all of them
