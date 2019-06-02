@@ -4,7 +4,7 @@
 It is openly developed by the Rust community, with core developers being funded by Mozilla\footnote{Mozilla is mainly known for the browser \emph{Firefox} and its involvement with researching and standardizing web-technologies. Website: \url{https://www.mozilla.org}}.
 Its first stable version was released in May 2015.
 Since then, a new, fully backwards-compatible version is released every six weeks.
-Rust was voted \enquote{most loved programming language} four times in a row from 2015 to 2019 in the StackOverflow\footnote{A question \& answer website for programmers with over 10 million registered users as of January 2019 \cite{so-user-count}. Website: \url{https://stackoverflow.com/}} Developer Survey -- one of the largest annual programmer-focussed surveys \cite{so-survey}.
+Rust was voted \enquote{most loved programming language} four times in a row from 2015 to 2019 in the StackOverflow\footnote{A question \& answer website for programmers with over 10 million registered users as of January 2019 \cite{so-user-count}. Website: \url{https://stackoverflow.com/}} Developer Survey -- one of the largest annual programmer-focused surveys \cite{so-survey}.
 
 \begin{figure}[h]
   \vspace{5mm}
@@ -16,7 +16,7 @@ Rust was voted \enquote{most loved programming language} four times in a row fro
 
 Rust is categorized as a multi-paradigm programming language; it is mainly imperative and structured, but has many features to allow for different programming paradigms, like functional or declarative programming.
 Its design is influenced by many other programming languages, most importantly \cpp, Haskell and OCaml \cite{rust-influences}.
-A strong, static type system is at the core of the language, enabling many of Rust's main features.
+A strong, static type~system is at the core of the language, enabling many of Rust's main features.
 It will be explained in more detail below.
 Rust is also a cross-platform language, running on different operating systems (including Linux, Windows, macOS, Android and iOS) and different CPU architectures (including x86, ARM, WASM and MIPS) \cite{rust-platforms}.
 
@@ -108,7 +108,7 @@ Some explanations and remarks to the code above:
   This is useful, because in normal Rust code (unlike in this example), immutable bindings significantly outnumber mutable ones.
   \item In control structures like \code{if} and \code{while}, the boolean expression does not need to be wrapped inside parentheses \code{()}, but the body always has to be wrapped in braces \code|{}|.
   This is, again, exactly the opposite of the rules in \cpp or Java.
-  Rust' syntax is more useful however, because this way, there are no parsing ambiguities.
+  Rust's syntax is more useful however, because this way, there are no parsing ambiguities.
   \item Apart from \code{while}, there are also \code|for _ in _ {}| (using iterators) and \code|loop {}| (equivalent to \code|while true {}|) as loop constructs.
   \item The principle \enquote{everything is an expression} allows most syntactic elements to be used in places where an expression is expected.
   One example is the assignment on line~22. While this in particular is also possible with the ternary operator \code{?:} in some other languages, Rust allows \code{match} expressions (similar to but more powerful than \code{switch} in \cpp), loops, full blocks and many more constructs in expression context.
@@ -141,7 +141,7 @@ Some explanations and remarks to the code above:
 
 The core language contains a number of primitive types, shown in table~\ref{tab:primitive-types}.
 New types can be created by programmers mainly in two ways: as \code{struct} or as \code{enum}.
-Structs are heterogeneous product-types defined by a list of fields and work very similar to structs in~C.
+Structs are heterogeneous product-types defined by a list of fields and work very similarly to structs in~C.
 
 Enums, on the other hand, are sum-types -- a feature not offered by most mainstream languages.
 While some enum types in Rust are simple \enquote{C-like enums} (just an enumeration of names), each enum \emph{variant} can have arbitrary data associated with it.
@@ -219,7 +219,7 @@ fn main() {
 }
 \end{rustcode*}
 
-This demonstrates a few additional points:
+This demonstrates a few additional aspects:
 
 \vspace{-3mm}
 \begin{itemize}
@@ -264,7 +264,7 @@ This works for all enums that are defined like \code{Option<T>} (the standard li
 
 \subsubsection*{Error Handling}
 
-In Rust, errors are logically divided into two kinds: recoverable errors and bugs (unrecoverable errors).
+In Rust, errors are logically divided into two kinds: recoverable errors and bugs (also called unrecoverable errors).
 Errors of the former kind are to be expected and occur because the \enquote{world} is in an erroneous state.
 The latter kind of errors are caused by an incorrect program and can usually not be recovered from.
 
@@ -272,9 +272,9 @@ Since these kinds of errors are very different, Rust uses two different strategi
 Upon noticing an unrecoverable error, a Rust program \emph{panics}.
 A \emph{panic} in Rust immediately aborts the current thread and does a final cleanup by unwinding the stack.
 This is Rust's version of \emph{abandonment} as defined in \cite{duffy2016error}.
-(That citation is also a great introduction to the topic and explains why this categorization into error kinds is useful and why \emph{abandonment} in a bug situation is useful).
+(This citation is also a great introduction to the topic and explains why this categorization into error kinds is useful and why \emph{abandonment} in a bug situation is useful).
 
-Recoverable errors are handled with the \code{Result<T, E>} type the definition of which can be seen in figure~\ref{fig:option-result-def}.
+Recoverable errors are handled with the \code{Result<T, E>} type, the definition of which can be seen in figure~\ref{fig:option-result-def}.
 Functions returning such a type either return successfully with a value \code{Ok(x)} where \code{x} is an instance of type \code{T}, or they fail and return \code{Err(e)} where \code{e} is an instance of \code{E}.
 This means that Rust uses \emph{return value based} error handling (like C does with returning error codes).
 However, in contrast to C-like error codes, with \code{Result}, it is impossible to forget to check if an error has occurred, making this solution far more robust.
@@ -608,5 +608,5 @@ Almost all \code{unsafe} code is hidden behind safe interfaces; so while buildin
 
 As can be seen from this chapter, Rust is a good choice for writing robust high-performance applications and libraries.
 In fact, in the opinion of the author, Rust is a better choice than \cpp for almost all new projects.
-The next chapter discusses how this language is used to create \code{lox}.
+The next chapter shows how this language is used to create \code{lox}.
 \vspace{1cm}

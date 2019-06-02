@@ -29,7 +29,7 @@ Note that polygon meshes can only represent polyhedrons exactly, so most of the 
 
 There are two special cases of the polygon mesh which are highly relevant in practice.
 A \emph{triangle mesh} is a mesh where each face is triangular and in a \emph{quad mesh} all faces are quadrilaterals.
-Restricting the faces of a mesh like that often makes algorithms operating it a lot simpler (and thus potentially faster).
+Restricting the faces of a mesh like that often makes algorithms operating on it a lot simpler (and thus potentially faster).
 In particular, triangle meshes are by far the most used kind of polygon mesh, because triangles are the simplest polygon (a 2-simplex, in fact).
 
 \begin{figure}[t]
@@ -43,7 +43,7 @@ In particular, triangle meshes are by far the most used kind of polygon mesh, be
 \end{figure}
 
 \newpage
-The following list explains a few common terms related to meshes or geometry processing.
+The following list explains a few common terms related to meshes and geometry processing.
 
 \begin{description}
   \item [\emph{Mesh element}] A vertex, edge or face.
@@ -57,7 +57,7 @@ The following list explains a few common terms related to meshes or geometry pro
   The manifold-property trivially holds for all points inside of a face, but a mesh can contain non-manifold edges or vertices (cf. figure~\ref{fig:non-manifold}).
   A manifold edge has $\le 2$ incident faces.
   A manifold vertex can be removed without disconnecting its adjacent faces (often described as: it is only adjacent to one fan of triangles).
-  A mesh is called a manifold if does not contain any non-manifold edges nor non-manifold vertices.
+  A mesh is called a manifold if it contains neither non-manifold edges nor non-manifold vertices.
   \item [\emph{Normal}] A surface normal of a point on a surface is a vector perpendicular to that surface at that point.
   \item [\emph{Orientable}] A mesh is orientable if it is possible to consistently assign a surface normal to every point on its surface.
   A famous example of a non-orientable mesh is the \emph{Möbius strip} (see figure~\ref{fig:moebius}).
@@ -73,7 +73,7 @@ The following list explains a few common terms related to meshes or geometry pro
 \end{figure}
 
 
-In many applications, meshes are expected to be orientable manifolds, as this makes working with them a lot easier.
+In many applications meshes are expected to be orientable manifolds, as this makes working with them a lot easier.
 In this thesis, all meshes are assumed to satisfy this property as well.
 However, the configuration in figure~\ref{fig:non-manifold} on the right is allowed.
 
@@ -89,10 +89,10 @@ Surface normals and texture coordinates are two other properties that are stored
 They are also usually associated with each vertex.
 For visualization, vertices, edges or faces can also be colored, that is: have a color associated with each element.
 Lastly, many algorithms need to associate temporary values with mesh elements, like some kind of cost or a Boolean flag (e.\,g. to store which elements were already visited).
-In general, it is necessary to be able to associated arbitrary values with mesh elements.
+In general, it is necessary to be able to associate arbitrary values with mesh elements.
 
 As long as each mesh element can be uniquely identified, storing mesh properties is easy (e.\,g. using a hash map).
-Storing the connectivity of a mesh is difficult, however, because algorithms operating on meshes require various kinds of adjacency information.
+Storing the connectivity of a mesh, however, is difficult because algorithms operating on meshes require various kinds of adjacency information.
 For example, a simple way to smooth a mesh is to replace each vertex position with the centroid of all adjacent vertices \cite[Chapter~3]{botsch2010polygon}.
 That algorithm needs to be able to enumerate all neighboring vertices of a specific vertex.
 
@@ -140,13 +140,13 @@ Just providing the information is not particularly difficult:
 most data structures can provide complete adjacency information in $\mathcal O(|V| + |F| + |E|)$.
 However, in this thesis, \enquote{fast} implies a runtime of $\mathcal O(|r|)$ where $r$ is the result of the query (the neighbors). In the rest of this thesis, a statement like \enquote{cannot provide this information} might also mean \enquote{cannot provide this information in $\mathcal O(|r|)$}.
 One could store all the neighborhood information explicitly to meet those asymptotic runtime requirements (i.\,e. each face stores a list of all adjacent faces, a list of all adjacent edges and a list of all adjacent vertices; similarly for vertices and edges).
-However, this approach has tremendous memory overhead and it would be very slow to modify the mesh, as a lot of information has to be updated.
+However, this approach has tremendous memory overhead and it would be very slow to modify the mesh, as a lot of information would have to be updated.
 
 \subsection{Performance Characteristics of Modern Hardware}
 
-Since data structures are expected to provide adjacency information in $\mathcal O(|r|)$ (which is optimal, asymptotically speaking), the only difference in execution speed is due to constants factors.
+Since data structures are expected to provide adjacency information in $\mathcal O(|r|)$ (which is optimal, asymptotically speaking), the only difference in execution speed is due to constant factors.
 In order to create data structures that are fast in practice, some knowledge of modern computer hardware is required.
-This sub-section gives a very coarse overview over some aspect of this topic, focusing on x86-64 CPUs as they are used in the vast majority of desktop PCs.
+This sub-section gives a very coarse overview over some aspects of this topic, focusing on x86-64 CPUs as they are used in the vast majority of desktop PCs.
 A lot of information throughout this section is taken from \cite{hennessy2017computer}, particularly from chapter~2 and appendix~B.
 
 For some decades now, the speed of processors improved more quickly than the speed of volatile memory.
@@ -170,11 +170,13 @@ Additionally, the \emph{prefetcher} -- also a part of the CPU -- loads new cache
 \begin{table}[t]
   \centering
   \sffamily
+  \renewcommand{\arraystretch}{1.1}
   \begin{tabular}{llllll}
   & \textbf{CPU registers} & \textbf{L1 cache} & \textbf{L2 cache} & \textbf{L3 cache} & \textbf{Main memory} \\\hline
-  \textbf{Size} & 1000\,bytes & 64\,KB & 256\,KB & 4--32\,MB & 4--64\,GB \\\hline
-  \textbf{Access time} & One cycle ($\approx$ 300\,ps) & 1\,ns & 3--10\,ns & 10--20\,ns & 50--100\,ns \\\hline
+  \textbf{Size} & 1000\,bytes & 64\,KB & 256\,KB & 4--32\,MB & 4--64\,GB \\\hdashline[.4mm/1mm]
+  \textbf{Access time} & One cycle ($\approx$ 300\,ps) & 1\,ns & 3--10\,ns & 10--20\,ns & 50--100\,ns \\
   \end{tabular}
+  \renewcommand{\arraystretch}{1.0}
   \caption{Typical sizes and access times of different kinds of memories on a desktop computer (data taken from \cite{hennessy2017computer}).}
   \label{tbl:caches}
   \vspace{5mm}
@@ -191,7 +193,7 @@ This has a few different consequences.
 
 In many programming languages, it seems natural to refer to mesh elements via pointers or references.
 This is problematic, however, since this approach requires a stable allocation for each element: the element cannot be moved in memory after the initial allocation or else the pointer would be invalidated.
-Unfortunately, all ways of achieving stable pointers (e.\,g. by using a linked list) are inherently cache-unfriendly.
+Unfortunately, all means of achieving stable pointers (e.\,g. by using a linked list) are inherently cache-unfriendly.
 A faster alternative is to store all elements in a growing array and refer to them via their index in that array (pointers cannot be used since they are invalidated when the growing array has to reallocate).
 This can be less convenient but has the additional benefit that the indices can often be stored with only 32 bits, reducing the memory consumption of the data structure on 64-bit platforms.
 
@@ -213,7 +215,7 @@ Additionally, the edge IDs assigned by the data structure should ideally start a
 Generally, two types of data structures can be distinguished: \emph{face-based} and \emph{edge-based} ones.
 The former store the main adjacency information per face, the latter per edge.
 As discussed in the last section, storing lists with dynamic length should be avoided, meaning that only neighbors bounded in number should be stored explicitly.
-As illustrated in table~\ref{tab:max-neighbors}, the number of possible neighbors per vertex are unbounded, which is why there are no relevant vertex-based data structures.
+As illustrated in table~\ref{tab:max-neighbors}, the number of possible neighbors per vertex is unbounded, which is why there are no relevant vertex-based data structures.
 The table also shows that face-based data structures are only efficient if the valence of faces is fixed (e.\,g. a triangle or quad mesh), as otherwise dynamic lists are required.
 
 \begin{table}[h]
@@ -244,7 +246,7 @@ The end of this chapter provides an overview over the most important properties 
 \subsubsection*{Half Edge Mesh}
 
 Often abbreviated \emph{HEM}, this data structure splits each edge into two \emph{half edges} and stores most connectivity information in those.
-Thus, it is a (half-)edge-based data structure.
+Thus, it is a (half)edge-based data structure.
 A HEM can provide all connectivity information and exposes full edges in its API, allowing to associate data with them.
 (Cf. \cite{mantyla1988introduction})
 
@@ -349,7 +351,7 @@ The \emph{directed edge mesh} is a memory-efficient version of the half edge mes
 It was initially presented in \cite{campagna1998directed} and is also mentioned and explained in \cite[Chapter~2]{botsch2010polygon}.
 Depending on the point of view, this data structure is either edge or face based.
 
-The main idea is to store a lot of information implicitly, by storing the half edges of a face next to each other in memory.
+The main idea is to store a lot of information implicitly by storing the half edges of a face next to each other in memory.
 For a triangle mesh, that means that the half edges of a face with index $f$ have the indices $3f$, $3f + 1$ and $3f + 2$.
 Similarly, the face of a half edge can be found by dividing the half edge index by 3 (rounding down).
 This also encodes the \code{next} and \code{prev} values for half edges implicitly.
@@ -466,7 +468,7 @@ This approach has a few problems and disadvantages.
 Since half edges are stored per face, there are no outer half edges on the boundary of the mesh, meaning that the boundary has to be treated in a special way.
 The original paper only suggests storing a special value~($-1$) in the inner boundary half edges' \code{twin} value to signal a missing twin.
 This, however, makes it impossible to easily iterate around the boundary -- something that is useful in many situations.
-To overcome this, a few different solutions can be used, which are not further described here.
+This can be overcome by, for example, using the \code{twin} field of the inner boundary half edges to point to the next edge around that boundary.
 
 The directed edge mesh can provide full adjacency information between vertices and faces, but it lacks the ability to easily expose full edges in its API.
 
@@ -535,7 +537,8 @@ The directed edge mesh can provide full adjacency information between vertices a
 This face-based data structure, also called \emph{indexed face set}, is the simplest and arguably the most used one.
 It uses very little memory, but is quite restricted in its standard version:
 it can only store triangular faces and cannot provide any adjacency information apart from \adj{F}{V}.
-These limitations do not pose a problem for most real-time 3D applications, however, as \adj{F}{V} is sufficient for rendering and most graphic APIs (like Vulkan or OpenGL) only support triangle meshes anyway.
+These limitations do not pose a problem for most real-time 3D applications, however, as \adj{F}{V} is sufficient for most rendering methods.
+Additionally, most graphic APIs (like Vulkan or OpenGL) only support triangle meshes anyway.
 For that reason, this data structure is used almost everywhere in real-time rendering.
 It is also used by most file formats, like \textsc{Ply} and \textsc{Obj}.
 
@@ -553,11 +556,12 @@ Interestingly, these data structures are often not discussed in-depth in the lit
 Not being able to refer to edges can indeed be a problem in many situations, but by far not every algorithm deals with edges explicitly.
 
 Two other well-known, edge-based data structures are the \emph{quad-edge mesh} \cite{guibas1985primitives} and the \emph{winged-edge mesh} \cite{baumgart1972winged}.
+These are not described here, as they are not implemented in \code{lox} and therefore are not relevant to this thesis.
 
 \newpage
 \subsubsection*{Overview}
 
-The following table shows the most important data structures with their properties.
+Table~\ref{tbl:ds-compare} shows the most important data structures with some of their properties.
 The column \emph{Poly} shows whether the data structure supports polygonal faces; \emph{Edges} whether it can expose full edges; and \emph{Full Adjacency} whether it supports all adjacency queries between faces and vertices.
 
 The memory column specifies the memory consumption per vertex for an average triangle mesh.
@@ -571,35 +575,40 @@ It is assumed that element references have a size of 4~bytes.
 Note that the values do \emph{not} include any mesh properties, not even vertex positions.
 Additionally, the smallest version of all meshes is used (without optional fields).
 
+\vspace{1cm}
 
-\begin{center}
-  \renewcommand{\arraystretch}{1.2}
-  \setlength{\tabcolsep}{3mm}
-  \begin{tabular}{l l l l l}
-    \textbf{Data structure} & \textbf{Memory} & \textbf{Poly} & \textbf{Edges} & \textbf{Full Adjacency} \\\hline
-    Shared Vertex Mesh
-      & $0 + 2 \cdot 12 = \textbf{24}$
-      & \textcolor{red}{\textbf{\textsf No}}
-      & \textcolor{red}{\textbf{\textsf No}}
-      & \textcolor{red}{\textbf{\textsf No}} \\\hdashline[.4mm/1mm]
-    Directed Edge Mesh
-      & $4 + 2 \cdot 24 = \textbf{52}$
-      & \textcolor{red}{\textbf{\textsf No}}
-      & \textcolor{red}{\textbf{\textsf No}}
-      & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
-    Half Edge Mesh
-      & $4 + 2 \cdot 4 + 3 \cdot 24 = \textbf{84}$
-      & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
-      & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
-      & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
-    Winged-edge Mesh
-      & $4 + 2 \cdot 4 + 3 \cdot 32 = \textbf{108}$
-      & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
-      & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
-      & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\
-  \end{tabular}
-  \renewcommand{\arraystretch}{1.0}
-\end{center}
+\begin{table}[h]
+  \begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \setlength{\tabcolsep}{3mm}
+    \begin{tabular}{l l l l l}
+      \textbf{Data structure} & \textbf{Memory} & \textbf{Poly} & \textbf{Edges} & \textbf{Full Adjacency} \\\hline
+      Shared Vertex Mesh
+        & $0 + 2 \cdot 12 = \textbf{24}$
+        & \textcolor{red}{\textbf{\textsf No}}
+        & \textcolor{red}{\textbf{\textsf No}}
+        & \textcolor{red}{\textbf{\textsf No}} \\\hdashline[.4mm/1mm]
+      Directed Edge Mesh
+        & $4 + 2 \cdot 24 = \textbf{52}$
+        & \textcolor{red}{\textbf{\textsf No}}
+        & \textcolor{red}{\textbf{\textsf No}}
+        & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
+      Half Edge Mesh
+        & $4 + 2 \cdot 4 + 3 \cdot 24 = \textbf{84}$
+        & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+        & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+        & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\\hdashline[.4mm/1mm]
+      Winged-edge Mesh
+        & $4 + 2 \cdot 4 + 3 \cdot 32 = \textbf{108}$
+        & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+        & \textcolor{flat-green-light}{\textbf{\textsf Yes}}
+        & \textcolor{flat-green-light}{\textbf{\textsf Yes}} \\
+    \end{tabular}
+    \renewcommand{\arraystretch}{1.0}
+  \end{center}
+  \caption{A comparison of different mesh data structures.}
+  \label{tbl:ds-compare}
+\end{table}
 
 
 
@@ -611,14 +620,14 @@ Most of them are open-source software.
 This section provides an incomplete overview over existing solutions.
 
 \begin{description}
-  \item [OpenMesh] Developed at the RWTH Aachen, OpenMesh \cite{botsch2002openmesh,openmeshhomepage} is one of the most used polygon mesh libraries.
+  \item [OpenMesh] Developed at the RWTH Aachen university, OpenMesh \cite{botsch2002openmesh,openmeshhomepage} is one of the most used polygon mesh libraries.
   It serves as the basis for OpenFlipper \cite{mobius2010openflipper, openflipperhomepage}, a geometry processing and rendering framework mainly developed at the same university.
 
   The library is cross-platform, written in \cpp (though it also offers Python bindings) and mainly features a customizable implementation of the half-edge mesh.
   Those compile-time customizations allow the user to, for example, choose whether \code{prev} references are stored and whether the mesh should be restricted to triangular faces.
   On top of the main data structures, functionality for reading and writing files of different formats and multiple algorithms are implemented.
 
-  \item [CGAL] The \textbf{C}omputational \textbf{G}eometry \textbf{A}lgorithms \textbf{L}ibrary \cite{cgalhomepage} offers a wide variety of different algorithms and data structures for everything related to computational geometry.
+  \item [CGAL] The \textbf{C}omputational \textbf{G}eometry \textbf{A}lgorithms \textbf{L}ibrary \cite{cgalhomepage} offers a wide variety of different algorithms and data structures related to computational geometry.
   This includes features beyond 3D meshes, like point set processing, nearest-neighbor search, surface reconstruction and many more.
   Its main mesh data structure is also the half-edge mesh (see \cite{cgal:k-hds-19a, cgal:bsmf-sm-19a}), but the library also uses different or more specialized data structures for some tasks.
 
@@ -631,7 +640,7 @@ This section provides an incomplete overview over existing solutions.
 
   \item [Plexus] \enquote{Plexus is a Rust library for processing 2D and 3D meshes} \cite{plexus}.
   As of May 2019, the library is still in its initial development phase offering no API stability guarantees yet.
-  It also uses a half edge mesh to store adjacency information.
+  It uses a half edge mesh to store adjacency information.
 \end{description}
 
 
