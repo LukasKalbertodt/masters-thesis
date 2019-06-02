@@ -17,7 +17,7 @@ To reduce the scope of this problem, this thesis focused on known mesh data stru
 Finding a good design for such a central interface requires knowledge about everything that interacts with it and a fair amount of experience from working with different solutions.
 While quite some experience was gained during \code{lox}'s development so far, it is not sufficient to commit to one specific solution (in the opinion of the author).
 Instead, a few more design iterations are to be expected.
-In particular, since the library was not yet (as time of this writing) publicly released, other programmers did not have the chance to provide feedback.
+In particular, since the library was not yet (as of this writing) publicly released, other programmers did not have the chance to provide feedback.
 
 
 \subsubsection*{Basic and Optional Capabilities}
@@ -30,10 +30,10 @@ Note that for now, adjacency information is ignored.
 Different data structures can expose different elements in their API: faces, vertices, edges and half-edges.
 Elements that are not exposed cannot be referred to and thus, associating data with those elements is not possible.
 For exposed elements, we expect the data structure to be able to enumerate all elements of that kind (i.\,e., iterate over them).
-As faces and vertices are needed in almost all situation and since it can be exposed by all data structures discussed so far, they are considered a basic part of meshes and are included in \code{Mesh}.
+As faces and vertices are needed in almost all situation and since they can be exposed by all data structures discussed so far, they are considered a basic part of meshes and are included in \code{Mesh}.
 However, edges are not exposed by all data structures and are thus optional, referred to as \code{EdgeMesh} from here on.
-Exposing half-edges can be useful in many situations, but are not as important as full edges.
-Because of this and to reduce the scope during initial development, half-edges were ignored for the public API (of course, half-edges can still be used internally by data structures).
+Exposing half-edges can be useful in many situations, but they are not as important as full edges.
+Therefore, as well as to reduce the scope during initial development, half-edges were ignored for the public API (of course, half-edges can still be used internally by data structures).
 
 Another optional capability is \emph{mutability}.
 Not all algorithms need to modify meshes and it is conceivable that some more exotic data structures (e.\,g., implicitly defining the mesh) do not support mutation.
@@ -45,7 +45,7 @@ So these are two mutually exclusive, optional capabilities with the extra restri
 They are referred to as \code{TriMesh} and \code{PolyMesh} from here on.
 (In the future, pure quad meshes will be considered in the API, too.)
 
-Everything a mesh data structure has to offer is now in one of three categories (see figure~\ref{fig:mesh-features} for an overview):
+Everything a mesh data structure has to offer now belongs to one of three categories (see figure~\ref{fig:mesh-features} for an overview):
 
 \begin{itemize}
   \item \textbf{Basic mesh features}. For example: enumerating all vertices.
@@ -255,5 +255,5 @@ Configurable data structures are tested for multiple different configurations.
 With these unit tests, new data structure implementations can be added by using \emph{test driven development}.
 
 The unit tests construct different mesh topologies, execute various operations on them and test almost all observable properties at every step.
-To avoid repetitive code, Rust macros and helper functions are use extensively, making test definitions very concise.
+To avoid repetitive code, Rust macros and helper functions are used extensively, making test definitions very concise.
 The test suite definition can be found in \code{src/ds/tests.rs}.

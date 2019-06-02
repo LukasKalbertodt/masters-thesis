@@ -18,18 +18,18 @@ Additionally, a \code{Handle} trait is defined to abstract over all handle types
 Another benefit of dedicated handle types is that the internal integer type can be changed easily (without changing it across the whole codebase).
 The default integer type in \code{lox} is a \code{u32} which is sufficient for most meshes in practice.
 However, large meshes with more than $2^{32}$ elements require a wider integer type.
-With the already mentioned Cargo features, it is possible to configure \code{lox} to used \code{u64} integers in handles, which is sufficient for all meshes in the foreseeable future.
+With the already mentioned Cargo features, it is possible to configure \code{lox} to use \code{u64} integers in handles, which is sufficient for all meshes in the foreseeable future.
 
 \vspace{2cm}
 \subsubsection*{Deleting Elements in a Growable Array}
 
 A simple growing array cannot replace a linked list in all situations, since the latter allows removing elements anywhere in the list in $\mathcal O(1)$ whereas the former only supports removing elements from the end.
-Being able to remove arbitrary elements from a mesh required in many situations, so mesh data structures are expected to support it.
+Being able to remove arbitrary elements from a mesh is required in many situations, so mesh data structures are expected to support it.
 
 There are two possibilities to remove an element at any position inside an array: (a) shift all elements right of the deleted elements one to the left, and (b) store a \code{deleted} flag for each element which is set to \code{true} once an element is deleted.
 Solution (a) has a complexity of $\mathcal O(n)$ per remove-operation, making it too slow for most applications.
 However, the real problem is that shifting elements invalidates their indices which are used as element reference.
-As a consequence, solution (b) has to be used.
+As a consequence, solution (b) needs to be used.
 
 \newpage
 A problem of the \code{deleted}-flag approach is that elements are not actually deleted but linger in memory, potentially until the whole data structure is freed.
@@ -45,13 +45,13 @@ Specifically, it is \code{align_of::<T>()} larger, which for structs storing \co
 \begin{figure}[t]
   \centering
   \includegraphics[width=.9\textwidth]{svg2pdf/stable-vec}
-  \caption{Different ways to delete an element from a growable array: shifting elements (left), storing a \codebox{deleted} flag as a separate bit-vector (center) and storing a \codebox{deleted} flag next to the elements (right).}
+  \caption{Different options to delete an element from a growable array: shifting elements (left), storing a \codebox{deleted} flag as a separate bit-vector (center) and storing a \codebox{deleted} flag next to the elements (right).}
   \vspace{5mm}
 \end{figure}
 
 A popular alternative way to store \code{deleted} flags is using a bit-vector, a densely packed array of bits (storing 8 bits per byte).
 It has the disadvantage of requiring a separate allocation which slightly increases the reallocation cost and could potentially double the number of cache misses per element access.
-However, this is usually out-weight by the benefits:
+However, this is usually outweighed by the benefits:
 the dense packing means that no memory is wasted and that many of these flags fit into the cache at once.
 For example, a standard-sized L1 cache with 256~KB of storage can fit over 2~million bits, a 64~byte cache line can fit 512 bits.
 
@@ -71,7 +71,7 @@ This library is technically also not part of this thesis.
 \newpage
 \subsubsection*{Property Maps}
 
-As mentioned in chapter 2, it is often necessary to associated arbitrary data with specific mesh elements.
+As mentioned in chapter 2, it is often necessary to associate arbitrary data with specific mesh elements.
 This data is called \enquote{property} in this thesis; vertex normals are a \enquote{vertex property}, for example.
 While some properties live as long as the mesh itself (e.\,g., vertex positions or face colors),  others are temporary values that only live for the duration of one algorithm (e.\,g., a Boolean \code{visited} flag).
 These temporary properties should not be kept in memory longer than necessary, meaning that they cannot be stored together with the actual elements.
@@ -271,14 +271,14 @@ Figure~\ref{fig:memory-layout-bench} shows the benchmark results, which are disc
 
 \newpage
 
-The results of the benchmark allow various interesting observations:
+The results of the benchmark allow for various interesting observations:
 
 \begin{itemize}
   \item The type of traversal plays a massive role in performance: in the 10M items benchmarks, random traversal is approximately 50 to 70 times slower than the sequential traversal.
-  The difference is a bit smaller for the benchmark with fewer items, but still substantially.
+  The difference is a bit smaller for the benchmark with fewer items, but still substantial.
   This effect is very much expected.
   \item The durations for sequential traversal scale pretty closely with the number of items.
-  This is to be expected, because in those benchmarks, any caching effects should be very small and all other operations should scale linearly.
+  This is to be expected, because in those benchmarks any caching effects should be very small and all other operations should scale linearly.
   On the other hand, the durations for random traversal do \emph{not} scale linearly with number of items, due to non-linear cache effects.
   The difference between 1M and 10M items is particularly high.
   \item The durations of \textsf{1:1} benchmarks do not differ between memory layouts, which is expected: for one field, the memory layouts are the same.
@@ -310,7 +310,7 @@ Something that might explain this behavior is the size of the test CPU's L3 cach
 one million items with \code{u32} fields corresponds to 4\,MiB (one field) to 24\,MiB (six fields) of data.
 In the \textsf{1:1} case, all data fits into the L3 cache, meaning that on average, the main memory only needs to be accessed $4 \text{\,MiB} / 64 \text{ Bytes (the size of one cache line)} = 65,536$ times.
 For more fields, the full data does not fit into the L3 cache, meaning that some cache lines might need to be loaded multiple times from main memory.
-The difference between memory layouts \emph{might} be due the specific associativity and replacement strategy of the L3 cache.
+The difference between memory layouts \emph{might} be due to the specific associativity and replacement strategy of the L3 cache.
 
 For 10M items, SoA slightly outperforms AoS for one or two used fields, but is slightly slower for four used fields and twice as slow for six used fields.
 Due to the total size of the data (40\,MiB to 240\,MiB), the probability to find a value in the L3 cache is very low: between 15\% and 2.5\%.

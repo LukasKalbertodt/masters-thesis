@@ -18,7 +18,7 @@ Before implementing the functionality, the following goals were set:
   Everything that can provide or receive mesh data should be able to use the IO interface like a file.
   \item \textbf{Correct and robust}: invalid input should never crash the library.
   Instead, an error indicating the problem should be emitted.
-  Additionally, reader and writers of file formats should stick to the specification as closely as possible.
+  Additionally, readers and writers of file formats should stick to the specification as closely as possible.
   \item \textbf{Compile time correctness}: unless this conflicts with the other goals, as many programmer errors as possible should be caught at compile time.
 \end{itemize}
 
@@ -247,7 +247,7 @@ Instead, the fuzzer tries to achieve a high code coverage by analyzing which sta
 That way, advanced fuzzers can generate valid input files from just analyzing and trying to optimize code coverage (cf. \cite{jpegfuzzing}).
 
 The goal of fuzzing tests is usually to find crashes and other unexpected behavior.
-This is particularly useful for parsers, as they often have to deal with many obscure edges cases.
+This is particularly useful for parsers, as they often have to deal with many obscure edge cases.
 Due to fuzzing tests, a couple of bugs were found and fixed in \code{lox}'s parsers.
 
 
