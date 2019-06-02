@@ -1,7 +1,7 @@
 \chapter{Conclusion}
 
 In this thesis, the geometry processing library \code{lox} was introduced and evaluated.
-That way, it was shown that, by using the trait system offered by the Rust programming language,  it is possible to abstract over different mesh data structures without incurring any significant runtime overhead.
+It was shown that, by using the trait system offered by the Rust programming language,  it is possible to abstract over different mesh data structures without incurring any significant runtime overhead.
 Furthermore, the benchmarks and code examples from chapter~5 demonstrate that \code{lox} is comparable to the \cpp libraries OpenMesh and PMP in terms of execution speed and ease of use.
 In some cases, it even significantly outperforms the two \cpp libraries.
 However, due to its young age, \code{lox} still offers notably fewer features (elaborate mesh algorithms in particular) than the other libraries.
@@ -17,8 +17,8 @@ However, due to its young age, \code{lox} still offers notably fewer features (e
 \section{Challenges}
 
 While using Rust had many advantages and made the project possible in the first place, some limitations of the language presented a number of problems, ranging from mildly inconvenient to seriously restrictive.
-The lack of abilities for dealing with higher-kinded types (e.\,g., GATs) posed a particularly significant obstacle, as it required elaborate workarounds and severely limited some parts of the library's interface.
-Less serious problems were caused by the incomplete implementations of \emph{specialization} and \emph{const generics}.
+The lack of language features for dealing with higher-kinded types (e.\,g., GATs) posed a particularly aggravating obstacle, as it required elaborate workarounds and severely limited some parts of the library's interface.
+Less serious difficulties were caused by the incomplete implementations of \emph{specialization} and \emph{const generics}.
 
 Rust's memory safety guarantees unfortunately also resulted in some complications.
 For one, the central rule \emph{aliasing nand mutability} required some tweaks to the library's API to work around this deliberate language limitation, thus making some common mesh operations less intuitive to use.
@@ -28,7 +28,7 @@ While most bound checks are removed by the optimizer during compilation, this wa
 Finally, designing \code{lox}'s central interfaces proved particularly challenging.
 Trait systems like the one used to abstract over mesh data structures have to strike the balance between flexibility and ease of use:
 using fewer traits makes for a simpler API, but might exclude some use-cases.
-Further experimentation, improvements and testing is certainly required to find a solution as optimal as possible.
+Further experiments, improvements and testing is certainly required to find an adequate solution.
 
 % Finally, designing the central interfaces of \code{lox} was non-trivial still req further testing and improvements are required.
 % For example, the trait system to abstract over mesh data structures have to strike the balance between flexibility and ease of use.
@@ -48,8 +48,8 @@ For example, while using \emph{handles} has many advantages, it also introduces 
 There has been some research on \enquote{type branding} in Rust that could be used to solve these problems \cite{beingessner2016you, indexing}.
 The same approach could potentially help to reduce the number of bound checks in certain situations.
 
-After various mesh data structures were implemented and sufficiently optimized, it would be possible to compare their respective speeds by benchmarking their performances in a large number of different benchmarks.
-This would allow creating extensive guidelines on when to best use which data structure.
+After various mesh data structures are implemented and sufficiently optimized, it would be possible to compare their respective speeds by benchmarking their performances in a large number of different benchmarks.
+This would allow for creating extensive guidelines on when to best use which data structure.
 
 
 % Of course, \code{lox} is still incomplete in several regards.
