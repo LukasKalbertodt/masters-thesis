@@ -17,7 +17,7 @@ However, due to its young age, \code{lox} still offers notably fewer features (e
 \section{Challenges}
 
 While using Rust had many advantages and made the project possible in the first place, some limitations of the language presented a number of problems, ranging from mildly inconvenient to seriously restrictive.
-The lack of abilities for dealing with higher kinded types (e.\,g. GATs) posed a particularly significant obstacle, as it required elaborate workarounds and severely limited some parts of the library's interface.
+The lack of abilities for dealing with higher-kinded types (e.\,g. GATs) posed a particularly significant obstacle, as it required elaborate workarounds and severely limited some parts of the library's interface.
 Less serious problems were caused by the incomplete implementations of \emph{specialization} and \emph{const generics}.
 
 Rust's memory safety guarantees unfortunately also resulted in some complications.
@@ -45,10 +45,10 @@ Lastly, after \code{lox}'s initial release shortly after handing in this thesis,
 
 The library could also benefit a lot from experimenting with how Rust's strong type system can improve performance or avoid certain classes of bugs.
 For example, while using \emph{handles} has many advantages, it also introduces potential bugs like using a handle to an already deleted element or using the handle of one mesh with another one.
-There has been some research on \enquote{type branding} in Rust that could be used to solves these problems \cite{beingessner2016you, indexing}.
+There has been some research on \enquote{type branding} in Rust that could be used to solve these problems \cite{beingessner2016you, indexing}.
 The same approach could potentially help to reduce the number of bound checks in certain situations.
 
-After many different mesh data structures were implemented and sufficiently optimized, it would be possible to compare their respective speeds by benchmarking their performances in a large number of different benchmarks.
+After various mesh data structures were implemented and sufficiently optimized, it would be possible to compare their respective speeds by benchmarking their performances in a large number of different benchmarks.
 This would allow creating extensive guidelines on when to best use which data structure.
 
 

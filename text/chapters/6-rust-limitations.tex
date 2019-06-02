@@ -69,7 +69,7 @@ But as this feature is crucial for \code{lox} in a couple of situations, \code{l
 
 \vfill
 
-For \code{lox}, the most critical limitation of Rust is the missing support for \emph{higher kinded types} (HKTs), particularly \emph{generic associated types} (GATs).
+For \code{lox}, the most critical limitation of Rust is the missing support for \emph{higher-kinded types} (HKTs), particularly \emph{generic associated types} (GATs).
 The term HKTs describes a type system's ability to let the programmer handle \emph{type constructors}, i.\,e. generic types whose type arguments have not been applied yet.
 For example, \code{Vec<u32>} is a specific type, but \code{Vec} is a type constructor.
 Sometimes it is necessary to be generic over type constructors, as shown in this code:
