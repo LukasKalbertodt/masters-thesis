@@ -28,7 +28,7 @@ In \code{lox}'s design, everything that can provide mesh data is called a \emph{
 The exact design of these traits is of uppermost importance for meeting the goals defined above.
 
 An early important realization is that there are two kinds of sources and sinks each: those which can provide/receive data in any order and those who are restricted to a particular order of data.
-For example, files are restricted to the specific order defined by their file format which can differ between different formats, e.\,g. \textsc{Ply} and \textsc{Obj}.
+For example, files are restricted to the specific order defined by their file format which can differ between different formats, e.\,g., \textsc{Ply} and \textsc{Obj}.
 Those files have to be read/written from front to back and usually do not allow random access.
 Similarly, meshes defined algorithmically provide the mesh data in the order that the algorithm creates it.
 On the other hand, in-memory mesh data structures and property maps allow arbitrary access to their data.
@@ -69,14 +69,14 @@ The trait also contains methods for every predefined mesh property, a list that 
 The \code{MemSink} has a similar interface that allows adding connectivity and property data.
 
 A difficult part of the design was to allow for different types of mesh properties.
-This is required because different file formats store mesh properties with different types and some file formats even allow storing multiple types (e.\,g. \textsc{Ply}).
+This is required because different file formats store mesh properties with different types and some file formats even allow storing multiple types (e.\,g., \textsc{Ply}).
 For example, \code{lox} should be able to read and write \code{f32} \emph{and} \code{f64} vertex positions;
 reading and writing color data should work with \code{f32} \emph{and} \code{u8} channels -- with or without alpha channel.
 This flexibility was achieved by making all property methods of the \code{Mem*} traits generic and providing a separate method to ask for the preferred data type.
 This made the interface notably more complex, but this was accepted in order to provide a fast and flexible core interface.
 Ideally, most users do not need to interact with these core traits directly anyway, making the complexity increase less of an issue.
 
-As the core data structures (e.\,g. \code{HalfEdgeMesh}) cannot store mesh properties, external property maps are needed for those.
+As the core data structures (e.\,g., \code{HalfEdgeMesh}) cannot store mesh properties, external property maps are needed for those.
 The user is then supposed to create a struct type that contains the core mesh and all required property meshes.
 These types are called \enquote{fat meshes} in the context of \code{lox}.
 In order to read mesh data from a file into a fat mesh or to write a fat mesh to a file, the fat mesh type needs to implement \code{MemSource} and \code{MemSink}.
@@ -107,7 +107,7 @@ This function is called by the compiler during compilation and the generated cod
 This has the effect, that the \code{Mem*} traits are implemented for \code{MyMesh} without the user having to write any boilerplate code.
 
 Another important part of the IO functionality is \emph{type casting}.
-In a fat mesh, the types of mesh properties are usually fixed, e.\,g. \code{Point3<f32>} vertex positions or \code{[u8; 3]} colors.
+In a fat mesh, the types of mesh properties are usually fixed, e.\,g., \code{Point3<f32>} vertex positions or \code{[u8; 3]} colors.
 As files may contain or require properties with a different type, the IO code should be able to deal with that type mismatch.
 One possibility is to always convert between the types automatically.
 While this makes the interface more convenient to use (as the problem is not exposed), it could exhibit behavior unexpected by the user.

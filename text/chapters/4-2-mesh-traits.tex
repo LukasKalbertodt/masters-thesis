@@ -3,7 +3,7 @@
 
 One of the main challenges in creating this library was to find a suitable set of traits that would serve as a reasonable abstraction over different mesh data structures.
 A single trait is not sufficient because not all data structures offer the same set of capabilities.
-On the other hand, having one trait for each individual feature (i.\,e. for each neighborhood information, each mutating operation, \dots) would result in a very large number of traits, making the library's API much harder to understand and more difficult to work with.
+On the other hand, having one trait for each individual feature (i.\,e., for each neighborhood information, each mutating operation, \dots) would result in a very large number of traits, making the library's API much harder to understand and more difficult to work with.
 Finding a good solution in between those extremes is crucial for the usefulness of the abstraction.
 This section describes the design considerations and introduces a few possible solutions.
 
@@ -24,19 +24,19 @@ In particular, since the library was not yet (as time of this writing) publicly 
 
 A good starting point is to define the basic features of a \enquote{mesh} (the lowest common denominator) and to identify \emph{optional} capabilities.
 All basic features are defined in the trait \code{Mesh} (in OOP\footnote{Object Oriented Programming} terms: the very top of the class hierarchy).
-Describing the optional capabilities (i.\,e. the features not part of \code{Mesh}) in the trait system is the main challenge in finding a good design.
+Describing the optional capabilities (i.\,e., the features not part of \code{Mesh}) in the trait system is the main challenge in finding a good design.
 Note that for now, adjacency information is ignored.
 
 Different data structures can expose different elements in their API: faces, vertices, edges and half-edges.
 Elements that are not exposed cannot be referred to and thus, associating data with those elements is not possible.
-For exposed elements, we expect the data structure to be able to enumerate all elements of that kind (i.\,e. iterate over them).
+For exposed elements, we expect the data structure to be able to enumerate all elements of that kind (i.\,e., iterate over them).
 As faces and vertices are needed in almost all situation and since it can be exposed by all data structures discussed so far, they are considered a basic part of meshes and are included in \code{Mesh}.
 However, edges are not exposed by all data structures and are thus optional, referred to as \code{EdgeMesh} from here on.
 Exposing half-edges can be useful in many situations, but are not as important as full edges.
 Because of this and to reduce the scope during initial development, half-edges were ignored for the public API (of course, half-edges can still be used internally by data structures).
 
 Another optional capability is \emph{mutability}.
-Not all algorithms need to modify meshes and it is conceivable that some more exotic data structures (e.\,g. implicitly defining the mesh) do not support mutation.
+Not all algorithms need to modify meshes and it is conceivable that some more exotic data structures (e.\,g., implicitly defining the mesh) do not support mutation.
 As such, it makes sense to treat the ability to mutate the mesh as an optional capability, called \code{MeshMut}.
 
 The distinction between pure triangle meshes and polygon meshes also needs to be considered.
@@ -66,7 +66,7 @@ As already stated, basic mesh features are defined in \code{Mesh}.
 There are multiple possibilities where all other features are defined:
 
 \begin{itemize}
-  \item Create a trait per combination of capabilities (e.\,g. \code{PolyMeshMut} for triangular meshes that can be mutated) and put each feature in the fitting trait.
+  \item Create a trait per combination of capabilities (e.\,g., \code{PolyMeshMut} for triangular meshes that can be mutated) and put each feature in the fitting trait.
   This works, but creates a large number of traits.
   Users might prefer to have functionality in as few traits as possible.
   \item Create a trait per single optional capability and put features only requiring one capability in the corresponding trait.
@@ -146,7 +146,7 @@ Luckily, this problem can simply be worked around by using types instead of valu
 \subsubsection*{Adjacency Traits}
 
 All functionality regarding adjacency information has to be defined in traits as well.
-As before, defining too many traits (e.\,g. one trait per basic adjacency query) would make the whole API more confusing while a single trait would not be flexible enough.
+As before, defining too many traits (e.\,g., one trait per basic adjacency query) would make the whole API more confusing while a single trait would not be flexible enough.
 The current design consists of three traits (cf. figure~\ref{fig:mesh-traits}):
 
 \begin{itemize}
@@ -168,7 +168,7 @@ But as mentioned above, this design is likely to change in the future.
   \includegraphics[width=.98\textwidth]{svg2pdf/mesh-traits}
   \caption{
     Traits currently used in \codebox{lox} to abstract over meshes.
-    The arrows represent \emph{super trait bounds}, i.\,e. \codebox{Mesh} is a super trait of \codebox{MeshMut}.
+    The arrows represent \emph{super trait bounds}, i.\,e., \codebox{Mesh} is a super trait of \codebox{MeshMut}.
     Green boxes contain traits that deal with adjacency information, yellow boxes indicate marker traits without own methods.
   }
   \label{fig:mesh-traits}
@@ -184,7 +184,7 @@ However, it is planned to add more data structures to the library in the near fu
 
 %TODO: maybe actually implement this?
 The half edge mesh and directed edge mesh can be configured at compile time.
-Both meshes allow specifying which optional fields (e.\,g. \code{prev}) are stored and the half edge mesh offers an option to restrict the mesh to triangular faces (which does not change the underlying data structure, but makes some operations faster).
+Both meshes allow specifying which optional fields (e.\,g., \code{prev}) are stored and the half edge mesh offers an option to restrict the mesh to triangular faces (which does not change the underlying data structure, but makes some operations faster).
 The configuration is done via a type parameter and a trait \code{Config}.
 The system for the half edge mesh looks like this:
 

@@ -6,14 +6,14 @@ This chapter gives an overview over some of the optimization work that went into
 Writing idiomatic Rust usually already makes sure that the compiled code performs reasonably well, meaning that correctness can be the programmer's main focus when initially writing the code.
 To improve speed further, several approaches were used.
 For one, a couple of benchmarks comparing \code{lox} to OpenMesh in different situations were created and executed regularly, providing a good baseline.
-The programs \emph{perf}\footnote{Performance analyzer for Linux} and Intel$^\text{\tiny ®}$~VTune$^\text{\tiny ™}$~Amplifier\footnote{Website: \url{https://software.intel.com/en-us/vtune}} were used for profiling, i.\,e. to gather different information about a program's runtime behavior.
+The programs \emph{perf}\footnote{Performance analyzer for Linux} and Intel$^\text{\tiny ®}$~VTune$^\text{\tiny ™}$~Amplifier\footnote{Website: \url{https://software.intel.com/en-us/vtune}} were used for profiling, i.\,e., to gather different information about a program's runtime behavior.
 To inspect generated machine code, the tools Cutter\footnote{Website: \url{https://github.com/radareorg/cutter}} and Godbolt Compiler Explorer\footnote{Website: \url{https://godbolt.org/}} were used.
 
 By profiling different workloads and inspecting the machine code, many performance problems and hotspots were identified across the code base.
 Generally, those problems were fixed by rewriting small parts of the code or providing hints to the compiler.
 In some cases, the optimizer did not inline tiny functions.
 This could be fixed by adding the \code{#[inline(always)]} attribute to those functions, often resulting in a measurable increase in performance.
-Important functions that are called very rarely (e.\,g. functions constructing an error object) are instead annotated with \code{#[inline(never)]} and \code{#[cold]}, improving code generation for callers of these functions.
+Important functions that are called very rarely (e.\,g., functions constructing an error object) are instead annotated with \code{#[inline(never)]} and \code{#[cold]}, improving code generation for callers of these functions.
 
 Before any code was changed, at least one benchmark executing that part of the code was written.
 That way, the performance impact of a change could always be measured directly.

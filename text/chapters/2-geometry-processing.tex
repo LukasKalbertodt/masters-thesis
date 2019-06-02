@@ -11,13 +11,13 @@ A 3D surface can be acquired through different means.
 In many areas, humans manually model 3D objects with modeling software (like Blender\footnote{Blender website: \url{https://www.blender.org/}}), while in other cases, 3D surfaces are algorithmically created from mathematical definitions or 3D scans (like MRI\footnote{Magnetic resonance imaging} or laser scan data).
 After acquisition it is often necessary to manipulate the surface in order to improve certain characteristics of it.
 For example, 3D scan data is often fairly noisy, so various post-processing algorithms are needed to remove artifacts caused by that noise.
-For real-time 3D graphics, it is often beneficial to reduce the complexity of an object in order to improve rendering times.
+For real-time 3D graphics, it is beneficial to reduce the complexity of an object in order to improve rendering times.
 See figure~\ref{fig:cat-algo} for two examples.
 
 To work with 3D surfaces, one first has to find a way to represent them.
-Amongst the many very different kinds of representation (cf. \cite[Chapter~1]{botsch2010polygon}), the polygon mesh (or just \enquote{mesh} for short) is arguably the most used one.
+Amongst the many different kinds of representation (cf. \cite[Chapter~1]{botsch2010polygon}), the polygon mesh (or just \enquote{mesh} for short) is arguably the most used one.
 A polygon mesh is a collection of vertices (singular \emph{vertex}), edges and faces.
-Note that polygon meshes can only represent polyhedrons exactly, so most of the time, they are just an approximation of the actual 3D surface.
+Note that polygon meshes can only represent polyhedrons exactly, so most of the time, they are merely an approximation of the actual 3D surface.
 
 \begin{figure}[b]
   \includesvg{cat-algo}
@@ -88,10 +88,10 @@ For example, 3D vertex positions -- a 3D vector associated with every vertex -- 
 Surface normals and texture coordinates are two other properties that are stored in many meshes.
 They are also usually associated with each vertex.
 For visualization, vertices, edges or faces can also be colored, that is: have a color associated with each element.
-Lastly, many algorithms need to associate temporary values with mesh elements, like some kind of cost or a Boolean flag (e.\,g. to store which elements were already visited).
+Lastly, many algorithms need to associate temporary values with mesh elements, like some kind of cost or a Boolean flag (e.\,g., to store which elements were already visited).
 In general, it is necessary to be able to associate arbitrary values with mesh elements.
 
-As long as each mesh element can be uniquely identified, storing mesh properties is easy (e.\,g. using a hash map).
+As long as each mesh element can be uniquely identified, storing mesh properties is easy (e.\,g., using a hash map).
 Storing the connectivity of a mesh, however, is difficult because algorithms operating on meshes require various kinds of adjacency information.
 For example, a simple way to smooth a mesh is to replace each vertex position with the centroid of all adjacent vertices \cite[Chapter~3]{botsch2010polygon}.
 That algorithm needs to be able to enumerate all neighboring vertices of a specific vertex.
@@ -139,20 +139,20 @@ The challenge in creating a mesh data structure is about (a) providing all requi
 Just providing the information is not particularly difficult:
 most data structures can provide complete adjacency information in $\mathcal O(|V| + |F| + |E|)$.
 However, in this thesis, \enquote{fast} implies a runtime of $\mathcal O(|r|)$ where $r$ is the result of the query (the neighbors). In the rest of this thesis, a statement like \enquote{cannot provide this information} might also mean \enquote{cannot provide this information in $\mathcal O(|r|)$}.
-One could store all the neighborhood information explicitly to meet those asymptotic runtime requirements (i.\,e. each face stores a list of all adjacent faces, a list of all adjacent edges and a list of all adjacent vertices; similarly for vertices and edges).
+One could store all the neighborhood information explicitly to meet those asymptotic runtime requirements (i.\,e., each face stores a list of all adjacent faces, a list of all adjacent edges and a list of all adjacent vertices; similarly for vertices and edges).
 However, this approach has tremendous memory overhead and it would be very slow to modify the mesh, as a lot of information would have to be updated.
 
 \subsection{Performance Characteristics of Modern Hardware}
 
 Since data structures are expected to provide adjacency information in $\mathcal O(|r|)$ (which is optimal, asymptotically speaking), the only difference in execution speed is due to constant factors.
 In order to create data structures that are fast in practice, some knowledge of modern computer hardware is required.
-This sub-section gives a very coarse overview over some aspects of this topic, focusing on x86-64 CPUs as they are used in the vast majority of desktop PCs.
+This sub-section gives a coarse overview over some aspects of this topic, focusing on x86-64 CPUs as they are used in the vast majority of desktop PCs.
 A lot of information throughout this section is taken from \cite{hennessy2017computer}, particularly from chapter~2 and appendix~B.
 
 For some decades now, the speed of processors improved more quickly than the speed of volatile memory.
 On current hardware, accessing the main memory takes approximately between 50\,ns and 100\,ns.
 As modern processors are clocked at around 3\,GHz, the memory access time corresponds to roughly 150 to 300 cycles.
-Different techniques are used to avoid wasting a lot of time waiting for the memory, the most notable being \emph{CPU caches}: processor-internal memory that is smaller but a lot faster than main memory.
+Different techniques are used to avoid wasting this time waiting for the memory, the most notable being \emph{CPU caches}: processor-internal memory that is smaller but considerably faster than main memory.
 
 % segue
 CPU caches work by exploiting the \emph{principle of locality}, which states that memory access patterns of programs tend to be fairly predictable.
@@ -163,8 +163,8 @@ If that is the case (\emph{cache hit}), that value can be used and the main memo
 If the cache does not contain the requested data (\emph{cache miss}), the value has to be loaded from main memory and is then stored in the cache (potentially replacing other data).
 Most modern processors have multiple layers of caches; see table~\ref{tbl:caches} for typical sizes and access times of caches from different layers.
 
-To use the spatial locality of programs, data is always loaded in \emph{cache lines}, blocks of memory typically 64 bytes long.
-That way, accessing multiple values in one cache line only requires accessing main memory at most once.
+To use the spatial locality of programs, data is loaded in \emph{cache lines}, blocks of memory typically 64 bytes long.
+That way, accessing multiple values in one cache line requires accessing main memory at most once.
 Additionally, the \emph{prefetcher} -- also a part of the CPU -- loads new cache lines from main memory even before the program requests them by predicting what memory is likely to be accessed next.
 
 \begin{table}[t]
@@ -193,12 +193,12 @@ This has a few different consequences.
 
 In many programming languages, it seems natural to refer to mesh elements via pointers or references.
 This is problematic, however, since this approach requires a stable allocation for each element: the element cannot be moved in memory after the initial allocation or else the pointer would be invalidated.
-Unfortunately, all means of achieving stable pointers (e.\,g. by using a linked list) are inherently cache-unfriendly.
+Unfortunately, all means of achieving stable pointers (e.\,g., by using a linked list) are inherently cache-unfriendly.
 A faster alternative is to store all elements in a growing array and refer to them via their index in that array (pointers cannot be used since they are invalidated when the growing array has to reallocate).
 This can be less convenient but has the additional benefit that the indices can often be stored with only 32 bits, reducing the memory consumption of the data structure on 64-bit platforms.
 
 Furthermore, storing dynamic lists -- a sequence of elements whose length is not known at compile time -- should be avoided.
-That's because the list data cannot be stored inline, requiring additional allocations and causing cache misses when accessing the data.
+That is because the list data cannot be stored inline, requiring additional allocations and causing cache misses when accessing the data.
 Additionally, dynamic lists incur memory overhead as they have to store the length in some way.
 
 \newpage
@@ -216,7 +216,7 @@ Generally, two types of data structures can be distinguished: \emph{face-based} 
 The former store the main adjacency information per face, the latter per edge.
 As discussed in the last section, storing lists with dynamic length should be avoided, meaning that only neighbors bounded in number should be stored explicitly.
 As illustrated in table~\ref{tab:max-neighbors}, the number of possible neighbors per vertex is unbounded, which is why there are no relevant vertex-based data structures.
-The table also shows that face-based data structures are only efficient if the valence of faces is fixed (e.\,g. a triangle or quad mesh), as otherwise dynamic lists are required.
+The table also shows that face-based data structures are only efficient if the valence of faces is fixed (e.\,g., a triangle or quad mesh), as otherwise dynamic lists are required.
 
 \begin{table}[h]
   \vspace{8mm}
@@ -347,7 +347,7 @@ See figure~\ref{fig:hem-structure}.
 \newpage
 \subsubsection*{Directed Edge Mesh}
 
-The \emph{directed edge mesh} is a memory-efficient version of the half edge mesh which is restricted to meshes with a fixed face valence (e.\,g. pure triangle or quad meshes).
+The \emph{directed edge mesh} is a memory-efficient version of the half edge mesh which is restricted to meshes with a fixed face valence (e.\,g., pure triangle or quad meshes).
 It was initially presented in \cite{campagna1998directed} and is also mentioned and explained in \cite[Chapter~2]{botsch2010polygon}.
 Depending on the point of view, this data structure is either edge or face based.
 
@@ -357,7 +357,7 @@ Similarly, the face of a half edge can be found by dividing the half edge index 
 This also encodes the \code{next} and \code{prev} values for half edges implicitly.
 However, in contrast to the half edge mesh, \code{twin} handles have to be stored explicitly.
 Each vertex also stores one \code{outgoing} half edge.
-Also see figure~\ref{fig:dem-structure}.
+See figure~\ref{fig:dem-structure}.
 
 \begin{figure}[t]
   \centering

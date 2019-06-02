@@ -9,7 +9,7 @@ As discussed in chapter~2, it is desirable to use growing arrays to store mesh d
 As a consequence, \code{lox} uses the index of an element in its array to refer to that element.
 (Also refer to \cite{sieger2011design} for a discussion about array vs. linked lists and indices vs. pointers.)
 
-Using simple integers as element references in the library's API is not a good idea, however, since it is very easy to use an integer referring to one element kind (e.\,g. a vertex) in a context where a reference to another element kind (e.\,g. a face) is expected.
+Using simple integers as element references in the library's API is not a good idea, however, since it is very easy to use an integer referring to one element kind (e.\,g., a vertex) in a context where a reference to another element kind (e.\,g., a face) is expected.
 To avoid this confusion, multiple distinct types are introduced: \code{VertexHandle}, \code{EdgeHandle} and \code{FaceHandle}.
 All of those types consist of a single integer field (called the \emph{handle ID}), making them behave exactly like an integer on machine level -- thus having no runtime overhead.
 If one is used in the place of another, a compiler \enquote{type mismatch} error is printed, pointing out the bug immediately.
@@ -73,7 +73,7 @@ This library is technically also not part of this thesis.
 
 As mentioned in chapter 2, it is often necessary to associated arbitrary data with specific mesh elements.
 This data is called \enquote{property} in this thesis; vertex normals are a \enquote{vertex property}, for example.
-While some properties live as long as the mesh itself (e.\,g. vertex positions or face colors),  others are temporary values that only live for the duration of one algorithm (e.\,g. a Boolean \code{visited} flag).
+While some properties live as long as the mesh itself (e.\,g., vertex positions or face colors),  others are temporary values that only live for the duration of one algorithm (e.\,g., a Boolean \code{visited} flag).
 These temporary properties should not be kept in memory longer than necessary, meaning that they cannot be stored together with the actual elements.
 Instead, \code{lox} uses external maps (mapping from element to property), called \emph{property maps}.
 
@@ -148,7 +148,7 @@ Users can still create their own struct type with property maps as fields to sto
 \newpage
 \subsubsection*{\enquote{Array of Structs} vs. \enquote{Struct of Arrays}}
 
-Having property maps to store mesh properties externally brings up an interesting consideration: is it faster to use one property map per property kind or to use as few different maps as possible (e.\,g. by clustering different property kinds).
+Having property maps to store mesh properties externally brings up an interesting consideration: is it faster to use one property map per property kind or to use as few different maps as possible (e.\,g., by clustering different property kinds).
 This problem is very similar to the \enquote{Array of Structs} (\emph{AoS}) vs. \enquote{Struct of Arrays} (\emph{SoA}) choice.
 The two different layout strategies are visualized in figure~\ref{fig:mem-layout-visualization}.
 
@@ -216,7 +216,7 @@ The different benchmarks attempted to cover the following parameter space:
   In the sequential benchmarks, a loop simply iterates sequentially over all indices starting from 0.
   The random benchmarks use the first field's \code{u32} value as next index to jump to.
   This was done to not include the generation of random numbers in the measured time.
-  Notably, these \code{u32} values were already generated to be valid indices (i.\,e. smaller than the total number of items) and thus, the timed code does not need to perform any additional work on these values.
+  Notably, these \code{u32} values were already generated to be valid indices (i.\,e., smaller than the total number of items) and thus, the timed code does not need to perform any additional work on these values.
   \item \textbf{Total number of items}: all benchmarks were performed with 10,000, 100,000, 1,000,000 and 10,000,000 items.
   \item \textbf{Number of [used] fields per item}: 1:1, 2:1, 2:2, 4:1, 4:2, 4:4, 6:1, 6:3 and 6:6 were tested.
   The syntax X:Y means that each item has X many fields and Y many fields were included in the sum, the other fields were ignored.
@@ -225,7 +225,7 @@ The different benchmarks attempted to cover the following parameter space:
 \vfill
 
 Getting reliable data from a benchmark is difficult because many factors need to be considered -- failing to pay attention to one of them could render the measured data useless.
-To deal with the inherent noise, almost all benchmarks execute the code that needs to be measured many times and analyze all measured durations to obtain a useful point estimate (e.\,g. the mean).
+To deal with the inherent noise, almost all benchmarks execute the code that needs to be measured many times and analyze all measured durations to obtain a useful point estimate (e.\,g., the mean).
 Performing a benchmark that attempts to measure the effect of CPU caches is particularly challenging, because the cache state persists over multiple iterations of the same code.
 That in turn means that repeated measurements are not independent of one another, making the measured data unusable or very hard to analyze.
 
@@ -320,13 +320,13 @@ The rather small difference in duration between one and two used fields for the 
 \vspace{1.5cm}
 
 In summary, neither memory layout is superior in all situations.
-While many memory access patterns for mesh operations (e.\,g. depth first search) tend to have a very random nature, iterating sequentially over all elements of a mesh is not uncommon either.
+While many memory access patterns for mesh operations (e.\,g., depth first search) tend to have a very random nature, iterating sequentially over all elements of a mesh is not uncommon either.
 Thus, benchmarks of both traversal kinds are important to consider.
 Analyzing this benchmark lead to the following consequences for the development of \code{lox}:
 
 \begin{itemize}
   \item Using multiple external property maps is usually fine.
-  For that reason, \code{lox} does not yet allow storing mesh properties next to adjacency information, i.\,e. a \code{HalfEdgeMesh} cannot store vertex positions.
+  For that reason, \code{lox} does not yet allow storing mesh properties next to adjacency information, i.\,e., a \code{HalfEdgeMesh} cannot store vertex positions.
   This feature might be added in the future, though.
   \item If an algorithm defines multiple mesh properties that are always used together, it is often preferred to cluster them into one property map.
   \item Generally, the more convenient solution can be used.

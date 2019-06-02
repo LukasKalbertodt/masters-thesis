@@ -7,7 +7,7 @@ This chapter briefly explores these complications and explains how they were sol
 
 Many mesh algorithms need to iterate over elements of the mesh while simultaneously mutating the mesh.
 For example, to add an isolated vertex in the center of each face, it is required to iterate over all faces while adding vertices.
-Regardless of language, the programmer has to pay attention in these situations to not accidentally invalidate the iterator (e.\,g. by removing elements) and to not iterate forever (e.\,g. by adding faces while iterating over all faces).
+Regardless of language, the programmer has to pay attention in these situations to not accidentally invalidate the iterator (e.\,g., by removing elements) and to not iterate forever (e.\,g., by adding faces while iterating over all faces).
 In Rust however, mutation during iteration is usually not accepted by the compiler, due to one of Rust's most central rules: \emph{aliasing nand mutability}.
 
 Most iteration in Rust is done by obtaining an iterator object from the container and calling \code{next()} repeatedly until \code{None} is returned.
@@ -40,7 +40,7 @@ This solution only works because the user code can reliably perform the same ite
 For meshes, that is usually not the case as meshes can implement their own iteration logic, mostly to skip deleted elements.
 
 Instead, the workaround used by \code{lox} is to add a way to mutate the container through the iterator object.
-This has the disadvantage that the user has to deal with the iterator objects themselves (i.\,e. they cannot use a \code{for} loop) and that the iterator logic might get a bit more complicated to ensure that mutations of the container do not invalidate the iterator.
+This has the disadvantage that the user has to deal with the iterator objects themselves (i.\,e., they cannot use a \code{for} loop) and that the iterator logic might get a bit more complicated to ensure that mutations of the container do not invalidate the iterator.
 On the other hand, the iterator object can precisely control which mutating operations are performed, which potentially makes this solution more robust.
 The solution works fine for \code{lox}, the exact iterator interface is not fixed yet, though.
 
@@ -59,7 +59,7 @@ Some Rust features are implemented, but have not been stabilized yet.
 To stabilize a feature means to commit to all details of it and to never change it in a backwards-incompatible way.
 As stabilizing too early could mean supporting a flawed feature forever, all additions to the language are tested, tweaked and evaluated for months, sometimes years, before a decision is made.
 An unstable feature can only be used with a \emph{nightly} compiler, a version built from the \code{master} branch every night.
-Currently, \code{lox} uses some unstable features, but only one of those is critical, i.\,e. not just for convenience: \emph{specialization}.
+Currently, \code{lox} uses some unstable features, but only one of those is critical, i.\,e., not just for convenience: \emph{specialization}.
 
 Usually, Rust maintains a property called \emph{coherence}, meaning that for any given type and trait, exactly one specific, unambiguous implementation applies (or none, if the type does not implement the trait).
 This property is important in several situations to guarantee soundness, but it is of course limiting in some other situations.
@@ -70,7 +70,7 @@ But as this feature is crucial for \code{lox} in a couple of situations, \code{l
 \vfill
 
 For \code{lox}, the most critical limitation of Rust is the missing support for \emph{higher-kinded types} (HKTs), particularly \emph{generic associated types} (GATs).
-The term HKTs describes a type system's ability to let the programmer handle \emph{type constructors}, i.\,e. generic types whose type arguments have not been applied yet.
+The term HKTs describes a type system's ability to let the programmer handle \emph{type constructors}, i.\,e., generic types whose type arguments have not been applied yet.
 For example, \code{Vec<u32>} is a specific type, but \code{Vec} is a type constructor.
 Sometimes it is necessary to be generic over type constructors, as shown in this code:
 
@@ -104,7 +104,7 @@ There are several situations in which that feature would be required:
 \begin{itemize}
   \item For the \code{PropMap} trait (cf. \autoref{chap:memory-layout}), the main idea is to let the implementing type decide whether a return value borrows from \code{self}.
   This would be easily solvable with GATs, but without them, an elaborate workaround was required.
-  \item All mesh adjacency traits return iterators from most methods (e.\,g. an iterator over all neighbor faces).
+  \item All mesh adjacency traits return iterators from most methods (e.\,g., an iterator over all neighbor faces).
   The type of the iterator can be specified by the mesh type implementing the adjacency trait, but the iterator also has to borrow from \code{self}.
   As with the previous point, this also requires a verbose workaround.
   \item The IO reader and writer types are generic over the underlying \code{Read} or \code{Write} type, respectively.

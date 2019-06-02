@@ -170,7 +170,7 @@ However, to get a sense for the differences between \code{lox}, OpenMesh and PMP
 
 Figure~\ref{fig:example-io} shows an example that reads the file \code{input.stl} and writes the mesh back into \code{output.ply}.
 Two main differences between the \code{lox} version and the two other versions can be observed.
-Firstly, with \code{lox}, the mesh is returned by the \code{read_file} function, while OpenMesh and PMP already require an instance of a mesh to read into, i.\,e. a variable has to created before reading.
+Firstly, with \code{lox}, the mesh is returned by the \code{read_file} function, while OpenMesh and PMP already require an instance of a mesh to read into, i.\,e., a variable has to created before reading.
 Secondly, \code{lox}'s IO functions report errors via \code{io::Error} which includes information about the underlying cause, whereas OpenMesh's and PMP's functions signal success or failure via a single \code{bool} which does not carry any additional information.
 
 In figure~\ref{fig:example-build}, code manually building a simple mesh is shown.

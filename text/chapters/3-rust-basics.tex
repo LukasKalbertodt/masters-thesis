@@ -24,7 +24,7 @@ Rust does not have a \emph{garbage collector} (GC) and is compiled to native mac
 The code generation is done by LLVM \cite{llvmwebsite, lattner2004llvm}, a collection of libraries and tools related to building compilers.
 It is also used by the \cpp compiler \code{clang++}, among others.
 Like in \cpp, resource management (including memory management) is handled by the \emph{RAII} idiom \cite{raiihackcraft, stroustrup2001exception}.
-This means that resources are released in so called \emph{destructor} functions (called \code{drop} in Rust) which are called automatically if an instance is destroyed (e.\,g. by going out of scope).
+This means that resources are released in so called \emph{destructor} functions (called \code{drop} in Rust) which are called automatically if an instance is destroyed (e.\,g., by going out of scope).
 
 An important principle of Rust is the notion of \emph{zero cost abstractions} -- a term coined by \cpp.
 As described by Stroustrup: \enquote{\cpp implementations obey the zero-overhead principle: What you don’t use, you don’t pay for [...]. And further: What you do use, you couldn’t hand code any better} \cite{stroustrup2012foundations}.
@@ -87,7 +87,7 @@ Some explanations and remarks to the code above:
   \item A library in Rust is a single compilation unit, called a \emph{crate}.
   Each crate defines symbols in a module tree.
   Modules are similar to namespaces in \cpp, but the module trees in Rust are often deeper than nested namespaces in \cpp.
-  The punctuation \code{::} is used as separator in paths to symbols (e.\,g. \code{std::time::Duration}).
+  The punctuation \code{::} is used as separator in paths to symbols (e.\,g., \code{std::time::Duration}).
   With \code{use} (line~1), symbol names can be imported into scope.
   A few very important names (listed in \code{std::prelude}) are always imported.
   \item The keyword \code{fn} defines a function.
@@ -170,7 +170,7 @@ enum CssColor {
 \end{center}
 
 As a side note: Rust is not an object-oriented language.
-While there are some similarities to object-oriented languages like Java (e.\,g. the \code{instance.method()} call syntax and \emph{encapsulation}), Rust, by design, does not feature inheritance.
+While there are some similarities to object-oriented languages like Java (e.\,g., the \code{instance.method()} call syntax and \emph{encapsulation}), Rust, by design, does not feature inheritance.
 Advantages of OOP, like code-reuse and abstraction, are achieved via different means in Rust.
 
 \newpage
@@ -225,7 +225,7 @@ This demonstrates a few additional aspects:
 \begin{itemize}
   \item \code{Self} is an alias for the type of the \code{impl} block (\code{Point} in this case).
   \item Structs can be created via the \emph{struct initializer syntax} (see line~3 or 16).
-  If the fields are not accessible due to them being private (like \code{Vec}'s fields), an instance can only be created via the associated functions offered by the type (e.\,g. \code{Point::origin} or \code{Vec::new}).
+  If the fields are not accessible due to them being private (like \code{Vec}'s fields), an instance can only be created via the associated functions offered by the type (e.\,g., \code{Point::origin} or \code{Vec::new}).
   \item Primitive types can have methods, too, as shown here: \code{f32::powi} and \code{f32::sqrt}.
 \end{itemize}
 
@@ -335,9 +335,9 @@ error[E0369]: binary operation `<` cannot
 
 To declare requirements on a type parameter via a trait bound, those requirements first need to be defined -- which is done via \emph{traits}.
 A trait is a kind of interface: it describes functionality without providing that functionality itself.
-The definition of a trait contains a number of items (usually methods) whose signatures are specified, but which are usually lacking an implementation (e.\,g. a method body).
+The definition of a trait contains a number of items (usually methods) whose signatures are specified, but which are usually lacking an implementation (e.\,g., a method body).
 A trait can be implemented by multiple types and each type can implement multiple traits.
-This is done with an \code{impl Trait for Type} block, in which all trait items need to be implemented, i.\,e. provided with a body.
+This is done with an \code{impl Trait for Type} block, in which all trait items need to be implemented, i.\,e., provided with a body.
 See figure~\ref{fig:shapes} for a simple example.
 
 \newpage
@@ -429,8 +429,8 @@ Additionally, the trait itself can already provide default implementations for i
 
 
 
-Traits are used by many other Rust features, including operator overloading (e.\,g. the \code{PartialOrd} trait mentioned above), destructors (the \code{Drop} trait) and closures.
-Particularly interesting are the \code{Send} and \code{Sync} traits which form the foundation for memory safe concurrency (i.\,e. preventing all data races).
+Traits are used by many other Rust features, including operator overloading (e.\,g., the \code{PartialOrd} trait mentioned above), destructors (the \code{Drop} trait) and closures.
+Particularly interesting are the \code{Send} and \code{Sync} traits which form the foundation for memory safe concurrency (i.\,e., preventing all data races).
 
 Traits can be used in two ways: statically and dynamically dispatched.
 The kind of dispatch is not specified in the trait definition, but in how the trait is used.
@@ -492,7 +492,7 @@ One such concept is \emph{ownership}.
 
 Different languages have different \emph{default assignment semantics}, in other words: they differ in what happens when assigning one value to another.
 In Java and many other garbage-collected languages, \emph{share semantics} are used by default.
-That means that, if there is a collection \code{a} and the line \code{Collection b = a;} is executed, \code{b} is now a reference to the original collection (i.\,e. \code{a} and \code{b} reference the same collection).
+That means that, if there is a collection \code{a} and the line \code{Collection b = a;} is executed, \code{b} is now a reference to the original collection (i.\,e., \code{a} and \code{b} reference the same collection).
 \cpp on the other hand, defaults to \emph{copy semantics}.
 In \cpp, \code{b} would be an exact (usually deep) copy of \code{a}; changing \code{b} would not influence \code{a}.
 
@@ -539,7 +539,7 @@ Optional move semantics have been introduced in \cppeleven, but they are not as 
 For example, the \cpp compiler does not raise an error when the programmer accesses the variable that was moved from, although this is usually unsafe.
 
 There is one notable exception to Rust's move semantics: types that implement the trait \code{Copy} use copy semantics.
-That trait is only implemented by types that can be correctly cloned by simply copying the bits of the type (i.\,e. the bits on the stack).
+That trait is only implemented by types that can be correctly cloned by simply copying the bits of the type (i.\,e., the bits on the stack).
 For example, \code{Vec<T>} cannot implement that trait, because it consists of a pointer to data; simply copying the pointer without copying the buffer behind that pointer would mean that two instances of \code{Vec<T>} think they own a buffer, leading to a double free when the destructor of the two instances is called.
 All primitive types implement \code{Copy}, but user-defined types can also implement it, as long as all their fields implement the trait, too.
 
@@ -555,10 +555,10 @@ This means that there cannot exist a mutable and an immutable reference to the s
 Like the ownership analysis mentioned above, this rule is also entirely enforced at compile time.
 Rust references compile down to simple pointers.
 
-This restriction might initially sound too strict, but there are many reasons why it is a good idea.
+This restriction might initially sound too limiting, but there are many reasons why it is a good idea.
 Figure~\ref{fig:vector-bad} illustrates one of those reasons.
 In practice, this rule is not as problematic as one might assume.
-Only in very few situations is it necessary to work around this problem, which can be done in a variety of ways.
+Only in a few situations is it necessary to work around this problem, which can be done in a variety of ways.
 One notable \enquote{escape hatch} is called \emph{interior mutability}, which describes the ability to mutate some data through a \code{&T} reference.
 This is only possible via carefully designed interfaces, like the type \code{Mutex} from the standard library.
 

@@ -5,7 +5,7 @@ The crate \code{lox-macros} is a library crate defining the procedural macros re
 It exists for a purely technical reason: currently, Rust requires procedural macros to be defined in their own crate.
 This restriction is likely to be lifted in the future, meaning the procedural macro definitions will be moved to the crate \code{lox} and \code{lox-macros} will be removed.
 
-Unlike the others, \code{lox-cli} is an application crate that is not part of the library \code{lox}, i.\,e. it is not included in external projects that use \code{lox}.
+Unlike the others, \code{lox-cli} is an application crate that is not part of the library \code{lox}, i.\,e., it is not included in external projects that use \code{lox}.
 Instead, it exists for three different purposes: it serves as an example for how to use \code{lox}, it is used as a test for \code{lox}'s capabilities and it is supposed to become a handy helper application for everyone working with meshes.
 Currently, it supports converting meshes between different files formats (the ones supported by \code{lox}) and displaying various information about a mesh file.
 Both operations can be tweaked via various command line parameters.
