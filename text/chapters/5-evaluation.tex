@@ -35,7 +35,7 @@ As already mentioned, the code, test meshes and raw results of all benchmarks ca
 \newpage
 \subsection{Input/Output}
 
-Some kind of IO operations are required in most applications dealing with meshes, usually as the first and last step of said program.
+Some kinds of IO operations are required in most applications dealing with meshes, usually as the first and last step of said program.
 While it is certainly not a particularly interesting processing step, due to its ubiquity, its performance still is important to consider.
 Different IO benchmarks were executed, covering the following parameter space:
 
@@ -52,7 +52,7 @@ Different IO benchmarks were executed, covering the following parameter space:
 \end{itemize}
 
 Performing IO benchmarks comes with a few additional challenges.
-Most importantly, it does not make sense to test the speed of the actual hardware disk as this is has little to do with the code performance.
+Most importantly, it does not make sense to test the speed of the actual hardware disk as this has little to do with the code performance.
 To avoid this problem, a RAM disk\footnote{An allocated part of the main memory which is mounted into the file system.} can be used to store the input mesh files and as a target for all write operations.
 However, this is not optimal as IO operations still have to communicate with the operating system, adding some overhead.
 
@@ -114,7 +114,7 @@ The following algorithms were used:
   \emph{Operations}: iterate over vertices, \adj{V}{V}, vertex boundary check, obtain vertex position.
   \item \textbf{\enquote{$\sqrt{3}$-subdivision}}: performs one iteration of said algorithm \cite{kobbelt20003}.
   This algorithm is by far the most elaborate one from this list.
-  \emph{Operations}: many different ones, including face split and edge flip.
+  \emph{Operations} include: face split and edge flip.
 \end{itemize}
 
 \vspace{1cm}
@@ -137,7 +137,7 @@ The results of these benchmarks can be seen in figure~\ref{fig:algo-benchmark} a
 \newpage
 
 These benchmarking results are a lot more mixed and less clear than the ones of the IO benchmarks.
-For one, no library clearly outperforms the others: for each library there is at least one benchmark where it performs worst.
+For one, no library clearly outperforms the others: each library performs worst in at least one benchmark.
 Additionally, in the more simple benchmarks, the order of libraries often changes between the smaller and larger mesh.
 
 Compared to the IO benchmarks, the average standard deviation is slightly higher, particularly for the benchmarks using the small \enquote{cat} mesh.
@@ -166,7 +166,7 @@ This is probably caused by the DEM using less memory, meaning that more of the m
 Speed is by far not the only factor determining the quality of a software library.
 For example, if the library is hard to understand and use, the increase in development time usually outweighs the gains due to higher execution speed.
 Unfortunately, it is often not possible to objectively evaluate a library's ease of use or the \enquote{readability} of its code -- particularly when comparing different languages.
-However, to get a sense for the differences between \code{lox}, OpenMesh and PMP, this chapters shows a few example tasks realized with the different libraries.
+However, to get a sense for the differences between \code{lox}, OpenMesh and PMP, this section shows a few example tasks realized with the different libraries.
 
 Figure~\ref{fig:example-io} shows an example that reads the file \code{input.stl} and writes the mesh back into \code{output.ply}.
 Two main differences between the \code{lox} version and the two other versions can be observed.
@@ -174,7 +174,7 @@ Firstly, with \code{lox}, the mesh is returned by the \code{read_file} function,
 Secondly, \code{lox}'s IO functions report errors via \code{io::Error} which includes information about the underlying cause, whereas OpenMesh's and PMP's functions signal success or failure via a single \code{bool} which does not carry any additional information.
 
 In figure~\ref{fig:example-build}, code manually building a simple mesh is shown.
-While most of the time, meshes are loaded from files, creating small meshes by hand is useful for examples and unit tests.
+While most of the time meshes are loaded from files, creating small meshes by hand is useful for examples and unit tests.
 While the two snippets using OpenMesh and PMP are very similar, the code using \code{lox} differs substantially.
 That is because with \code{lox}, mesh properties -- including vertex positions -- have to be stored in external property maps.
 The \code{mesh!} macro is offered to make creating meshes more convenient by allowing the user to specify mesh connectivity and properties with a custom syntax.
@@ -187,11 +187,12 @@ Lastly, figure~\ref{fig:example-smooth} shows a simple smoothing algorithm that 
 This shows a number of differences between the libraries.
 For one, \code{lox}'s vertex iterator iterates over \code{VertexRef}s, allowing features like \code{v.adjacent_vertices()} and \code{v.is_boundary()}, while the other two libraries iterate over vertex handles.
 In OpenMesh and PMP, the property map for the new positions is created from the mesh and filled afterwards; in \code{lox} it is created by collecting an iterator over \code{(VertexHandle, Point3)} pairs.
-An iterator method \code{centroid} is offered by \code{lox}, while the versions implement that logic themselves.
+An iterator method \code{centroid} is offered by \code{lox}, while the two \cpp versions implement that logic themselves.
 
 In general, in situations where \code{lox} code is more concise than equivalent code for the two other libraries, this advantage is mostly due to Rust's powerful iterator system.
-It allows defining new methods (like \code{centroid}), but even the built-in methods can make some code notably shorter.
-As another example, this code counts the number of boundary faces: \code{mesh.faces().filter(|f| f.is_boundary()).count()}.
+For one, it allows defining new methods like \code{centroid}.
+But even the built-in iterator methods can make some code notably shorter.
+For example, this code counts the number of boundary faces: \code{mesh.faces().filter(|f| f.is_boundary()).count()}.
 
 
 \begin{figure}[p]

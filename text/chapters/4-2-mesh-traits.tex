@@ -3,7 +3,7 @@
 
 One of the main challenges in creating this library was to find a suitable set of traits that would serve as a reasonable abstraction over different mesh data structures.
 A single trait is not sufficient because not all data structures offer the same set of capabilities.
-On the other hand, having one trait for each individual feature (i.\,e., for each neighborhood information, each mutating operation, \dots) would result in a very large number of traits, making the library's API much harder to understand and more difficult to work with.
+On the other hand, having one trait for each individual feature (i.\,e., for each neighborhood~information, each mutating operation, \dots) would result in a very large number of traits, making the library's API much harder to understand and more difficult to work with.
 Finding a good solution in between those extremes is crucial for the usefulness of the abstraction.
 This section describes the design considerations and introduces a few possible solutions.
 
