@@ -1,21 +1,21 @@
 \chapter{Rust: Obstacles and Limitations}
 
-While using Rust in this project had many advantages, the language also created a number of problems, ranging from minor inconveniences to major limitations.
-This chapter briefly explores these complications and explains how they were solved in \code{lox}.
+While using Rust in this project had many advantages, the language also caused a number of problems, ranging from minor inconveniences to major limitations.
+This chapter briefly explores these complications and explains how they were worked around in \code{lox}.
 
-\vspace{1cm}
+\vfill
 
-Many mesh algorithms need to iterate over elements of the mesh while simultaneously mutating the mesh.
+One problem emerged because many mesh algorithms need to iterate over elements of the mesh while simultaneously mutating it.
 For example, to add an isolated vertex in the center of each face, it is required to iterate over all faces while adding vertices.
-Regardless of language, the programmer has to pay attention in these situations to not accidentally invalidate the iterator (e.\,g., by removing elements) and to not iterate forever (e.\,g., by adding faces while iterating over all faces).
-In Rust however, mutation during iteration is usually not accepted by the compiler, due to one of Rust's most central rules: \emph{aliasing nand mutability}.
+In situations like this, the programmer has to pay attention to not accidentally invalidate the iterator (e.\,g., by removing elements) and to not iterate forever (e.\,g., by adding faces while iterating over all faces).
+In Rust however, mutation during iteration conflicts with one of Rust's most central rules: \emph{aliasing nand mutability}.
 
 Most iteration in Rust is done by obtaining an iterator object from the container and calling \code{next()} repeatedly until \code{None} is returned.
 This can be done manually or by using a \code{for} loop, which performs both steps automatically.
-The key to the problem is that the iterator object has a reference to the container and lives for the whole iteration, meaning that the container is \emph{borrowed} for the whole time.
-The code below demonstrates this problem.
-Compiling the code on the left fails with \enquote{cannot borrow \codebox{v} as mutable because it is also borrowed as immutable}.
-The code snippet on the right works around the problem by using an iterator that does not borrow \code{v} (the vector is only briefly borrowed to obtain the length).
+The iterator object has a reference to the container and lives for the whole iteration, meaning that the container is \emph{borrowed} and thus cannot be mutated during that entire time.
+The code below demonstrates this.
+Compiling the code on the left fails with the message \enquote{cannot borrow \codebox{v} as mutable because it is also borrowed as immutable}.
+Trying to naively mutate a mesh while iterating over its elements will be rejected by the compiler for the same reason.
 
 \vspace{5mm}
 \begin{minipage}{0.49\textwidth}
@@ -36,13 +36,14 @@ The code snippet on the right works around the problem by using an iterator that
 \end{minipage}
 \vspace{5mm}
 
-This solution only works because the user code can reliably perform the same iteration the container's iterator would have performed: in this case, just iterating over all valid indices.
-For meshes, that is usually not the case as meshes can implement their own iteration logic, mostly to skip deleted elements.
+The code snippet on the right works around the problem by using an iterator that does not borrow \code{v} during iteration.
+But this only works because the user code can easily perform the same iteration the container's iterator would have performed: in this case, just iterating over all valid indices.
+For meshes, that is usually not the case as they might require more complex iteration logic, for example to skip deleted elements.
 
-Instead, the workaround used by \code{lox} is to add a way to mutate the container through the iterator object.
+The workaround \code{lox} uses to mitigate this problem is to add a way to mutate the container through the iterator object.
 This has the disadvantage that the user has to deal with the iterator objects themselves (i.\,e., they cannot use a \code{for} loop) and that the iterator logic might get a bit more complicated to ensure that mutations of the container do not invalidate the iterator.
 On the other hand, the iterator object can precisely control which mutating operations are performed, which potentially makes this solution more robust.
-The solution works fine for \code{lox}, the exact iterator interface is not fixed yet, though.
+This approach works fine for \code{lox} so far, but the exact iterator interface is not fixed yet.
 
 \newpage
 
@@ -55,22 +56,23 @@ This is only a viable solution if the number of different values is fairly small
 
 \vfill
 
-Some Rust features are implemented, but have not been stabilized yet.
+Additional problems are caused by some Rust features that are implemented, but not stabilized yet.
 To stabilize a feature means to commit to all details of it and to never change it in a backwards-incompatible way.
 As stabilizing too early could mean supporting a flawed feature forever, all additions to the language are tested, tweaked and evaluated for months, sometimes years, before a decision is made.
-An unstable feature can only be used with a \emph{nightly} compiler, a version built from the \code{master} branch every night.
+Before that, an unstable feature can only be used with a \emph{nightly} compiler, a version built from the \code{master} branch every night.
 Currently, \code{lox} uses some unstable features, but only one of those is critical, i.\,e., not just for convenience: \emph{specialization}.
 
-Usually, Rust maintains a property called \emph{coherence}, meaning that for any given type and trait, exactly one specific, unambiguous implementation applies (or none, if the type does not implement the trait).
+Rust maintains a property called \emph{coherence}.
+It means that for any given type and trait, exactly one specific, unambiguous implementation applies (or none, if the type does not implement the trait).
 This property is important in several situations to guarantee soundness, but it is of course limiting in some other situations.
-To somewhat relax the restrictions, specialization was introduced \cite{rfc1210}, providing the ability to have some forms overlapping trait implementations.
-Unfortunately, it is not yet stabilized as there are a few problems with the current system.
+To relax the restrictions somewhat, specialization was introduced \cite{rfc1210}, providing the ability to have some forms of overlapping trait implementations.
+Unfortunately, it is not yet stabilized because there are still a few problems with the current system.
 But as this feature is crucial for \code{lox} in a couple of situations, \code{lox} is forced to use the nightly compiler until it has been stabilized.
 
 \vfill
 
-For \code{lox}, the most critical limitation of Rust is the missing support for \emph{higher-kinded types} (HKTs), particularly \emph{generic associated types} (GATs).
-The term HKTs describes a type system's ability to let the programmer handle \emph{type constructors}, i.\,e., generic types whose type arguments have not been applied yet.
+However, the most critical limitation of Rust for \code{lox} is the missing support for \emph{higher-kinded types} (HKTs).
+This describes a type system's ability to let the programmer handle \emph{type constructors}, i.\,e., generic types whose type arguments have not been applied yet.
 For example, \code{Vec<u32>} is a specific type, but \code{Vec} is a type constructor.
 Sometimes it is necessary to be generic over type constructors, as shown in this code:
 
@@ -96,14 +98,14 @@ Sometimes it is necessary to be generic over type constructors, as shown in this
 
 \newpage
 While \cpp offers decent HKT support with its \enquote{template template} feature, working with HKTs in Rust is usually not possible.
-As a first step in fixing this language deficiency, GATs were proposed, which simply allows associated types to be generic \cite{rfc1598}.
+As a first step in fixing this language deficiency, \emph{generic associated types} (GATs) were proposed, which simply allows associated types to be generic \cite{rfc1598}.
 It is a rather small surface-level change to the language, but can be used in many different ways to deal with HKTs.
 Unfortunately, GATs are not yet fully implemented and thus cannot be used by \code{lox}.
 There are several situations in which that feature would be required:
 
 \begin{itemize}
-  \item For the \code{PropMap} trait (cf. \autoref{chap:memory-layout}), the main idea is to let the implementing type decide whether a return value borrows from \code{self}.
-  This would be easily solvable with GATs, but without them, an elaborate workaround was required.
+  \item For the \code{PropMap} trait (cf.\ \autoref{chap:memory-layout}), the main idea is to let the implementing type decide whether a return value borrows from \code{self}.
+  This would be easily solved with GATs, but without them, an elaborate workaround was required.
   \item All mesh adjacency traits return iterators from most methods (e.\,g., an iterator over all neighbor faces).
   The type of the iterator can be specified by the mesh type implementing the adjacency trait, but the iterator also has to borrow from \code{self}.
   As with the previous point, this also requires a verbose workaround.
@@ -114,8 +116,9 @@ There are several situations in which that feature would be required:
 \end{itemize}
 
 The workarounds for the first two situations are explained in \cite{gatworkaround}.
-Specifically, the second workaround from that article was used in the IO reader/writer situation and the third workaround was used in the \code{PropMap} situation.
-While not many Rust projects need to deal with HKTs or other advanced type-level capabilities, for \code{lox}, the problems caused by a lack of HKT features cost a notable amount of development time and made parts of the library's API worse than it could have been with those features.
+Specifically, the second workaround from that article was used for the adjacency trait iterators and the third workaround was used in the \code{PropMap} situation.
+While not many Rust projects need to deal with HKTs or other advanced type-level capabilities, for \code{lox}, the problems caused by a lack of HKT features cost a notable amount of development time.
+It also made some useful additions to the API (e.\,g., abstraction over IO writers) impossible to implement.
 
 \vfill
 
@@ -123,9 +126,9 @@ While not many Rust projects need to deal with HKTs or other advanced type-level
 \rule{.8\textwidth}{.15mm}
 \end{center}
 
-Without Rust's advantages over \cpp, this project would not have been possible.
+To summarize, without Rust's advantages over \cpp, this project would not have been possible.
 However, limitations of Rust created a number of problems that could only be fixed by finding some kind of workaround.
-While, in the author's opinion, Rust is still the best choice for a project like this, the mentioned language deficiencies are a significant problem for some programmers and could hinder Rust's mainstream adoption.
+While, in the author's opinion, Rust is still the best choice for a project like this, the language deficiencies mentioned here are a significant problem for some programmers and could hinder Rust's mainstream adoption.
 
 Fortunately, all of those problems are well-known to the Rust community and actively being worked on.
 The Rust 2019 roadmap \cite{rfc2657} specifically mentions const generics, GATs and specialization as three long-standing features which should be finished in the near future.
