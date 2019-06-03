@@ -9,8 +9,8 @@ Rust was voted \enquote{most loved programming language} four times in a row fro
 \begin{figure}[h]
   \vspace{5mm}
   \centering
-  \includesvg[.68\textwidth]{rust-logo-ferris}
-  \caption{The Rust logo (left, \protect\hyperlink{cc-by}{CC-BY 4.0}) and the unofficial mascot of Rust (right, \protect\hyperlink{cc0}{CC0}).}
+  \includegraphics[width=.25\textwidth]{svg2pdf/rust-logo}
+  \caption{The Rust logo, \protect\hyperlink{cc-by}{CC-BY 4.0}.}
   \vspace{5mm}
 \end{figure}
 
@@ -40,7 +40,7 @@ It is already used in production by hundreds of companies, most notably Dropbox,
 
 This chapter gives a very quick overview over the language.
 To learn more about Rust, numerous resources are available, including \emph{The Rust Programming Language} \cite{klabnik2018rust} which is available for free at \url{https://doc.rust-lang.org/book/}.
-The \enquote{Rust Playground} is a very handy online compiler available at \url{https://play.rust-lang.org/}.
+Additionally, the \enquote{Rust Playground} is an online compiler available at \url{https://play.rust-lang.org/}.
 In this chapter, many code snippets contain a link to the playground containing that code (only usable in the digital version of this thesis).
 
 \vspace{5mm}
@@ -94,7 +94,7 @@ Some explanations and remarks to the code above:
   Parameters are listed in the parentheses after the function name (parameter name and type are swapped compared to \cpp), the return type is specified after \code{->}.
   \item The \code{main} function (line~6) is the entry point of Rust programs.
   \item Variables (more precisely: \emph{variable bindings}) are created with \code{let} (line~9).
-  \item Rust is completely statically typed, but very elaborate type inference allows omitting type annotations in many places.
+  \item Rust is completely statically typed, but elaborate type inference allows omitting type annotations in many places.
   They are usually only necessary in function signatures, types and \code{const} definitions.
   \item \code{println} (line~10) is a macro which is used for printing to stdout.
   Macros are invoked with the \code{!} after the name and operate on the source code and not on values, which makes them more powerful than normal functions in some situations.
@@ -607,6 +607,5 @@ Almost all \code{unsafe} code is hidden behind safe interfaces; so while buildin
 \end{center}
 
 As can be seen from this chapter, Rust is a good choice for writing robust high-performance applications and libraries.
-In fact, in the opinion of the author, Rust is a better choice than \cpp for almost all new projects.
 The next chapter shows how this language is used to create \code{lox}.
 \vspace{1cm}
