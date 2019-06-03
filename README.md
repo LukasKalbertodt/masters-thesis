@@ -15,8 +15,3 @@ My master's thesis. Abstract:
 **Links**:
 - **Download thesis as PDF** TODO
 - [Repository of polygon library `lox`](https://github.com/LukasKalbertodt/lox)
-
-
----
-
-TODO: license

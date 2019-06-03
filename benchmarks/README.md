@@ -4,9 +4,9 @@ Benchmarks
 This folder contains all benchmarks mentioned in the thesis.
 A quick overview:
 
-- `memory-layout/`: benchmarking "Array of Structs" vs. "Struct of Arrays" memory layouts in various scenarios.
 - `comparison/`: benchmarks comparing lox, PMP and OpenMesh.
 - `data/`: test meshes.
+- `memory-layout/`: benchmarking "Array of Structs" vs. "Struct of Arrays" memory layouts in various scenarios.
 - `raw-results/`: contains the data measured by me and used in the thesis in various formats.
 - `util/`: contains Rust scripts for certain things.
 
