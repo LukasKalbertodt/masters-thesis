@@ -182,7 +182,6 @@ At the time of this writing, \code{lox} provides three data structures:
 the shared vertex mesh, the half edge mesh and the directed edge mesh.
 However, it is planned to add more data structures to the library in the near future.
 
-%TODO: maybe actually implement this?
 The half edge mesh and directed edge mesh can be configured at compile time.
 Both meshes allow specifying which optional fields (e.\,g., \code{prev}) are stored and the half edge mesh offers an option to restrict the mesh to triangular faces (which does not change the underlying data structure, but makes some operations faster).
 The configuration is done via a type parameter and a trait \code{Config}.

@@ -6,13 +6,6 @@ It was shown that, by using the trait system offered by the Rust programming lan
 Furthermore, the benchmarks and code examples from chapter~\ref{chap:evaluation} demonstrate that \code{lox} is comparable to the \cpp libraries OpenMesh and PMP in terms of execution speed and ease of use.
 In some cases, it even significantly outperforms the two \cpp libraries.
 However, due to its young age, \code{lox} still offers notably fewer features (elaborate mesh algorithms in particular) than the other libraries.
-%TODO: autoref
-
-% After handing in this thesis, \code{lox} will be publicly released and announced to the Rust community.
-% The
-
-% As this was not purely a research project, \code{lox} will be released as open-source library.
-% It is developed in this repository: \url{https://github.com/LukasKalbertodt/lox}.
 
 \vfill
 \section{Challenges}
@@ -31,9 +24,6 @@ Trait systems like the one used to abstract over mesh data structures have to st
 using fewer traits makes for a simpler API, but might exclude some use-cases.
 Further experiments, improvements and testing is certainly required to find an adequate solution.
 
-% Finally, designing the central interfaces of \code{lox} was non-trivial still req further testing and improvements are required.
-% For example, the trait system to abstract over mesh data structures have to strike the balance between flexibility and ease of use.
-% The optimal solution was certainly not found yet.
 \vspace{1cm}
 
 \newpage
@@ -51,38 +41,3 @@ The same approach could potentially help to reduce the number of bound checks in
 
 After various mesh data structures are implemented and sufficiently optimized, it would be possible to compare their respective speeds by benchmarking their performances in a large number of different benchmarks.
 This would allow for creating extensive guidelines on when to best use which data structure.
-
-
-% Of course, \code{lox} is still incomplete in several regards.
-% Firstly, its feature set needs to be expanded by, for example, implementing more data structures, supporting more file formats and adding more mesh algorithms.
-% Furthermore, its core interface needs to be polished by testing different approaches and incorporating feedback by users.
-
-% The library could also benefit a lot from experimenting with how Rust's strong type system can improve performance or avoid certain classes of bugs.
-% For example, while using \emph{handles} has many advantages, it also introduces potential bugs like using a handle to an already deleted element and using the handle of one mesh in another one.
-% It could be possible to avoid these bugs at compile-time with techniques like \enquote{tagging}, but it is not yet clear how well this would actually work.
-
-% An interesting research
-
-
-
-% - [ ]  What went well
-%   - [ ]  Traits
-%   - [ ]  Zero Cost abstractions
-%   - [ ]  Iterators
-%   - [x]  abstraction over DS works
-% - [x]  What went not so well (Challenges)
-%   - [x]  Rust limitations
-%   - [x]  bound checks
-%   - [x]  Not clear yet
-%     - [x]  Design of mesh interface
-% - [ ]  Future Work
-%   - [ ]  Publish as 0.1 soon
-%   - [ ]  Properties stored next to adjacency data
-%   - [x]  more algorithms
-%   - [x]  Avoid typical mistakes by smart API design:
-%     - [x]  Use handles in wrong mesh
-%     - [x]  Use after free/other bugs with handles, solved by slotmap
-%   - [x]  Generally make API nicer
-%   - [x]  Generally extend API
-%   - [x]  Implement and optimize more data structures
-%   - [x]  make a big benchmark to compare all of them
