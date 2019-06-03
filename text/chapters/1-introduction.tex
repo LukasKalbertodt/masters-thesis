@@ -37,16 +37,15 @@ Using the library \code{lox} and the experience from creating it, this thesis at
 
 \vspace{1cm}
 
-% TODO: write out numbers? TODO: real links with autoref
 This report starts by laying out some necessary background information.
-Chapter~2 explains terminology around polygon meshes and discusses why mesh data structures are needed and what makes it hard to design fast data structures.
+Chapter~\ref{chap:background-geometry-processing} explains terminology around polygon meshes and discusses why mesh data structures are needed and what makes it hard to design fast data structures.
 This includes some information about performance on modern hardware.
 The chapter also lists and describes some existing data structures as well as existing geometry processing libraries.
-Chapter~3 introduces the programming language Rust and explains its core concepts, focussing on features particularly relevant for this thesis.
+Chapter~\ref{chap:background-rust} introduces the programming language Rust and explains its core concepts, focussing on features particularly relevant for this thesis.
 
-Chapter~4 discusses major design decisions and notable implementation details of \code{lox}.
-In chapter~5, the library is evaluated and compared to existing libraries regarding execution speed and other factors.
-Chapter~6 briefly reviews the main advantages and problems of Rust which arose while creating the library.
+Chapter~\ref{chap:implementing-lox} discusses major design decisions and notable implementation details of \code{lox}.
+In chapter~\ref{chap:evaluation}, the library is evaluated and compared to existing libraries regarding execution speed and other factors.
+Chapter~\ref{chap:rust-limitations} briefly reviews the main problems and limitations of Rust which arose while creating the library.
 The last chapter summarizes all findings and lays out a plan for the near-term future of \code{lox}.
 
 

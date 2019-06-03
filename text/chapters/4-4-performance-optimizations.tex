@@ -63,7 +63,7 @@ The library \code{stable-vec} -- offering the underlying dynamic array data stru
 These optimizations improved overall performance by roughly 20\%.
 
 Another important optimization is based on an additional invariant held by the half edge mesh and directed edge mesh.
-Chapter~2 states that these data structures store one arbitrary outgoing half edge per vertex.
+Chapter~\ref{chap:background-geometry-processing} states that these data structures store one arbitrary outgoing half edge per vertex.
 The implementations in \code{lox} make sure that if a vertex is a boundary vertex, the half edge stored in the \code{outgoing} field is a boundary half edge as well.
 This requires only a bit more work in methods mutating the mesh, but means that checking whether a vertex lies on the boundary is a lot faster, as only one adjacent half edge has to be checked.
 This optimization is also used in OpenMesh.

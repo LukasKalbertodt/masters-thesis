@@ -5,7 +5,7 @@
 
 In many situations, it is necessary to refer to a specific element in the mesh (for example, to delete a specific face or to query the neighbors of a specific vertex).
 There are mainly two ways to realize an \emph{element reference}: pointers or IDs/indices.
-As discussed in chapter~2, it is desirable to use growing arrays to store mesh data, making pointers impossible (or at least very difficult) to use as element references.
+As discussed in chapter~\ref{chap:background-geometry-processing}, it is desirable to use growing arrays to store mesh data, making pointers impossible (or at least very difficult) to use as element references.
 As a consequence, \code{lox} uses the index of an element in its array to refer to that element.
 (Also refer to \cite{sieger2011design} for a discussion about array vs. linked lists and indices vs. pointers.)
 
@@ -98,7 +98,7 @@ The abstraction is realized with three traits to make it as flexible as possible
 
 \begin{description}
   \item [\codebox{PropMap}] This trait only requires a single method to be implemented.
-  Its signature is \code{fn get(&self, handle: H) -> Option<Value>} where \code{H} is the handle type parameter (this is a simplified version of the actual signature, which is explained in chapter~6).
+  Its signature is \code{fn get(&self, handle: H) -> Option<Value>} where \code{H} is the handle type parameter (this is a simplified version of the actual signature, which is explained in chapter~\ref{chap:rust-limitations}).
   Returning \code{None} means that no value is associated with the given handle/element.
   This trait represents a simple map from handle to optional value.
   \item [\codebox{PropStore}] Like \code{PropMap}, but can additionally iterate over all handles and values.
