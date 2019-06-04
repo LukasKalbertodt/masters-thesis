@@ -13,5 +13,5 @@ My master's thesis. Abstract:
 
 
 **Links**:
-- **Download thesis as PDF** TODO
+- [**Download thesis as PDF**](https://github.com/LukasKalbertodt/masters-thesis/releases/download/v1.0/rust-geometry-processing-lox.pdf)
 - [Repository of polygon library `lox`](https://github.com/LukasKalbertodt/lox)
