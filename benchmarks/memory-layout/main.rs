@@ -261,7 +261,7 @@ macro_rules! gen_benchmarks {
     }
 }
 
-/// Generate benchmarks for all configurations of number of fields/used fields.
+// Generate benchmarks for all configurations of number of fields/used fields.
 gen_benchmarks!(f1_1, 1, 1);
 gen_benchmarks!(f2_1, 2, 1);
 gen_benchmarks!(f2_2, 2, 2);
@@ -281,7 +281,7 @@ fn clear_cache(c: &mut Criterion) {
     });
 }
 
-/// Register all benchmarks.
+// Register all benchmarks.
 criterion_group!(util, clear_cache);
 criterion_group!(
     name = benches;
