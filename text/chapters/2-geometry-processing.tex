@@ -182,7 +182,7 @@ Additionally, the \emph{prefetcher} -- also a part of the CPU -- loads new cache
   \vspace{5mm}
 \end{table}
 
-As a consequence of CPU caches, the execution time of a program can be increased (dramatically in many cases) by making it more \enquote{cache-friendly}: making sure that memory access patterns are predictable and follow the principle of locality.
+As a consequence of CPU caches, the execution speed of a program can be increased (dramatically in many cases) by making it more \enquote{cache-friendly}: making sure that memory access patterns are predictable and follow the principle of locality.
 For example, iterating over an array (which stores its elements contiguously in memory) is one of the most cache-friendly things to do, while iterating over a linked list is the exact opposite.
 In the latter case, since each list node is usually allocated on its own, each element access is likely a cache miss.
 
